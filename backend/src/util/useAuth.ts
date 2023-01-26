@@ -1,5 +1,4 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
-import admin from 'firebase-admin'
 
 /**
  * A middleware for checking and verifying a request's authorization token.
@@ -15,8 +14,8 @@ async function useAuth(req: Request, res: Response, next: NextFunction) {
 
   if (typeof auth === 'string') {
     try {
-      const user = await admin.auth().verifyIdToken(auth)
-      res.locals.currentUser = { uid: user.uid, role: user.role }
+      /* const user = await admin.auth().verifyIdToken(auth)
+      res.locals.currentUser = { uid: user.uid, role: user.role } */
     } catch (_) {
       console.error('Invalid token')
     }

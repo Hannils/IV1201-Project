@@ -14,12 +14,16 @@
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" "
   },
   "dependencies": {
+    "@types/passport": "^1.0.11",
+    "@types/passport-local": "^1.0.35",
     "Express": "^3.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express-async-handler": "^1.2.0",
     "firebase-admin": "^11.5.0",
     "firebase-functions": "^4.2.0",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
     "pg": "^8.8.0",
     "zod": "^3.20.2"
   },

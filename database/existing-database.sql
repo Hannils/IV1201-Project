@@ -114,7 +114,8 @@ CREATE TABLE public.person (
     email character varying(255),
     password character varying(255),
     role_id integer,
-    username character varying(255)
+    username character varying(255),
+    salt character varying(255)
 );
 
 

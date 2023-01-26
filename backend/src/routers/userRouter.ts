@@ -1,10 +1,10 @@
 import express from 'express'
 import asyncHandler from 'express-async-handler'
-import admin from 'firebase-admin'
-import { UserRecord } from 'firebase-admin/auth'
-
+import crypto from 'crypto'
 import { z } from 'zod'
+import { insertPerson } from '../integrations/DAO/userDAO'
 import isAuthorized from '../util/isAuthorized'
+import { Person } from '../util/Types'
 
 const createUserParams = z.object({
   username: z.string(),
@@ -14,6 +14,7 @@ const createUserParams = z.object({
   personNumber: z.string(),
   password: z.string(),
 })
+
 
 /* import { requireAuth } from '../util/Misc' */
 
@@ -42,28 +43,28 @@ const createUserParams = z.object({
  */
 const createUser: express.RequestHandler = async (req, res) => {
   try {
-    const {
-      email,
-      password,
-      username: displayName,
-      ...newUser
-    } = createUserParams.parse(req.body)
+    const user = createUserParams.parse(req.body)
+    const salt = crypto.randomBytes(16)
 
-    const requesterIsRecruter = res.locals.currentUser?.role === 'recruiter'
-
-    const createdUser = await admin.auth().createUser({ email, password, displayName })
-    const token = await admin.auth().createCustomToken(createdUser.uid)
-
-    await admin
-      .auth()
-      .setCustomUserClaims(createdUser.uid, {
-        role: requesterIsRecruter ? 'recruiter' : 'applicant',
+    const password = await new Promise<Buffer>((resolve, reject) => {
+      crypto.pbkdf2(user.password, salt, 310000, 32, 'sha256', (err, hashedPassword) => {
+        if (err) reject(err)
+        return resolve(hashedPassword)
       })
+    })
 
-    res.status(200).json({ signInToken: token })
+    const person = {
+      ...user,
+      password: password.toString(),
+      role: 'applicant',
+      salt: salt.toString(),
+    } satisfies Person
+    await insertPerson(person)
+
+    res.sendStatus(200) /* .json(/* { signInToken: token } *) */
   } catch (e: any) {
     console.error(e.message)
-    return res.sendStatus(400)
+    res.sendStatus(400)
   }
 }
 /**
@@ -77,9 +78,9 @@ const patchUser: express.RequestHandler = async (req, res) => {
   if (username === '') return res.sendStatus(400).json('Fields missing in PATCH /user')
 
   try {
-    const response = await admin.auth().updateUser(res.locals.currentUser, {
+    /* const response = await admin.auth().updateUser(res.locals.currentUser, {
       displayName: username,
-    })
+    }) */
     res.sendStatus(200)
   } catch (error) {
     res.sendStatus(500)
@@ -87,7 +88,7 @@ const patchUser: express.RequestHandler = async (req, res) => {
 }
 /** */
 const deleteUser: express.RequestHandler = async (req, res) => {
-  await admin.auth().deleteUser(res.locals.currentUser)
+  /* await admin.auth().deleteUser(res.locals.currentUser) */
   res.sendStatus(200)
 }
 

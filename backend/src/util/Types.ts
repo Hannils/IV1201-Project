@@ -1,15 +1,29 @@
-import { UserRecord } from 'firebase-admin/auth'
-
+import { z } from 'zod'
 export type Role = 'recruiter' | 'applicant'
 export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
-export interface Person extends UserRecord {
-  firstname: string
-  lastname: string
-  personNumber: string
-  role: Role
-  application?: Application
-}
+export const PersonSchema = z.object({
+  username: z.string(),
+  firstname: z.string(),
+  lastname: z.string(),
+  role: z.string(),
+  email: z.string().email().optional(),
+  personNumber: z.string().optional(),
+  password: z.string(),
+  salt: z.string(),
+})
+
+export type Person = z.infer<typeof PersonSchema>
+
+export const IncompletePersonSchema = z.object({
+  firstname: z.string(),
+  lastname: z.string(),
+  role: z.string(),
+  email: z.string().email(),
+  personNumber: z.string(),
+})
+
+export type IncompletePerson = z.infer<typeof IncompletePersonSchema>
 
 export interface Application {
   competenceProfile: Array<Competence>
@@ -26,4 +40,3 @@ export interface AvailabilityPeriod {
   startDate: Date
   endDate: Date
 }
-

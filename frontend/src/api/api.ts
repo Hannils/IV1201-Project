@@ -12,6 +12,7 @@ interface SignUpRequest {
   email: string
   username: string
   password: string
+  personNumber: string
 }
 
 interface UpdateAccountRequest {
@@ -43,13 +44,14 @@ async function getAuthedHeaders() {
 }
 
 const api = {
-  signUp: ({ firstname, lastname, email, username, password }: SignUpRequest) =>
+  signUp: ({ firstname, lastname, email, username, password, personNumber }: SignUpRequest) =>
     axios.post<SignUpResponse>(`${API_URL}/user`, {
       firstname,
       lastname,
       email,
       username,
       password,
+      personNumber
     }),
 
   updateAccount: async ({ username, profilePicture }: UpdateAccountRequest) => {

@@ -1,10 +1,12 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express, { Request, Response } from 'express'
-import initFirebase from './integrations/firebase'
+
 import userRouter from './routers/userRouter'
 import useAuth from './util/useAuth'
 import path from 'path'
+
+import { initDatabase } from './integrations/DAO/DAO'
 
 dotenv.config()
 
@@ -17,8 +19,7 @@ dotenv.config({
  */
 async function init() {
   const app = express()
-
-  initFirebase()
+  await initDatabase()
 
   app.use(express.json())
   app.use(cors({ origin: true }))

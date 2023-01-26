@@ -22,6 +22,7 @@ interface SignUpFormElement extends FormEvent<HTMLFormElement> {
     username: HTMLInputElement
     email: HTMLInputElement
     password: HTMLInputElement
+    personNumber: HTMLInputElement
   }
 }
 
@@ -37,9 +38,10 @@ export default function Signup() {
     const email = e.target.email.value
     const username = e.target.username.value
     const password = e.target.password.value
+    const personNumber = e.target.password.value
 
     api
-      .signUp({ firstname, lastname, email, username, password })
+      .signUp({ firstname, lastname, email, username, password, personNumber })
       .then((res) => signInWithCustomToken(auth, res.data.signInToken))
       .then(() => navigate('/'))
       .catch((error) => console.error(error))
@@ -61,15 +63,15 @@ export default function Signup() {
           />
           <TextField
             disabled={loading}
-            name="personNummer"
-            label="person nummer"
+            name="lastname"
+            label="Last name"
             required
             variant="outlined"
           />
           <TextField
             disabled={loading}
-            name="lastname"
-            label="Last name"
+            name="personNumber"
+            label="person nummer"
             required
             variant="outlined"
           />
