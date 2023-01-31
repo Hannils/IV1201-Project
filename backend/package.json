@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "npx tsc",
+    "build": "rm -r ./dist && npx tsc",
     "start": "node dist/App.js",
     "dev": "pm2 start src/app.ts --watch --name recrutement-service && pm2 flush recrutement-service && pm2 logs recrutement-service",
     "dev-stop": "pm2 stop recrutement-service",

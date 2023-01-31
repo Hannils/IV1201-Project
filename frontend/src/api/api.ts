@@ -1,8 +1,12 @@
+// Description: This file contains all the API calls to the backend server and is used by the frontend to communicate with the backend. 
+//The API calls are made using the axios library. 
+
 import axios from 'axios'
 import { Person } from '../util/Types'
 
 const API_URL = 'http://localhost:8888'
 
+// Types
 interface SignUpRequest {
   firstname: string
   lastname: string
@@ -42,11 +46,14 @@ interface GetUserRequest {
   email?: string
 }
 
+// this function is used to get the token from the local storage and add it to the headers of the request
 function getAuthedHeaders() {
   return { headers: { Authorization: window.localStorage.getItem('token') } }
 }
-
+// api calls to the backend server 
 const api = {
+
+  // create a new document
   signUp: ({
     firstname,
     lastname,
@@ -68,6 +75,7 @@ const api = {
         window.localStorage.setItem('token', data.token)
         return data.user
       }),
+      // sign in to the application
   signIn: async ({ username, password }: SignInRequest) =>
     axios
       .post<AuthResponse>(`${API_URL}/user/signin`, {
@@ -78,7 +86,7 @@ const api = {
         window.localStorage.setItem('token', data.token)
         return data.user
       }),
-
+  // get the authenticated user
   getUser: async () =>
     axios
       .get<Person>(`${API_URL}/user`, { ...getAuthedHeaders() })

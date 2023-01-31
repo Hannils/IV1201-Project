@@ -1,3 +1,4 @@
+// Description: This file contains the functions that interact with the person table in the database
 import {
   IncompletePerson,
   IncompletePersonSchema,
@@ -21,7 +22,7 @@ function toPerson(x: any) {
     personId: x.person_id,
   }
 }
-
+// description: This function insert a person in the database
 export async function insertPerson(person: Omit<Person, 'personId'>) {
   const response = await queryDatabase(
     `
@@ -43,7 +44,7 @@ export async function insertPerson(person: Omit<Person, 'personId'>) {
 
   return response.rows[0].person_id as number
 }
-
+// description: This function delete a person in the database
 export async function dropPerson(personId: number) {
   await queryDatabase(
     `
@@ -53,7 +54,7 @@ export async function dropPerson(personId: number) {
     [personId],
   )
 }
-
+// description: This function update a person by ID in the database
 export async function selectPersonById(personId: number) {
   const response = await queryDatabase(
     `
@@ -70,7 +71,7 @@ export async function selectPersonById(personId: number) {
 
   return null
 }
-
+// description: This function update a person by email in the database
 export async function selectPersonByEmail(email: string) {
   const response = await queryDatabase(
     `
@@ -87,7 +88,7 @@ export async function selectPersonByEmail(email: string) {
 
   return null
 }
-
+// description: This function update a person by username in the database
 export async function selectPersonByUsername(username: string) {
   const response = await queryDatabase(
     `

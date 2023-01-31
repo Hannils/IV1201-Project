@@ -1,3 +1,4 @@
+// Description: This file contains the functions to connect to the database and execute queries
 import { Client, QueryResult } from 'pg'
 
 

@@ -14,13 +14,26 @@ dotenv.config({
   path: path.resolve(__dirname, '../.env.local'),
 })
 
+init()
+
 /**
- *
+ * Start Express server. Connect to database and start server. 
+ * If database connection fails, exit process. 
  */
 async function init() {
-  const app = express()
   await initDatabase()
 
+  const app = initServer()
+
+  app.listen(process.env.PORT, () => {
+    console.log(`[server]: Server is running at https://localhost:${process.env.PORT}`)
+  })
+}
+/**
+ * Initialize the server
+ */
+export function initServer() {
+  const app = express()
   app.use(express.json())
   app.use(cors({ origin: true }))
   app.use(useAuth)
@@ -30,9 +43,6 @@ async function init() {
   app.get('/', (req: Request, res: Response) => {
     res.send('Express + TypeScript Server')
   })
-  app.listen(process.env.PORT, () => {
-    console.log(`[server]: Server is running at https://localhost:${process.env.PORT}`)
-  })
-}
 
-init()
+  return app
+}
