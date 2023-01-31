@@ -6,7 +6,7 @@ export const PersonSchema = z.object({
   username: z.string(),
   firstname: z.string(),
   lastname: z.string(),
-  role: z.string(),
+  role: z.enum(['recruiter', 'applicant']),
   email: z.string().email().optional(),
   personNumber: z.string().optional(),
   password: z.string(),

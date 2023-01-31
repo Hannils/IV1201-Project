@@ -15,6 +15,15 @@ interface SignUpRequest {
   personNumber: string
 }
 
+interface SignInRequest {
+  email: string,
+  password: string
+}
+
+interface SignInResponse {
+  signInToken: string
+}
+
 interface UpdateAccountRequest {
   username: string
   profilePicture?: string
@@ -64,6 +73,13 @@ const api = {
       { ...(await getAuthedHeaders()) },
     )
   },
+  signIn: async ({email, password}: SignInRequest) => {
+    return axios.post<SignInResponse>(`${API_URL}/user`, {
+      email,
+      password
+    })
+  }
+  
 }
 
 export default api

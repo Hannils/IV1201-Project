@@ -110,7 +110,7 @@ CREATE TABLE public.person (
     person_id integer NOT NULL,
     name character varying(255),
     surname character varying(255),
-    pnr character varying(255),
+    person_number character varying(255),
     email character varying(255),
     password character varying(255),
     role_id integer,
@@ -3873,7 +3873,7 @@ COPY public.competence_profile (competence_profile_id, person_id, competence_id,
 -- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.person (person_id, name, surname, pnr, email, password, role_id, username) FROM stdin;
+COPY public.person (person_id, name, surname, person_number, email, password, role_id, username) FROM stdin;
 1	Joelle	Wilkinson	\N	\N	LiZ98qvL8Lw	1	JoelleWilkinson
 2	Martin	Cummings	\N	\N	QkK48drV2Da	1	MartinCummings
 3	Dante	Mason	\N	\N	EyD84euX5Nj	1	DanteMason

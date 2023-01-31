@@ -2,19 +2,9 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import crypto from 'crypto'
 import { z } from 'zod'
-import { insertPerson } from '../integrations/DAO/userDAO'
+import { insertPerson, selectPersonByUsername } from '../integrations/DAO/userDAO'
 import isAuthorized from '../util/isAuthorized'
 import { Person } from '../util/Types'
-
-const createUserParams = z.object({
-  username: z.string(),
-  firstname: z.string(),
-  lastname: z.string(),
-  email: z.string().email(),
-  personNumber: z.string(),
-  password: z.string(),
-})
-
 
 /* import { requireAuth } from '../util/Misc' */
 
@@ -34,6 +24,15 @@ const createUserParams = z.object({
   }
   res.json(response)
 } */
+
+const createUserParams = z.object({
+  username: z.string(),
+  firstname: z.string(),
+  lastname: z.string(),
+  email: z.string().email(),
+  personNumber: z.string(),
+  password: z.string(),
+})
 
 /**
  * This method create a new user and get a feedback
@@ -67,6 +66,45 @@ const createUser: express.RequestHandler = async (req, res) => {
     res.sendStatus(400)
   }
 }
+
+const signInParams = z.object({
+  username: z.string(),
+  password: z.string(),
+})
+
+/**
+ * This method Signs in an existing
+ * @param req
+ * @param res
+ * @returns
+ */
+const signInUser: express.RequestHandler = async (req, res) => {
+  try {
+    const params = signInParams.parse(req.body)
+
+    const user = await selectPersonByUsername(params.username)
+
+    if(user === null || user === undefined) {
+      return res.status(404).send("User not found")
+    }
+
+    const password = await new Promise<Buffer>((resolve, reject) => {
+      crypto.pbkdf2(params.password, user.salt, 310000, 32, 'sha256', (err, hashedPassword) => {
+        if (err) reject(err)
+        return resolve(hashedPassword)
+      })
+
+    })
+    
+
+
+    res.sendStatus(200) /* .json(/* { signInToken: token } *) */
+  } catch (e: any) {
+    console.error(e.message)
+    res.sendStatus(400)
+  }
+}
+
 /**
  *
  * @param req
@@ -95,6 +133,7 @@ const deleteUser: express.RequestHandler = async (req, res) => {
 const userRouter = express.Router()
 /* userRouter.get('/', asyncHandler(getUser)) */
 userRouter.post('/', asyncHandler(createUser))
+userRouter.post('/signin', asyncHandler(signInUser))
 userRouter.patch('/', isAuthorized(), asyncHandler(patchUser))
 userRouter.delete('/', isAuthorized(), asyncHandler(deleteUser))
 

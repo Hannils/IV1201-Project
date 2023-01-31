@@ -6,6 +6,7 @@ import {
   Role,
 } from '../../util/Types'
 import { queryDatabase } from './DAO'
+import { getRoleId } from './roleDAO'
 
 function parseToPersonType(x: unknown) {
   const personParse = PersonSchema.safeParse(x)
@@ -32,7 +33,7 @@ export async function insertPerson(person: Person) {
       person.email,
       person.username,
       person.password,
-      2,
+      await getRoleId(person.role),
       person.salt,
     ],
   )
@@ -49,54 +50,72 @@ export async function dropPerson(personId: number) {
 }
 
 export async function selectPersonById(personId: number) {
-  return parseToPersonType(
-    await queryDatabase(
-      `
+  const response = await queryDatabase(
+    `
         SELECT * FROM person 
         WHERE person_id = $1
       `,
-      [personId],
-    ),
+    [personId],
   )
+
+  const personParse = PersonSchema.safeParse(response.rows[0])
+
+  if (personParse.success) return personParse.data
+
+  return null
 }
 
 export async function selectPersonByEmail(email: string) {
-  return parseToPersonType(
-    await queryDatabase(
-      `
+  const response = await queryDatabase(
+    `
         SELECT * FROM person 
         WHERE email = $1
       `,
-      [email],
-    ),
+    [email],
   )
+
+  const personParse = PersonSchema.safeParse(response.rows[0])
+
+  if (personParse.success) return personParse.data
+
+  return null
 }
 
 export async function selectPersonByUsername(email: string) {
-  return parseToPersonType(
-    await queryDatabase(
-      `
+  const response = await queryDatabase(
+    `
       SELECT * FROM person 
       WHERE username = $1
     `,
-      [email],
-    ),
+    [email],
   )
+
+  const personParse = PersonSchema.safeParse(response.rows[0])
+
+  if (personParse.success) return personParse.data
+
+  return null
 }
 
 /**
  * Function to select all people with a specific entered role
- * @param role recruiter || applicant
+ * @param role a role
  */
 export async function selectPeopleByRole(role: Role) {
-  return parseToPersonType(
-    await queryDatabase(
-      `
+  const response = await queryDatabase(
+    `
         SELECT * FROM public.person 
         INNER JOIN public.role ON role.role_id = person.role_id 
         WHERE role.name = $1
       `,
-      [role],
-    ),
+    [role],
   )
+
+  response.rows.map((row) => PersonSchema.safeParse(row)).filter(parse => parse.success)
+
+  const personParse = PersonSchema.safeParse(response.rows[0])
+
+  if (personParse.success) return personParse.data
+
+  return null
 }

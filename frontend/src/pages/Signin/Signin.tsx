@@ -8,9 +8,9 @@ import {
     TextField,
     Typography,
   } from '@mui/material'
-  import { signInWithEmailAndPassword } from 'firebase/auth'
   import React, { FormEvent, useState } from 'react'
   import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import api from '../../api/api'
   
   import { auth } from '../../api/firebase'
   
@@ -26,9 +26,11 @@ import {
     const navigate = useNavigate()
   
     const signIn = (e: SignInFormElement) => {
+      const email = e.target.email.value
+      const password = e.target.password.value
       e.preventDefault()
       setLoading(true)
-      signInWithEmailAndPassword(auth, e.target.email.value, e.target.password.value)
+      api.signIn({email, password})
         .then(() => navigate('/'))
         .catch((error) => console.error(error))
         .finally(() => setLoading(false))

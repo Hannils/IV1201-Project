@@ -8,8 +8,7 @@
     "start": "node dist/App.js",
     "dev": "pm2 start src/app.ts --watch --name recrutement-service && pm2 flush recrutement-service && pm2 logs recrutement-service",
     "dev-stop": "pm2 stop recrutement-service",
-    "dev-conf": "pm2 install typescript",
-    "test": "pm2 update",
+    "dev-conf": "pm2 install typescript && pm2 update",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" "
   },

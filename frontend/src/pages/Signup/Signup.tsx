@@ -42,7 +42,7 @@ export default function Signup() {
 
     api
       .signUp({ firstname, lastname, email, username, password, personNumber })
-      .then((res) => signInWithCustomToken(auth, res.data.signInToken))
+      .then((res) => api.signIn({email, password}))
       .then(() => navigate('/'))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))

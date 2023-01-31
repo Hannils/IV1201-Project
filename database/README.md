@@ -11,7 +11,8 @@ from inside the SQLShell
 
 - Select all applicants
 
-    `SELECT * FROM public.person WHERE role_id = 2;`
+    ```sql
+    SELECT * FROM public.person WHERE role_id = 2;```
 
 - Note: The availability_id column is used to show the application status, assuming that availability_id is NULL means the person has not applied yet, otherwise it means the person has applied and the value of availability_id is the application status.
 
