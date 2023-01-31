@@ -25,7 +25,6 @@ export async function queryDatabase(query: string, data: any[]): Promise<QueryRe
         console.error(err)
         return reject(err.message)
       }
-
       resolve(res)
     })
   })

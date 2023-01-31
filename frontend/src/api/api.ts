@@ -1,8 +1,5 @@
 import axios from 'axios'
-import { User } from 'firebase/auth'
-
-//import { Document, DocumentPreview } from '../util/Types'
-import { auth } from './firebase'
+import { Person } from '../util/Types'
 
 const API_URL = 'http://localhost:8888'
 
@@ -16,21 +13,18 @@ interface SignUpRequest {
 }
 
 interface SignInRequest {
-  email: string,
+  username: string
   password: string
 }
 
-interface SignInResponse {
-  signInToken: string
+interface AuthResponse {
+  user: Person
+  token: string
 }
 
 interface UpdateAccountRequest {
   username: string
   profilePicture?: string
-}
-
-interface SignUpResponse {
-  signInToken: string
 }
 
 interface UpdateUserResponse {
@@ -48,38 +42,47 @@ interface GetUserRequest {
   email?: string
 }
 
-async function getAuthedHeaders() {
-  return { headers: { Authorization: await auth.currentUser?.getIdToken(false) } }
+function getAuthedHeaders() {
+  return { headers: { Authorization: window.localStorage.getItem('token') } }
 }
 
 const api = {
-  signUp: ({ firstname, lastname, email, username, password, personNumber }: SignUpRequest) =>
-    axios.post<SignUpResponse>(`${API_URL}/user`, {
-      firstname,
-      lastname,
-      email,
-      username,
-      password,
-      personNumber
-    }),
-
-  updateAccount: async ({ username, profilePicture }: UpdateAccountRequest) => {
-    return axios.patch<UpdateUserResponse>(
-      `${API_URL}/user`,
-      {
+  signUp: ({
+    firstname,
+    lastname,
+    email,
+    username,
+    password,
+    personNumber,
+  }: SignUpRequest) =>
+    axios
+      .post<AuthResponse>(`${API_URL}/user`, {
+        firstname,
+        lastname,
+        email,
         username,
-        profilePicture,
-      },
-      { ...(await getAuthedHeaders()) },
-    )
-  },
-  signIn: async ({email, password}: SignInRequest) => {
-    return axios.post<SignInResponse>(`${API_URL}/user`, {
-      email,
-      password
-    })
-  }
-  
+        password,
+        personNumber,
+      })
+      .then(({ data }) => {
+        window.localStorage.setItem('token', data.token)
+        return data.user
+      }),
+  signIn: async ({ username, password }: SignInRequest) =>
+    axios
+      .post<AuthResponse>(`${API_URL}/user/signin`, {
+        username,
+        password,
+      })
+      .then(({ data }) => {
+        window.localStorage.setItem('token', data.token)
+        return data.user
+      }),
+
+  getUser: async () =>
+    axios
+      .get<Person>(`${API_URL}/user`, { ...getAuthedHeaders() })
+      .then((res) => res.data),
 }
 
 export default api

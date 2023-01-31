@@ -1,14 +1,14 @@
-import { User } from 'firebase/auth'
-
 export type Role = 'recruiter' | 'applicant'
 export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
-export interface Person extends User {
+export interface Person {
+  personId: number
+  username: string
   firstname: string
   lastname: string
   personNumber: string
+  email: string
   role: Role
-  application?: Application
 }
 
 export interface Application {

@@ -13,7 +13,8 @@ import React, { FormEvent, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 
 import api from '../../api/api'
-import { auth } from '../../api/firebase'
+
+import useUser from '../../util/auth'
 
 interface SignUpFormElement extends FormEvent<HTMLFormElement> {
   target: EventTarget & {
@@ -29,6 +30,7 @@ interface SignUpFormElement extends FormEvent<HTMLFormElement> {
 export default function Signup() {
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
+  const [,, setUser] = useUser()
 
   const signUp = (e: SignUpFormElement) => {
     e.preventDefault()
@@ -42,7 +44,7 @@ export default function Signup() {
 
     api
       .signUp({ firstname, lastname, email, username, password, personNumber })
-      .then((res) => api.signIn({email, password}))
+      .then(user => setUser(user))
       .then(() => navigate('/'))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))

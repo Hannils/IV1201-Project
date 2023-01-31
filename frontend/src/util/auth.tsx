@@ -1,25 +1,30 @@
 import { CircularProgress } from '@mui/material'
-import { User } from 'firebase/auth'
 import { createContext, useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import api from '../api/api'
+import { Person } from './Types'
 
-import { auth } from '../api/firebase'
+const authContext = createContext<
+  [Person | null, boolean, React.Dispatch<React.SetStateAction<Person | null>>]
+>([null, true, () => null])
 
-const authContext = createContext<[User | null, boolean]>([null, true])
 const useUser = () => useContext(authContext)
 const Provider = authContext.Provider
 
 export const AuthProvider = (props: any) => {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<Person | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    return auth.onAuthStateChanged((user) => {
-      setUser(user)
-      setLoading(false)
-    })
+    api
+      .getUser()
+      .then((user) => setUser(user))
+      .catch(() => console.log('Not signed in'))
+      .finally(() => setLoading(false))
   }, [])
 
-  return <Provider {...props} value={[user, loading]} />
+
+  return <Provider {...props} value={[user, loading, setUser]} />
 }
 
 export default useUser

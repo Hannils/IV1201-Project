@@ -3,6 +3,7 @@ export type Role = 'recruiter' | 'applicant'
 export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
 export const PersonSchema = z.object({
+  personId: z.number(),
   username: z.string(),
   firstname: z.string(),
   lastname: z.string(),
