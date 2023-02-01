@@ -32,17 +32,18 @@ export default function SignIn() {
     setLoading(true)
     api
       .signIn({ username, password })
-      .then((user) => {
-        setUser(user)
-          navigate('/')
-      })
+      .then((user) => setUser(user))
+      .then(() => navigate('/'))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
   }
 
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h1" textAlign="center" gutterBottom>
+    <Container
+      maxWidth="sm"
+      sx={{ display: 'grid', alignContent: 'center', minHeight: '80vh' }}
+    >
+      <Typography variant="h1" gutterBottom>
         Sign in
       </Typography>
       <Box component="form" onSubmit={signIn}>
@@ -69,6 +70,12 @@ export default function SignIn() {
             No account?{' '}
             <Link component={RouterLink} to="/signup">
               Create account
+            </Link>
+          </Typography>
+          <Typography>
+            No username or password?{' '}
+            <Link component={RouterLink} to="/migrate-user">
+              Add login for account
             </Link>
           </Typography>
         </Stack>

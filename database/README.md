@@ -2,7 +2,7 @@
 
 ## Migrating database
 To migrate existing-database.sql do the following:
-psql -f <P>.sql -U my_login_role -d db_name 
+`psql -f <P>.sql -U my_login_role -d db_name`
 or
 from inside the SQLShell
 \i /THE_DATABASE_PATH
