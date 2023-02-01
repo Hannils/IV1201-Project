@@ -39,13 +39,13 @@ const createUser: express.RequestHandler = async (req, res) => {
       : res.sendStatus(500) // Should never happen
   }
 
-  const salt = crypto.randomBytes(16)
-  let password: Buffer
+  const salt = crypto.randomBytes(16).toString('hex')
+  let password: string
   try {
-    password = await new Promise<Buffer>((resolve, reject) => {
+    password = await new Promise<string>((resolve, reject) => {
       crypto.pbkdf2(user.password, salt, 310000, 32, 'sha256', (err, hashedPassword) => {
         if (err) reject(err)
-        return resolve(hashedPassword)
+        return resolve(hashedPassword.toString('hex'))
       })
     })
   } catch (error: any) {
@@ -55,9 +55,9 @@ const createUser: express.RequestHandler = async (req, res) => {
 
   const person = {
     ...user,
-    password: password.toString('hex'),
+    password: password,
     role: 'applicant',
-    salt: salt.toString('hex'),
+    salt: salt,
   } satisfies Omit<Person, 'personId'>
 
   let personId: number
@@ -112,12 +112,14 @@ const signInParams = z.object({
 const signInUser: express.RequestHandler = async (req, res) => {
   try {
     const params = signInParams.parse(req.body)
+    console.log(params)
     const user = await selectPersonByUsername(params.username)
+    console.log(user)
     if (user === null || user === undefined) {
       return res.status(404).send('USER_NOT_FOUND')
     }
 
-    const password = await new Promise<Buffer>((resolve, reject) =>
+    const password = await new Promise<string>((resolve, reject) =>
       crypto.pbkdf2(
         params.password,
         user.salt,
@@ -126,13 +128,13 @@ const signInUser: express.RequestHandler = async (req, res) => {
         'sha256',
         (err, hashedPassword) => {
           if (err) reject(err)
-          return resolve(hashedPassword)
+          return resolve(hashedPassword.toString('hex'))
         },
       ),
     )
-
-    if (password.compare(Buffer.from(user.password, 'hex')) !== 1)
-      return res.status(400).send('WRONG_PASSWORD')
+  
+    if (password !== user.password) 
+        return res.status(400).send('WRONG_PASSWORD')
 
     const token = await new Promise<string>((resolve, reject) =>
       crypto.randomBytes(64, (err, key) =>

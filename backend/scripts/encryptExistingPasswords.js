@@ -42,16 +42,16 @@ async function run() {
   console.log("Encrypting...")
   const res = await queryDatabase(selectQuery)
   for await (const row of res.rows) {
-    const salt = crypto.randomBytes(16)
+    const salt = crypto.randomBytes(16).toString('hex')
     const encryptedPassword = await new Promise((resolve, reject) => {
       crypto.pbkdf2(row.password, salt, 310000, 32, 'sha256', (err, hashedPassword) => {
         if (err) reject(err)
-        return resolve(hashedPassword)
+        return resolve(hashedPassword.toString('hex'))
       })
     })
     await queryDatabase(updateQuery, [
-      encryptedPassword.toString('hex'),
-      salt.toString('hex'),
+      encryptedPassword,
+      salt,
       row.person_id,
     ])
   }
