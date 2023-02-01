@@ -23,7 +23,7 @@ interface SignInFormElement extends FormEvent<HTMLFormElement> {
 export default function SignIn() {
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
-  const [,, setUser] = useUser()
+  const [, , setUser] = useUser()
 
   const signIn = (e: SignInFormElement) => {
     const username = e.target.username.value
@@ -32,8 +32,10 @@ export default function SignIn() {
     setLoading(true)
     api
       .signIn({ username, password })
-      .then(user => setUser(user))
-      .then(() => navigate('/'))
+      .then((user) => {
+        setUser(user)
+          navigate('/')
+      })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
   }
