@@ -13,7 +13,7 @@ import {
 import isAuthorized from '../util/isAuthorized'
 import { IncompletePerson, Person } from '../util/Types'
 import * as schemas from '../util/schemas'
-import tokenStore, { TOKEN_VALIDITY } from '../util/tokenManager'
+import tokenManager from '../util/tokenManager'
 
 const migrationTokenStore = new Map<string, number>()
 
@@ -31,8 +31,6 @@ const generateToken: express.RequestHandler = async (req, res) => {
       ? res.status(400).json(err.issues)
       : res.sendStatus(500) // Should never happen
   }
-
-  console.log('Email', email)
 
   let user: IncompletePerson | null
 
@@ -120,17 +118,11 @@ const migrateUser: express.RequestHandler = async (req, res) => {
   let token: string
 
   try {
-    token = await new Promise<string>((resolve, reject) =>
-      crypto.randomBytes(64, (err, key) =>
-        err ? reject(err) : resolve(key.toString('hex')),
-      ),
-    )
+    token = await tokenManager.createToken(personId)
   } catch (error: any) {
     console.error(error.message)
     return res.sendStatus(500)
   }
-
-  tokenStore.set(token, { personId, expires: new Date(Date.now() + TOKEN_VALIDITY) })
 
   res.json({ token, user })
 }

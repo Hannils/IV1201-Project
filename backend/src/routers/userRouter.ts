@@ -69,7 +69,14 @@ const createUser: express.RequestHandler = async (req, res) => {
     return res.status(500).send('Database Error')
   }
 
-  const token = await tokenManager.createToken(personId)
+  let token: string
+
+  try {
+    token = await tokenManager.createToken(personId)
+  } catch (error: any) {
+    console.error(error.message)
+    return res.sendStatus(500)
+  }
 
   res.json({
     token,
@@ -99,9 +106,7 @@ const signInParams = z.object({
 const signInUser: express.RequestHandler = async (req, res) => {
   try {
     const params = signInParams.parse(req.body)
-    console.log(params)
     const user = await selectPersonByUsername(params.username)
-    console.log(user)
     if (user === null || user === undefined) {
       return res.status(404).send('USER_NOT_FOUND')
     }
@@ -122,7 +127,14 @@ const signInUser: express.RequestHandler = async (req, res) => {
 
     if (password !== user.password) return res.status(400).send('WRONG_PASSWORD')
 
-    const token = await tokenManager.createToken(user.personId)
+    let token: string
+
+    try {
+      token = await tokenManager.createToken(user.personId)
+    } catch (error: any) {
+      console.error(error.message)
+      return res.sendStatus(500)
+    }
 
     res.json({
       token,

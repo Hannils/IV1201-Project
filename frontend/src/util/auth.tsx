@@ -19,7 +19,6 @@ export const AuthProvider = (props: any) => {
     api
       .getUser()
       .then((user) => setUser(user))
-      .catch(() => console.log('Not signed in'))
       .finally(() => setLoading(false))
   }, [])
 

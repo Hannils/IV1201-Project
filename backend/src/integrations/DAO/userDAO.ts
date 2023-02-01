@@ -138,8 +138,6 @@ export async function selectIncompletePersonByEmail(email: string) {
 
   if (rowCount === 0) return null
 
-  console.log(toPerson(rows[0]))
-
   return IncompletePersonSchema.parse(toPerson(rows[0]))
 }
 
