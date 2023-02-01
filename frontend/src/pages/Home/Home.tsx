@@ -7,5 +7,5 @@ import RecruiterHome from './RecruiterHome/RecruiterHome'
 export default function Home() {
   const [user] = useUser()
   if (user === null) return null
-  return user.role === 'recruiter' ? <ApplicantHome /> : <RecruiterHome />
+  return user.role === 'recruiter' ? <RecruiterHome /> : <ApplicantHome />
 }
