@@ -29,6 +29,7 @@ export default function ValidateTokenStep({
           placeholder="xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
           required
           variant="outlined"
+          autoComplete='off'
         />
         <Button type="submit" variant="contained" disabled={mutator.isLoading}>
           {mutator.isLoading ? 'Validating...' : 'Continue'}

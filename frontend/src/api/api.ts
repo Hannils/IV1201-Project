@@ -92,7 +92,10 @@ const api = {
     axios.get(`${API_URL}/user-migration/token/${token}`),
 
   migrateUser: async (data: { token: string; username: string; password: string }) =>
-    axios.put<AuthResponse>(`${API_URL}/user-migration`, data),
+    axios.put<AuthResponse>(`${API_URL}/user-migration`, data).then(({ data }) => {
+      window.localStorage.setItem('token', data.token)
+      return data.user
+    }),
   // get the authenticated user
   getUser: async () =>
     axios

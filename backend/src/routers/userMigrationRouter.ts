@@ -4,6 +4,7 @@ import crypto from 'crypto'
 import { z } from 'zod'
 import {
   insertPerson,
+  migratePerson,
   selectIncompletePersonByEmail,
   selectPersonByEmail,
   selectPersonById,
@@ -12,8 +13,9 @@ import {
 import isAuthorized from '../util/isAuthorized'
 import { IncompletePerson, Person } from '../util/Types'
 import * as schemas from '../util/schemas'
+import tokenStore, { TOKEN_VALIDITY } from '../util/tokenStore'
 
-const tokenStore = new Map<string, number>()
+const migrationTokenStore = new Map<string, number>()
 
 const getTokenParams = z.object({
   email: schemas.emailSchema,
@@ -45,7 +47,7 @@ const generateToken: express.RequestHandler = async (req, res) => {
 
   const token = crypto.randomUUID()
 
-  tokenStore.set(token, user.personId)
+  migrationTokenStore.set(token, user.personId)
 
   console.info(
     `[SENT IN AN EMAIL]: A token was generated: "${token}" for user: ${user.email}`,
@@ -65,7 +67,7 @@ const validateToken: express.RequestHandler = async (req, res) => {
     return res.sendStatus(400)
   }
 
-  if (tokenStore.get(token) === undefined) return res.sendStatus(404)
+  if (migrationTokenStore.get(token) === undefined) return res.sendStatus(404)
   res.sendStatus(200)
 }
 
@@ -86,15 +88,51 @@ const migrateUser: express.RequestHandler = async (req, res) => {
       : res.sendStatus(500) // Should never happen
   }
 
-  const personId = tokenStore.get(data.token)
+  const personId = migrationTokenStore.get(data.token)
 
   if (personId === undefined) {
     return res.sendStatus(404)
   }
 
-  
+  const salt = crypto.randomBytes(16).toString('hex')
+  let password: string
+  try {
+    password = await new Promise<string>((resolve, reject) => {
+      crypto.pbkdf2(data.password, salt, 310000, 32, 'sha256', (err, hashedPassword) => {
+        if (err) reject(err)
+        return resolve(hashedPassword.toString('hex'))
+      })
+    })
+  } catch (error: any) {
+    console.error(error.message)
+    return res.sendStatus(500)
+  }
 
-  res.sendStatus(200)
+  await migratePerson({
+    ...data,
+    password,
+    salt,
+    personId,
+  })
+
+  const user = await selectPersonById(personId)
+
+  let token: string
+
+  try {
+    token = await new Promise<string>((resolve, reject) =>
+      crypto.randomBytes(64, (err, key) =>
+        err ? reject(err) : resolve(key.toString('hex')),
+      ),
+    )
+  } catch (error: any) {
+    console.error(error.message)
+    return res.sendStatus(500)
+  }
+
+  tokenStore.set(token, { personId, expires: new Date(Date.now() + TOKEN_VALIDITY) })
+
+  res.json({ token, user })
 }
 
 const userMigrationRouter = express.Router()

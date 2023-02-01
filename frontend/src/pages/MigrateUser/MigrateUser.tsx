@@ -16,10 +16,14 @@ import GetTokenStep from './GetTokenStep'
 import api from '../../api/api'
 import ValidateTokenStep from './ValidateTokenStep'
 import UpdateStep from './UpdateStep'
+import useUser from '../../util/auth'
+import { useNavigate } from 'react-router-dom'
 
 export default function MigrateUser() {
   const [currentStep, setCurrentStep] = useState<number>(0)
   const [usedToken, setUsedToken] = useState<string | null>(null)
+  const [, , setUser] = useUser()
+  const navigate = useNavigate()
 
   const getTokenMutation = useMutation({
     mutationFn: (email: string) => api.getMigrationToken({ email }),
@@ -37,7 +41,10 @@ export default function MigrateUser() {
   const updateMutation = useMutation({
     mutationFn: (data: { username: string; password: string; token: string }) =>
       api.migrateUser(data),
-    onSuccess: () => {},
+    onSuccess: (user) => {
+      setUser(user)
+      navigate('/')
+    },
   })
 
   return (

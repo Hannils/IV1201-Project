@@ -3,6 +3,7 @@ import { UseMutationResult } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import React, { FormEvent } from 'react'
 import { AuthResponse } from '../../api/api'
+import { Person } from '../../util/Types'
 
 interface UpdateSubmitEvent extends FormEvent<HTMLFormElement> {
   target: EventTarget & {
@@ -17,7 +18,7 @@ export default function UpdateStep({
   token,
 }: {
   mutator: UseMutationResult<
-    AxiosResponse<AuthResponse, any>,
+    Person,
     unknown,
     {
       username: string

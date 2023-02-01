@@ -129,10 +129,10 @@ export async function selectPeopleByRole(role: Role) {
 export async function selectIncompletePersonByEmail(email: string) {
   const { rowCount, rows } = await queryDatabase(
     `
-            SELECT ${PERSON_SELECT} FROM public.person
-            INNER JOIN public.role ON role.role_id = person.role_id 
-            WHERE email=$1 AND password IS NULL AND username IS NULL
-        `,
+        SELECT ${PERSON_SELECT} FROM public.person
+        INNER JOIN public.role ON role.role_id = person.role_id 
+        WHERE email=$1 AND password IS NULL AND username IS NULL
+    `,
     [email],
   )
 
@@ -141,4 +141,24 @@ export async function selectIncompletePersonByEmail(email: string) {
   console.log(toPerson(rows[0]))
 
   return IncompletePersonSchema.parse(toPerson(rows[0]))
+}
+
+export async function migratePerson({
+  username,
+  password,
+  salt,
+  personId,
+}: {
+  username: string
+  password: string
+  salt: string
+  personId: number
+}) {
+  await queryDatabase(
+    `
+        UPDATE public.person 
+        SET username = $1, password = $2, salt = $3 WHERE person_id = $4
+    `,
+    [username, password, salt, personId],
+  )
 }
