@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { selectPersonById } from '../integrations/DAO/userDAO'
-import tokenStore, { TOKEN_VALIDITY } from './tokenStore'
+import tokenManager from '../util/tokenManager'
+
 /**
  * A middleware for checking and verifying a request's authorization token.
  *
@@ -15,24 +16,15 @@ async function useAuth(req: Request, res: Response, next: NextFunction) {
 
   if (typeof token === 'string') {
     try {
-      const tokenEntry = tokenStore.get(token)
-      if (tokenEntry === undefined) throw new Error('invalid token')
-
-      const { personId, expires } = tokenEntry
-
-      if (Date.now() > expires.getTime()) throw new Error('Expired Token')
+      const personId = tokenManager.validateToken(token)
+      if (personId === null) throw new Error('invalid token')
 
       const person = await selectPersonById(personId)
 
-      if (person !== null) {
-        tokenStore.set(token, {
-          personId: person.personId,
-          expires: new Date(Date.now() + TOKEN_VALIDITY),
-        })
+      if (person !== null)
         res.locals.currentUser = { personId: person.personId, role: person.role }
-      }
     } catch (e: any) {
-      console.error('Invalid token: ', e.message)
+      console.error(e.message)
     }
   }
   next()

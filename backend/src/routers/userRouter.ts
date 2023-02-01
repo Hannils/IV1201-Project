@@ -11,7 +11,7 @@ import {
 import isAuthorized from '../util/isAuthorized'
 import { Person } from '../util/Types'
 import * as schemas from '../util/schemas'
-import tokenStore, { TOKEN_VALIDITY } from '../util/tokenStore'
+import tokenManager from '../util/tokenManager'
 
 const createUserParams = z.object({
   username: schemas.usernameSchema,
@@ -69,20 +69,7 @@ const createUser: express.RequestHandler = async (req, res) => {
     return res.status(500).send('Database Error')
   }
 
-  let token: string
-
-  try {
-    token = await new Promise<string>((resolve, reject) =>
-      crypto.randomBytes(64, (err, key) =>
-        err ? reject(err) : resolve(key.toString('hex')),
-      ),
-    )
-  } catch (error: any) {
-    console.error(error.message)
-    return res.sendStatus(500)
-  }
-
-  tokenStore.set(token, { personId, expires: new Date(Date.now() + TOKEN_VALIDITY) })
+  const token = await tokenManager.createToken(personId)
 
   res.json({
     token,
@@ -132,20 +119,10 @@ const signInUser: express.RequestHandler = async (req, res) => {
         },
       ),
     )
-  
-    if (password !== user.password) 
-        return res.status(400).send('WRONG_PASSWORD')
 
-    const token = await new Promise<string>((resolve, reject) =>
-      crypto.randomBytes(64, (err, key) =>
-        err ? reject(err) : resolve(key.toString('hex')),
-      ),
-    )
+    if (password !== user.password) return res.status(400).send('WRONG_PASSWORD')
 
-    tokenStore.set(token, {
-      personId: user.personId,
-      expires: new Date(Date.now() + TOKEN_VALIDITY),
-    })
+    const token = await tokenManager.createToken(user.personId)
 
     res.json({
       token,

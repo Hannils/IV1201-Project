@@ -13,7 +13,7 @@ import {
 import isAuthorized from '../util/isAuthorized'
 import { IncompletePerson, Person } from '../util/Types'
 import * as schemas from '../util/schemas'
-import tokenStore, { TOKEN_VALIDITY } from '../util/tokenStore'
+import tokenStore, { TOKEN_VALIDITY } from '../util/tokenManager'
 
 const migrationTokenStore = new Map<string, number>()
 
