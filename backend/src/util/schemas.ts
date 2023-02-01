@@ -27,7 +27,7 @@ export const emailSchema = z
 export const personNumberSchema = z
   .string()
   .refine((val) => val.match(/^\d{8}-\d{4}$/) !== null, {
-    message: 'Password must be format YYYYMMDD-XXXX',
+    message: 'PersonNumber must be format YYYYMMDD-XXXX',
   })
 export const passwordSchema = z
   .string()

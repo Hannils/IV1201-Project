@@ -98,7 +98,6 @@ export async function selectPersonByUsername(username: string) {
     `,
     [username],
   )
-
   const personParse = PersonSchema.safeParse(toPerson(response.rows[0]))
 
   if (personParse.success) return personParse.data
