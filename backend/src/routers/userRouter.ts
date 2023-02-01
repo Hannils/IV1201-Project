@@ -112,9 +112,7 @@ const signInParams = z.object({
 const signInUser: express.RequestHandler = async (req, res) => {
   try {
     const params = signInParams.parse(req.body)
-
     const user = await selectPersonByUsername(params.username)
-
     if (user === null || user === undefined) {
       return res.status(404).send('USER_NOT_FOUND')
     }
@@ -134,7 +132,7 @@ const signInUser: express.RequestHandler = async (req, res) => {
     )
 
     if (password.compare(Buffer.from(user.password, 'hex')) !== 1)
-      return res.sendStatus(400).send('WRONG_PASSWORD')
+      return res.status(400).send('WRONG_PASSWORD')
 
     const token = await new Promise<string>((resolve, reject) =>
       crypto.randomBytes(64, (err, key) =>
