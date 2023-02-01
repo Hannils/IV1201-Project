@@ -1,6 +1,6 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
-import express, { Request, Response } from 'express'
+import express from 'express'
 
 import userRouter from './routers/userRouter'
 import useAuth from './util/useAuth'
@@ -14,11 +14,13 @@ dotenv.config({
   path: path.resolve(__dirname, '../.env.local'),
 })
 
-init()
+if (process.env.JEST_WORKER_ID === undefined) {
+  init()
+}
 
 /**
- * Start Express server. Connect to database and start server. 
- * If database connection fails, exit process. 
+ * Start Express server. Connect to database and start server.
+ * If database connection fails, exit process.
  */
 async function init() {
   await initDatabase()
@@ -40,7 +42,7 @@ export function initServer() {
 
   app.use('/user', userRouter)
 
-  app.get('/', (req: Request, res: Response) => {
+  app.get('/', (req: express.Request, res: express.Response) => {
     res.send('Express + TypeScript Server')
   })
 
