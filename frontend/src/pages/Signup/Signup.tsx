@@ -40,7 +40,7 @@ export default function Signup() {
     const email = e.target.email.value
     const username = e.target.username.value
     const password = e.target.password.value
-    const personNumber = e.target.password.value
+    const personNumber = e.target.personNumber.value
 
     api
       .signUp({ firstname, lastname, email, username, password, personNumber })
