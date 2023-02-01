@@ -10,9 +10,9 @@ import { queryDatabase } from './DAO'
 import { getRoleId } from './roleDAO'
 import { z } from 'zod'
 
-const PERSON_SELECT = `
-  person_id, username, person.name as firstname, surname as lastname, role.name as role, email, person_number, password, salt
-`
+const PERSON_SELECT = `person_id, username, person.name as firstname, surname as lastname, role.name as role, email, person_number, password, salt`
+
+const PERSON_VALIDATOR = `person.username IS NOT NULL AND person.password IS NOT NULL AND person.salt IS NOT NULL`
 
 function toPerson(x: any) {
   if (!x) return null
@@ -60,7 +60,7 @@ export async function selectPersonById(personId: number) {
     `
         SELECT ${PERSON_SELECT} FROM person 
         INNER JOIN public.role ON role.role_id = person.role_id 
-        WHERE person_id = $1
+        WHERE person_id = $1 AND ${PERSON_VALIDATOR}
       `,
     [personId],
   )
@@ -77,7 +77,7 @@ export async function selectPersonByEmail(email: string) {
     `
         SELECT ${PERSON_SELECT} FROM person 
         INNER JOIN public.role ON role.role_id = person.role_id 
-        WHERE email = $1
+        WHERE email = $1 AND ${PERSON_VALIDATOR}
       `,
     [email],
   )
@@ -94,7 +94,7 @@ export async function selectPersonByUsername(username: string) {
     `
       SELECT ${PERSON_SELECT} FROM person 
       INNER JOIN public.role ON role.role_id = person.role_id 
-      WHERE username = $1
+      WHERE username = $1 AND ${PERSON_VALIDATOR}
     `,
     [username],
   )
@@ -114,7 +114,7 @@ export async function selectPeopleByRole(role: Role) {
     `
         SELECT ${PERSON_SELECT} FROM public.person 
         INNER JOIN public.role ON role.role_id = person.role_id 
-        WHERE role.name = $1
+        WHERE role.name = $1 AND ${PERSON_VALIDATOR}
       `,
     [role],
   )
