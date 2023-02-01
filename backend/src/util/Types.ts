@@ -17,6 +17,7 @@ export const PersonSchema = z.object({
 export type Person = z.infer<typeof PersonSchema>
 
 export const IncompletePersonSchema = z.object({
+  personId: z.number(),
   firstname: z.string(),
   lastname: z.string(),
   role: z.string(),

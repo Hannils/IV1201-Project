@@ -126,3 +126,20 @@ export async function selectPeopleByRole(role: Role) {
 
   return peopleSchema.parse(response.rows.map(toPerson))
 }
+
+export async function selectIncompletePersonByEmail(email: string) {
+  const { rowCount, rows } = await queryDatabase(
+    `
+            SELECT ${PERSON_SELECT} FROM public.person
+            INNER JOIN public.role ON role.role_id = person.role_id 
+            WHERE email=$1 AND password IS NULL AND username IS NULL
+        `,
+    [email],
+  )
+
+  if (rowCount === 0) return null
+
+  console.log(toPerson(rows[0]))
+
+  return IncompletePersonSchema.parse(toPerson(rows[0]))
+}

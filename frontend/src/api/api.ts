@@ -1,5 +1,5 @@
-// Description: This file contains all the API calls to the backend server and is used by the frontend to communicate with the backend. 
-//The API calls are made using the axios library. 
+// Description: This file contains all the API calls to the backend server and is used by the frontend to communicate with the backend.
+//The API calls are made using the axios library.
 
 import axios from 'axios'
 import { Person } from '../util/Types'
@@ -21,7 +21,7 @@ interface SignInRequest {
   password: string
 }
 
-interface AuthResponse {
+export interface AuthResponse {
   user: Person
   token: string
 }
@@ -50,9 +50,8 @@ interface GetUserRequest {
 function getAuthedHeaders() {
   return { headers: { Authorization: window.localStorage.getItem('token') } }
 }
-// api calls to the backend server 
+// api calls to the backend server
 const api = {
-
   // create a new document
   signUp: ({
     firstname,
@@ -75,7 +74,7 @@ const api = {
         window.localStorage.setItem('token', data.token)
         return data.user
       }),
-      // sign in to the application
+  // sign in to the application
   signIn: async ({ username, password }: SignInRequest) =>
     axios
       .post<AuthResponse>(`${API_URL}/user/signin`, {
@@ -86,6 +85,14 @@ const api = {
         window.localStorage.setItem('token', data.token)
         return data.user
       }),
+  getMigrationToken: async ({ email }: { email: string }) =>
+    axios.post(`${API_URL}/user-migration/token`, { email }),
+
+  validateMigrationToken: async ({ token }: { token: string }) =>
+    axios.get(`${API_URL}/user-migration/token/${token}`),
+
+  migrateUser: async (data: { token: string; username: string; password: string }) =>
+    axios.put<AuthResponse>(`${API_URL}/user-migration`, data),
   // get the authenticated user
   getUser: async () =>
     axios
