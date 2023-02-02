@@ -3,10 +3,11 @@ import dotenv from 'dotenv'
 import express from 'express'
 
 import userRouter from './routers/userRouter'
-import useAuth from './util/useAuth'
+import useAuth from './middlewares/useAuth'
 import path from 'path'
 
 import { initDatabase } from './integrations/DAO/DAO'
+import userMigrationRouter from './routers/userMigrationRouter'
 
 dotenv.config()
 
@@ -41,6 +42,7 @@ export function initServer() {
   app.use(useAuth)
 
   app.use('/user', userRouter)
+  app.use('/user-migration', userMigrationRouter)
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('Express + TypeScript Server')

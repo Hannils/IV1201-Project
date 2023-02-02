@@ -11,7 +11,7 @@ import {
 import isAuthorized from '../util/isAuthorized'
 import { Person } from '../util/Types'
 import * as schemas from '../util/schemas'
-import tokenStore, { TOKEN_VALIDITY } from '../util/tokenStore'
+import tokenManager from '../util/tokenManager'
 
 const createUserParams = z.object({
   username: schemas.usernameSchema,
@@ -72,17 +72,11 @@ const createUser: express.RequestHandler = async (req, res) => {
   let token: string
 
   try {
-    token = await new Promise<string>((resolve, reject) =>
-      crypto.randomBytes(64, (err, key) =>
-        err ? reject(err) : resolve(key.toString('hex')),
-      ),
-    )
+    token = await tokenManager.createToken(personId)
   } catch (error: any) {
     console.error(error.message)
     return res.sendStatus(500)
   }
-
-  tokenStore.set(token, { personId, expires: new Date(Date.now() + TOKEN_VALIDITY) })
 
   res.json({
     token,
@@ -112,9 +106,7 @@ const signInParams = z.object({
 const signInUser: express.RequestHandler = async (req, res) => {
   try {
     const params = signInParams.parse(req.body)
-    console.log(params)
     const user = await selectPersonByUsername(params.username)
-    console.log(user)
     if (user === null || user === undefined) {
       return res.status(404).send('USER_NOT_FOUND')
     }
@@ -132,20 +124,17 @@ const signInUser: express.RequestHandler = async (req, res) => {
         },
       ),
     )
-  
-    if (password !== user.password) 
-        return res.status(400).send('WRONG_PASSWORD')
 
-    const token = await new Promise<string>((resolve, reject) =>
-      crypto.randomBytes(64, (err, key) =>
-        err ? reject(err) : resolve(key.toString('hex')),
-      ),
-    )
+    if (password !== user.password) return res.status(400).send('WRONG_PASSWORD')
 
-    tokenStore.set(token, {
-      personId: user.personId,
-      expires: new Date(Date.now() + TOKEN_VALIDITY),
-    })
+    let token: string
+
+    try {
+      token = await tokenManager.createToken(user.personId)
+    } catch (error: any) {
+      console.error(error.message)
+      return res.sendStatus(500)
+    }
 
     res.json({
       token,
