@@ -5,8 +5,7 @@ const app = initServer()
 
 describe('Test userRouter.ts', () => {
   beforeAll(() => {
-    jest.mock('../../src/integrations/DAO/userDAO', () => {
-      //Mock the default export and named export 'foo'
+    /* jest.mock('../../src/integrations/DAO/userDAO', () => {
       return {
         __esModule: true,
         insertPerson: jest.fn(() => {
@@ -17,14 +16,25 @@ describe('Test userRouter.ts', () => {
         selectPersonByUsername: jest.fn(() => null),
         default: jest.fn(() => 'mocked baz'),
       }
-    })
+    }) */
   })
 
-  afterAll(() => {
+  afterEach(() => {
     jest.unmock('../../src/integrations/DAO/userDAO')
   })
+
   test('Create', async () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+
+    jest.mock('../../src/integrations/DAO/userDAO', () => {
+      return {
+        __esModule: true,
+        insertPerson: jest.fn(() => {
+          throw new Error('Error')
+        }),
+        default: jest.fn(() => 'mocked baz'),
+      }
+    })
 
     const res = await request(app).post('/user').send({
       username: 'username',

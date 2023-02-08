@@ -114,10 +114,8 @@ CREATE TABLE public.person (
     email character varying(255),
     password character varying(255),
     role_id integer,
-    username character varying(255),
-    salt character varying(255)
+    username character varying(255)
 );
-
 
 ALTER TABLE public.person OWNER TO postgres;
 
@@ -4892,6 +4890,13 @@ ALTER TABLE ONLY public.competence_profile
 
 ALTER TABLE ONLY public.person
     ADD CONSTRAINT person_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.role(role_id);
+
+
+
+--
+-- ALL CHANGES MADE TO DATABASE
+--
+ALTER TABLE public.person ADD salt character varying(255);
 
 
 --

@@ -8,8 +8,8 @@ export const PersonSchema = z.object({
   firstname: z.string(),
   lastname: z.string(),
   role: z.enum(['recruiter', 'applicant']),
-  email: z.string().email().optional(),
-  personNumber: z.string().optional(),
+  email: z.string().email().nullable(),
+  personNumber: z.string().nullable(),
   password: z.string(),
   salt: z.string(),
 })
@@ -17,6 +17,7 @@ export const PersonSchema = z.object({
 export type Person = z.infer<typeof PersonSchema>
 
 export const IncompletePersonSchema = z.object({
+  personId: z.number(),
   firstname: z.string(),
   lastname: z.string(),
   role: z.string(),

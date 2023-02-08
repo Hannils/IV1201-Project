@@ -11,7 +11,7 @@ import {
 import isAuthorized from '../util/isAuthorized'
 import { Person } from '../util/Types'
 import * as schemas from '../util/schemas'
-import tokenStore, { TOKEN_VALIDITY } from '../util/tokenStore'
+import tokenManager from '../util/tokenManager'
 
 const createUserParams = z.object({
   username: schemas.usernameSchema,
@@ -39,13 +39,13 @@ const createUser: express.RequestHandler = async (req, res) => {
       : res.sendStatus(500) // Should never happen
   }
 
-  const salt = crypto.randomBytes(16)
-  let password: Buffer
+  const salt = crypto.randomBytes(16).toString('hex')
+  let password: string
   try {
-    password = await new Promise<Buffer>((resolve, reject) => {
+    password = await new Promise<string>((resolve, reject) => {
       crypto.pbkdf2(user.password, salt, 310000, 32, 'sha256', (err, hashedPassword) => {
         if (err) reject(err)
-        return resolve(hashedPassword)
+        return resolve(hashedPassword.toString('hex'))
       })
     })
   } catch (error: any) {
@@ -55,9 +55,9 @@ const createUser: express.RequestHandler = async (req, res) => {
 
   const person = {
     ...user,
-    password: password.toString('hex'),
+    password: password,
     role: 'applicant',
-    salt: salt.toString('hex'),
+    salt: salt,
   } satisfies Omit<Person, 'personId'>
 
   let personId: number
@@ -72,17 +72,11 @@ const createUser: express.RequestHandler = async (req, res) => {
   let token: string
 
   try {
-    token = await new Promise<string>((resolve, reject) =>
-      crypto.randomBytes(64, (err, key) =>
-        err ? reject(err) : resolve(key.toString('hex')),
-      ),
-    )
+    token = await tokenManager.createToken(personId)
   } catch (error: any) {
     console.error(error.message)
     return res.sendStatus(500)
   }
-
-  tokenStore.set(token, { personId, expires: new Date(Date.now() + TOKEN_VALIDITY) })
 
   res.json({
     token,
@@ -112,14 +106,12 @@ const signInParams = z.object({
 const signInUser: express.RequestHandler = async (req, res) => {
   try {
     const params = signInParams.parse(req.body)
-
     const user = await selectPersonByUsername(params.username)
-
     if (user === null || user === undefined) {
       return res.status(404).send('USER_NOT_FOUND')
     }
 
-    const password = await new Promise<Buffer>((resolve, reject) =>
+    const password = await new Promise<string>((resolve, reject) =>
       crypto.pbkdf2(
         params.password,
         user.salt,
@@ -128,24 +120,21 @@ const signInUser: express.RequestHandler = async (req, res) => {
         'sha256',
         (err, hashedPassword) => {
           if (err) reject(err)
-          return resolve(hashedPassword)
+          return resolve(hashedPassword.toString('hex'))
         },
       ),
     )
 
-    if (password.compare(Buffer.from(user.password, 'hex')) !== 1)
-      return res.sendStatus(400).send('WRONG_PASSWORD')
+    if (password !== user.password) return res.status(400).send('WRONG_PASSWORD')
 
-    const token = await new Promise<string>((resolve, reject) =>
-      crypto.randomBytes(64, (err, key) =>
-        err ? reject(err) : resolve(key.toString('hex')),
-      ),
-    )
+    let token: string
 
-    tokenStore.set(token, {
-      personId: user.personId,
-      expires: new Date(Date.now() + TOKEN_VALIDITY),
-    })
+    try {
+      token = await tokenManager.createToken(user.personId)
+    } catch (error: any) {
+      console.error(error.message)
+      return res.sendStatus(500)
+    }
 
     res.json({
       token,
