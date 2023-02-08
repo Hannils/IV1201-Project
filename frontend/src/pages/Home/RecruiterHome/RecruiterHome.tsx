@@ -25,11 +25,14 @@ import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 
 export default function RecruiterHome() {
-  return null
-  /* const { data: applications, isLoading, isSuccess } = useQuery(['applications'], () =>
-    api.getApplications(),
+  const {
+    data: applications,
+    isLoading,
+    isSuccess,
+  } = useQuery(
+    ['applications'],
+    () => [] as UserApplication[] /* api.getApplications() */,
   )
-  //const navigate = useNavigate();
 
   const handleAccept = (application: UserApplication) => {
     api.updateApplicationStatus({
@@ -49,7 +52,7 @@ export default function RecruiterHome() {
     return <CircularProgress />
   }
 
-  if(!isSuccess) {
+  if (!isSuccess) {
     return <p>Something bad happened</p>
   }
 
@@ -68,30 +71,25 @@ export default function RecruiterHome() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {applications
-            .sort(
-              (a, b) =>
-                a.competenceProfile[0].yearsOfExperience -
-                b.competenceProfile[0].yearsOfExperience,
-            )
-            .map(({ user, competenceProfile, status }) => (
-              <TableRow key={user.personId}>
-                <TableCell>
-                  {user.firstname} {user.lastname}
-                </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  {competenceProfile.map((comp) => (
-                    <div key={comp.competence}>
-                      {comp.competence} ({comp.yearsOfExperience} years)
-                    </div>
-                  ))}
-                </TableCell>
-              </TableRow>
-            ))}
+          {applications.map(({ user, competenceProfile, status }) => (
+            <TableRow key={user.personId}>
+              <TableCell>
+                {user.firstname} {user.lastname}
+              </TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>
+                {competenceProfile.map((profile) => (
+                  <div key={profile.competence.competenceId}>
+                    {profile.competence.name} ({profile.yearsOfExperience} years)
+                  </div>
+                ))}
+              </TableCell>
+              <TableCell>Avaiability</TableCell>
+              <TableCell>{status}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </Stack>
-  ) */
+  )
 }
-

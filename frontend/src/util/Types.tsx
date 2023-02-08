@@ -12,7 +12,7 @@ export interface Person {
 }
 
 export interface Application {
-  competenceProfile: Array<Competence>
+  competenceProfile: CompetenceProfile
   availability: Array<AvailabilityPeriod>
   status: ApplicationStatus
 }

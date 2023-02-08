@@ -26,6 +26,7 @@ if (process.env.JEST_WORKER_ID === undefined) {
  * If database connection fails, exit process.
  */
 async function init() {
+    console.log("Initializing backend...")
   await initDatabase()
 
   const app = initServer()

@@ -20,8 +20,6 @@ export default function CompetenceManager() {
     return <p>Something bad happend</p>
   }
 
-  console.log(availableCompetencesQuery.data, competenceProfileQuery.data)
-
   return (
     <CompetenceManagerPage
       availableCompetences={availableCompetencesQuery.data}
