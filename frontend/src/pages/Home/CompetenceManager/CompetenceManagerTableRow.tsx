@@ -75,6 +75,12 @@ export default function CompetenceManagerTableRow({
             {validationState.error.message}
           </Typography>
         )}
+        {updateMutation.isError && updateMutation.error instanceof Error && (
+          <Typography variant="body2" color="error">
+            {updateMutation.error.message}
+          </Typography>
+        )}
+        {updateMutation.isLoading && <CircularProgress color="inherit" size={16} />}
       </TableCell>
       <TableCell padding="checkbox">
         <IconButton onClick={() => deleteMutation.mutate(field.competence.competenceId)}>
