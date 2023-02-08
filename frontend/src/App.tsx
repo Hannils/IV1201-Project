@@ -6,6 +6,7 @@ import Home from './pages/Home/Home'
 import Signin from './pages/Signin/Signin'
 import Signup from './pages/Signup/Signup'
 import MigrateUser from './pages/MigrateUser/MigrateUser'
+import CompetenceManager from './pages/Home/CompetenceManager/CompetenceManager'
 
 function App() {
   return (
@@ -16,6 +17,10 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/migrate-user" element={<MigrateUser />} />
+          <Route
+            path="/apply"
+            element={<WithAuth allowedRoles={['applicant']} Page={CompetenceManager} />}
+          />
           {/* <Route path="/account" element={<WithAuth Page={Account} />} /> */}
         </Route>
       </Routes>
