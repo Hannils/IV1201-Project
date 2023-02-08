@@ -22,9 +22,14 @@ export interface UserApplication extends Application {
 }
 
 export interface Competence {
-  competence: string
-  yearsOfExperience: number
+  name: string
+  competenceId: number
 }
+
+export type CompetenceProfile = Array<{
+  competence: Competence
+  yearsOfExperience: number
+}>
 
 export interface AvailabilityPeriod {
   startDate: Date

@@ -2,7 +2,7 @@
 //The API calls are made using the axios library.
 
 import axios from 'axios'
-import { Person, ApplicationStatus, UserApplication } from '../util/Types'
+import { Person, ApplicationStatus, UserApplication, Competence, CompetenceProfile } from '../util/Types'
 
 const API_URL = 'http://localhost:8888'
 
@@ -52,7 +52,7 @@ function getAuthedHeaders() {
 }
 // api calls to the backend server
 const api = {
-  // create a new document
+  /* Users */
   signUp: ({
     firstname,
     lastname,
@@ -96,15 +96,26 @@ const api = {
       window.localStorage.setItem('token', data.token)
       return data.user
     }),
-  // get the authenticated user
   getUser: async () =>
     axios
       .get<Person>(`${API_URL}/user`, { ...getAuthedHeaders() })
       .then((res) => res.data),
 
-  getApplications: async () => axios.get<UserApplication[]>('/application').then((res) => res.data),
-  updateApplicationStatus: async (data: { status: ApplicationStatus; personId: number }) =>
-    axios.patch(`/application/${data.personId}`, { status: data.status }),
+  /* Applications */
+
+  getApplications: async () =>
+    axios.get<UserApplication[]>(`${API_URL}/application`).then((res) => res.data),
+  updateApplicationStatus: async (data: {
+    status: ApplicationStatus
+    personId: number
+  }) => axios.patch(`${API_URL}/application/${data.personId}`, { status: data.status }),
+
+  /* Competence */
+
+  getCompetences: async () =>
+    axios.get<Competence[]>(`${API_URL}/competence`).then((res) => res.data),
+  getCompetenceProfile: async (personId: number) =>
+    axios.get<CompetenceProfile>(`${API_URL}/competence/${personId}`).then((res) => res.data),
 }
 
 export default api

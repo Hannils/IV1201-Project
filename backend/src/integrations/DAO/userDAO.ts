@@ -119,10 +119,7 @@ export async function selectPeopleByRole(role: Role) {
     [role],
   )
 
-  const peopleSchema = z
-    .array(PersonSchema)
-    .transform((as) => as.filter((a) => PersonSchema.safeParse(a).success))
-
+  const peopleSchema = z.array(PersonSchema)
   return peopleSchema.parse(response.rows.map(toPerson))
 }
 

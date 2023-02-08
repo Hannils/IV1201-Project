@@ -2,6 +2,18 @@ import { z } from 'zod'
 export type Role = 'recruiter' | 'applicant'
 export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
+export const CompetenceSchema = z.object({
+  competenceId: z.number(),
+  name: z.string(),
+})
+
+export const CompetenceProfileSchema = z.array(
+  z.object({
+    competence: CompetenceSchema,
+    yearsOfExperience: z.number(),
+  }),
+)
+
 export const PersonSchema = z.object({
   personId: z.number(),
   username: z.string(),

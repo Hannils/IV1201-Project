@@ -13,14 +13,24 @@ const getApplications: express.RequestHandler = async (req, res) => {
 
 }
 
+const getApplication: express.RequestHandler = async (req, res) => {
+
+}
+
 const updateApplication: express.RequestHandler = async (req, res) => {
   req.params.personId
+}
+
+const insertApplication: express.RequestHandler = async (req, res) => {
+    
 }
 
 const deleteApplication: express.RequestHandler = async (req, res) => {}
 
 const applicationRouter = express.Router()
 applicationRouter.get('/', asyncHandler(getApplications))
+applicationRouter.get('/:id', asyncHandler(getApplication))
+
 applicationRouter.patch(
   '/:personId/',
   isAuthorized(['recruiter']),

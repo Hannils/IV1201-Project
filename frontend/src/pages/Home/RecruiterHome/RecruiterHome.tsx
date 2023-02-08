@@ -25,7 +25,8 @@ import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 
 export default function RecruiterHome() {
-  const { data: applications, isLoading, isSuccess } = useQuery(['applications'], () =>
+  return null
+  /* const { data: applications, isLoading, isSuccess } = useQuery(['applications'], () =>
     api.getApplications(),
   )
   //const navigate = useNavigate();
@@ -91,5 +92,6 @@ export default function RecruiterHome() {
         </TableBody>
       </Table>
     </Stack>
-  )
+  ) */
 }
+

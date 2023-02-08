@@ -40,7 +40,7 @@ export default function ApplicantHome() {
             </>
           ) : (
             <List>
-              <Typography variant="h2">Your application</Typography>
+              {/* <Typography variant="h2">Your application</Typography>
               <Typography>Your competences</Typography>
               {application.competenceProfile.map(({ competence, yearsOfExperience }) => (
                 <ListItem key={competence} disableGutters>
@@ -49,7 +49,7 @@ export default function ApplicantHome() {
                     secondary={`Years of experience: ${yearsOfExperience}`}
                   />
                 </ListItem>
-              ))}
+              ))} */}
             </List>
           )}
         </CardContent>
