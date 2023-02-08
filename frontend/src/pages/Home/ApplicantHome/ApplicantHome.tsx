@@ -36,7 +36,7 @@ export default function ApplicantHome() {
           {application.competenceProfile.length === 0 ? (
             <>
               <Typography>You have not added your competences yet</Typography>
-              <Link to="/apply">Create competence profile</Link>
+              <Link to="/competences">Create competence profile</Link>
             </>
           ) : (
             <List>

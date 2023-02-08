@@ -18,7 +18,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/migrate-user" element={<MigrateUser />} />
           <Route
-            path="/apply"
+            path="/competences"
             element={<WithAuth allowedRoles={['applicant']} Page={CompetenceManager} />}
           />
           {/* <Route path="/account" element={<WithAuth Page={Account} />} /> */}
