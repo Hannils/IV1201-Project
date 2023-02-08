@@ -1,49 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { Stack, TextField, Typography, Table, TableHead, TableBody, TableRow, TableCell, Button } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import api from '../../../api/api';
-import useUser from '../../../util/auth';
-import { Application, ApplicationStatus, Person,Competence, AvailabilityPeriod} from '../../../util/Types';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import {
+  Stack,
+  TextField,
+  Typography,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Button,
+  CircularProgress,
+} from '@mui/material'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import api from '../../../api/api'
+import useUser from '../../../util/auth'
+import {
+  Application,
+  UserApplication,
+  Person,
+  Competence,
+  AvailabilityPeriod,
+} from '../../../util/Types'
+import axios from 'axios'
+import { useQuery } from '@tanstack/react-query'
 
-interface Props {
-  applications: Application[];
-  setApplications: React.Dispatch<React.SetStateAction<Application[]>>;
-}
-
-export default function RecruiterHome({ applications, setApplications }: Props) {
-  const { user, isLoading } = useUser();
+export default function RecruiterHome() {
+  const { data: applications, isLoading, isSuccess } = useQuery(['applications'], () =>
+    api.getApplications(),
+  )
   //const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user || isLoading) {
-      return;
-    }
-
-    axios.get('/applications').then((res: { data: React.SetStateAction<Application[]>; }) => {
-      setApplications(res.data);
-    });
-  }, [user, isLoading, setApplications]);
-
-  if (!user || isLoading) {
-    return <div>Loading...</div>;
+  const handleAccept = (application: UserApplication) => {
+    api.updateApplicationStatus({
+      status: 'approved',
+      personId: application.user.personId,
+    })
   }
 
-  const handleAccept = (app: Application) => {
-    axios.patch(`/applications/${app.personId}`, { status: 'approved' }).then((res) => {
-      setApplications(
-        applications.map((a) => (a.personId === app.personId ? { ...a, status: 'approved' } : a))
-      );
-    });
-  };
+  const handleReject = (application: UserApplication) => {
+    api.updateApplicationStatus({
+      status: 'rejected',
+      personId: application.user.personId,
+    })
+  }
 
-  const handleReject = (app: Application) => {
-    axios.patch(`/applications/${app.personId}`, { status: 'rejected' }).then((res) => {
-      setApplications(
-        applications.map((a) => (a.personId === app.personId ? { ...a, status: 'rejected' } : a))
-      );
-    });
-  };
+  if (isLoading) {
+    return <CircularProgress />
+  }
+
+  if(!isSuccess) {
+    return <p>Something bad happened</p>
+  }
 
   return (
     <Stack>
@@ -61,21 +68,28 @@ export default function RecruiterHome({ applications, setApplications }: Props) 
         </TableHead>
         <TableBody>
           {applications
-            .sort((a, b) => a.competenceProfile[0].yearsOfExperience - b.competenceProfile[0].yearsOfExperience)
-            .map((app) => (
-              <TableRow key={app.personId}>
+            .sort(
+              (a, b) =>
+                a.competenceProfile[0].yearsOfExperience -
+                b.competenceProfile[0].yearsOfExperience,
+            )
+            .map(({ user, competenceProfile, status }) => (
+              <TableRow key={user.personId}>
                 <TableCell>
-                  <RouterLink to={`/applicants/${app.personId}`}>{app.username}</RouterLink>
+                  {user.firstname} {user.lastname}
                 </TableCell>
-                <TableCell>{app.email}</TableCell>
+                <TableCell>{user.email}</TableCell>
                 <TableCell>
-                  {app.competenceProfile.map((comp) => (
+                  {competenceProfile.map((comp) => (
                     <div key={comp.competence}>
                       {comp.competence} ({comp.yearsOfExperience} years)
                     </div>
                   ))}
                 </TableCell>
-              </TableRow>))}
-          </TableBody>
+              </TableRow>
+            ))}
+        </TableBody>
       </Table>
-    </Stack> );}
+    </Stack>
+  )
+}
