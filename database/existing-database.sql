@@ -4898,6 +4898,51 @@ ALTER TABLE ONLY public.person
 --
 ALTER TABLE public.person ADD salt character varying(255);
 
+CREATE TABLE public.status (
+    status_id integer NOT NULL,
+    name character varying(255)
+);
+
+ALTER TABLE public.status OWNER TO postgres;
+
+ALTER TABLE ONLY public.status
+    ADD CONSTRAINT status_pkey PRIMARY KEY (status_id);
+
+ALTER TABLE public.status ALTER COLUMN status_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.status_status_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+COPY public.status (status_id, name) FROM stdin;
+1	unhandled
+2	rejected
+3	accepted
+\.
+
+CREATE TABLE public.application (
+    application_id integer NOT NULL,
+    person_id integer REFERENCES public.person(person_id),
+    status_id integer REFERENCES public.status(status_id),
+    year integer NOT NULL
+);
+ALTER TABLE public.status OWNER TO postgres;
+
+
+ALTER TABLE ONLY public.application
+    ADD CONSTRAINT application_pkey PRIMARY KEY (application_id);
+
+ALTER TABLE public.application ALTER COLUMN application_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.application_application_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
 
 --
 -- PostgreSQL database dump complete

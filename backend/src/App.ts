@@ -8,6 +8,7 @@ import path from 'path'
 
 import { initDatabase } from './integrations/DAO/DAO'
 import userMigrationRouter from './routers/userMigrationRouter'
+import applicationRouter from './routers/applicationRouter'
 
 dotenv.config()
 
@@ -43,6 +44,7 @@ export function initServer() {
 
   app.use('/user', userRouter)
   app.use('/user-migration', userMigrationRouter)
+  app.use('/application', applicationRouter)
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('Express + TypeScript Server')

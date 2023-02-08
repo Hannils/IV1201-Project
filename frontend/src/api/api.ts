@@ -102,9 +102,9 @@ const api = {
       .get<Person>(`${API_URL}/user`, { ...getAuthedHeaders() })
       .then((res) => res.data),
 
-  getApplications: async () => axios.get<UserApplication[]>('/applications').then((res) => res.data),
+  getApplications: async () => axios.get<UserApplication[]>('/application').then((res) => res.data),
   updateApplicationStatus: async (data: { status: ApplicationStatus; personId: number }) =>
-    axios.patch(`/applications/${data.personId}`, { status: data.status }),
+    axios.patch(`/application/${data.personId}`, { status: data.status }),
 }
 
 export default api
