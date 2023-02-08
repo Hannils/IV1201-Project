@@ -7,12 +7,14 @@ export const CompetenceSchema = z.object({
   name: z.string(),
 })
 
-export const CompetenceProfileSchema = z.array(
-  z.object({
-    competence: CompetenceSchema,
-    yearsOfExperience: z.number(),
-  }),
-)
+export type Competence = z.infer<typeof CompetenceSchema>
+
+export const UserCompetenceSchema = z.object({
+  competence: CompetenceSchema,
+  yearsOfExperience: z.number(),
+})
+
+export type UserCompetence = z.infer<typeof UserCompetenceSchema>
 
 export const PersonSchema = z.object({
   personId: z.number(),
@@ -47,11 +49,6 @@ export interface Application {
 
 export interface UserApplication extends Application {
   user: Person
-}
-
-export interface Competence {
-  competence: string
-  yearsOfExperience: number
 }
 
 export interface AvailabilityPeriod {

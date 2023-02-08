@@ -1,23 +1,20 @@
 import {
-  Box,
-  Button,
   Container,
-  Stack,
-  Stepper,
-  TextField,
-  Typography,
   Step,
-  StepLabel,
   StepContent,
+  StepLabel,
+  Stepper,
+  Typography,
 } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
-import GetTokenStep from './GetTokenStep'
-import api from '../../api/api'
-import ValidateTokenStep from './ValidateTokenStep'
-import UpdateStep from './UpdateStep'
-import useUser from '../../util/auth'
 import { useNavigate } from 'react-router-dom'
+
+import api from '../../api/api'
+import useUser from '../../util/auth'
+import GetTokenStep from './GetTokenStep'
+import UpdateStep from './UpdateStep'
+import ValidateTokenStep from './ValidateTokenStep'
 
 export default function MigrateUser() {
   const [currentStep, setCurrentStep] = useState<number>(0)

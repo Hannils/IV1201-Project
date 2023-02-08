@@ -26,10 +26,12 @@ export interface Competence {
   competenceId: number
 }
 
-export type CompetenceProfile = Array<{
+export interface UserCompetence {
   competence: Competence
   yearsOfExperience: number
-}>
+}
+
+export type CompetenceProfile = Array<UserCompetence>
 
 export interface AvailabilityPeriod {
   startDate: Date

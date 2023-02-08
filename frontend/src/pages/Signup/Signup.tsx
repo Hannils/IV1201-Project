@@ -1,19 +1,8 @@
-import {
-  Box,
-  Button,
-  Container,
-  FormGroup,
-  Link,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material'
-import { signInWithCustomToken } from 'firebase/auth'
+import { Box, Button, Container, Link, Stack, TextField, Typography } from '@mui/material'
 import React, { FormEvent, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 
 import api from '../../api/api'
-
 import useUser from '../../util/auth'
 
 interface SignUpFormElement extends FormEvent<HTMLFormElement> {

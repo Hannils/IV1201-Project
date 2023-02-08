@@ -1,8 +1,7 @@
 import { Box, Button, Stack, TextField } from '@mui/material'
 import { UseMutationResult } from '@tanstack/react-query'
-import { AxiosResponse } from 'axios'
 import React, { FormEvent } from 'react'
-import { AuthResponse } from '../../api/api'
+
 import { Person } from '../../util/Types'
 
 interface UpdateSubmitEvent extends FormEvent<HTMLFormElement> {

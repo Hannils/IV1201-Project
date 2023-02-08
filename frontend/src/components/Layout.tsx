@@ -1,7 +1,6 @@
 import { AccountCircleRounded, LogoutRounded } from '@mui/icons-material'
 import {
   AppBar,
-  Avatar,
   Box,
   Container,
   Divider,
@@ -9,16 +8,11 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
-  MenuItemProps,
   Stack,
   Typography,
 } from '@mui/material'
-import React, {
-  ReactElement,
-  useRef,
-  useState,
-} from 'react'
-import { Link, Outlet, useNavigate, useRevalidator } from 'react-router-dom'
+import React, { ReactElement, useRef, useState } from 'react'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 import useUser from '../util/auth'
 import UserAvatar from './UserAvatar'
@@ -97,9 +91,7 @@ export default function Layout(props: LayoutProps) {
               Create an account
             </MenuItem>
           ) : (
-            <MenuItem
-              onClick={onClicker(() => navigate('/signin'))}
-            >
+            <MenuItem onClick={onClicker(() => navigate('/signin'))}>
               <ListItemIcon>
                 <LogoutRounded fontSize="small" />
               </ListItemIcon>

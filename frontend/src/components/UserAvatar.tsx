@@ -1,5 +1,6 @@
 import { Avatar, AvatarProps, Skeleton } from '@mui/material'
 import React, { forwardRef, useMemo } from 'react'
+
 import { Person } from '../util/Types'
 
 interface UserAvatarProps extends AvatarProps {
@@ -12,8 +13,7 @@ export default forwardRef<HTMLDivElement, UserAvatarProps>(function UserAvatar(
   ref,
 ) {
   const initials = useMemo<string>(
-    () =>
-      user === null || user.username === null ? '' : getInitials(user.username),
+    () => (user === null || user.username === null ? '' : getInitials(user.username)),
     [user],
   )
 

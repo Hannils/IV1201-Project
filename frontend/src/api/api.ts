@@ -2,7 +2,15 @@
 //The API calls are made using the axios library.
 
 import axios from 'axios'
-import { Person, ApplicationStatus, UserApplication, Competence, CompetenceProfile } from '../util/Types'
+
+import {
+  ApplicationStatus,
+  Competence,
+  CompetenceProfile,
+  Person,
+  UserApplication,
+  UserCompetence,
+} from '../util/Types'
 
 const API_URL = 'http://localhost:8888'
 
@@ -115,7 +123,40 @@ const api = {
   getCompetences: async () =>
     axios.get<Competence[]>(`${API_URL}/competence`).then((res) => res.data),
   getCompetenceProfile: async (personId: number) =>
-    axios.get<CompetenceProfile>(`${API_URL}/competence/${personId}`).then((res) => res.data),
+    axios
+      .get<CompetenceProfile>(`${API_URL}/competence/${personId}`, {
+        ...getAuthedHeaders(),
+      })
+      .then((res) => res.data),
+
+  createUserCompetence: async (userCompetence: UserCompetence, personId: number) =>
+    axios.post(`${API_URL}/competence/${personId}`, userCompetence, {
+      ...getAuthedHeaders(),
+    }),
+  deleteUserCompetence: async ({
+    personId,
+    competenceId,
+  }: {
+    personId: number
+    competenceId: number
+  }) =>
+    axios.delete(`${API_URL}/competence/${personId}/${competenceId}`, {
+      ...getAuthedHeaders(),
+    }),
+  updateUserCompetence: async ({
+    personId,
+    competenceId,
+    yearsOfExperience,
+  }: {
+    personId: number
+    competenceId: number
+    yearsOfExperience: number
+  }) =>
+    axios.patch(
+      `${API_URL}/competence/${personId}/${competenceId}`,
+      { yearsOfExperience },
+      { ...getAuthedHeaders() },
+    ),
 }
 
 export default api

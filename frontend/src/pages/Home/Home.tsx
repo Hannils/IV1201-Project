@@ -1,5 +1,5 @@
-import { Typography } from '@mui/material'
 import React from 'react'
+
 import useUser from '../../util/auth'
 import ApplicantHome from './ApplicantHome/ApplicantHome'
 import RecruiterHome from './RecruiterHome/RecruiterHome'

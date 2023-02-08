@@ -1,24 +1,8 @@
-import {
-  Stack,
-  Paper,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Card,
-  CardContent,
-  Select,
-  MenuItem,
-  Checkbox,
-  FormControl,
-  InputLabel,
-  SelectChangeEvent,
-} from '@mui/material'
+import { Card, CardContent, List, Stack } from '@mui/material'
 import React from 'react'
-import { Application, Competence } from '../../../util/Types'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import api from '../../../api/api'
+
+import { Application } from '../../../util/Types'
 
 const application: Application = {
   competenceProfile: [

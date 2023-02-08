@@ -1,5 +1,12 @@
 import { z } from 'zod'
 
+export function validateWithZod(v: unknown, schema: z.ZodType) {
+  const result = schema.safeParse(v)
+  console.log(result)
+  if (!result.success) return result.error.issues.map(({ message }) => message).join(', ')
+  return true
+}
+
 export const usernameSchema = z
   .string()
   .refine((val) => val.length <= 255, {
@@ -38,4 +45,4 @@ export const passwordSchema = z
     message: 'Password should be longer than 5 characters',
   })
 
-  export const yearsOfExperienceSchema = z.number().min(0).max(100)
+export const yearsOfExperienceSchema = z.number().min(0).max(100)

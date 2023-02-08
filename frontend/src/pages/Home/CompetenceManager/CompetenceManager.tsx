@@ -1,9 +1,9 @@
 import { CircularProgress } from '@mui/material'
-
-import CompetenceManagerPage from './CompetenceManagerPage'
-import api from '../../../api/api'
 import { useQuery } from '@tanstack/react-query'
+
+import api from '../../../api/api'
 import useUser from '../../../util/auth'
+import CompetenceManagerPage from './CompetenceManagerPage'
 
 export default function CompetenceManager() {
   const [user] = useUser()

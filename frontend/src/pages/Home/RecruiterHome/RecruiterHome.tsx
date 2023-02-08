@@ -1,28 +1,18 @@
-import React, { useState, useEffect } from 'react'
 import {
-  Stack,
-  TextField,
-  Typography,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Button,
   CircularProgress,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
 } from '@mui/material'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
-import api from '../../../api/api'
-import useUser from '../../../util/auth'
-import {
-  Application,
-  UserApplication,
-  Person,
-  Competence,
-  AvailabilityPeriod,
-} from '../../../util/Types'
-import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
+import React from 'react'
+
+import api from '../../../api/api'
+import { UserApplication } from '../../../util/Types'
 
 export default function RecruiterHome() {
   const {
