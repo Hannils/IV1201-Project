@@ -2,7 +2,7 @@
 //The API calls are made using the axios library.
 
 import axios from 'axios'
-import { Person } from '../util/Types'
+import { Person, ApplicationStatus, UserApplication } from '../util/Types'
 
 const API_URL = 'http://localhost:8888'
 
@@ -101,6 +101,10 @@ const api = {
     axios
       .get<Person>(`${API_URL}/user`, { ...getAuthedHeaders() })
       .then((res) => res.data),
+
+  getApplications: async () => axios.get<UserApplication[]>('/applications').then((res) => res.data),
+  updateApplicationStatus: async (data: { status: ApplicationStatus; personId: number }) =>
+    axios.patch(`/applications/${data.personId}`, { status: data.status }),
 }
 
 export default api

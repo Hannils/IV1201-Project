@@ -17,6 +17,10 @@ export interface Application {
   status: ApplicationStatus
 }
 
+export interface UserApplication extends Application {
+  user: Person
+}
+
 export interface Competence {
   competence: string
   yearsOfExperience: number
