@@ -28,7 +28,7 @@ import {
 } from '@mui/material'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { Application, Competence } from '../../../util/Types'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useFieldArray, useForm, SubmitHandler } from 'react-hook-form'
 import { AddRounded, DeleteRounded } from '@mui/icons-material'
 
 const application: Application = {
@@ -48,7 +48,7 @@ type FormValues = {
 }
 
 export default function CompetenceManager() {
-  const { control, register } = useForm<FormValues>()
+  const { control, register, handleSubmit } = useForm<FormValues>()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const competences = useFieldArray({
@@ -61,20 +61,29 @@ export default function CompetenceManager() {
     setAnchorEl(null)
   }
 
-  const competencesAvialbleToAdd = useMemo(
+  const competencesAvailableToAdd = useMemo(
     () =>
-      availableCompatences.filter((comp) =>
-        !competences.fields.some(({ competence }) => comp === competence),
+      availableCompatences.filter(
+        (comp) => !competences.fields.some(({ competence }) => comp === competence),
       ),
     [competences],
   )
 
+  const onSubmit: SubmitHandler<FormValues> = (d) => {
+    console.log(d)
+  }
+
   return (
-    <Stack spacing={2} alignItems="flex-start">
+    <Stack
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      spacing={2}
+      alignItems="flex-start"
+    >
       <Typography variant="h1" gutterBottom>
         Your competences
       </Typography>
-      {competencesAvialbleToAdd.length > 0 && (
+      {competencesAvailableToAdd.length > 0 && (
         <>
           <Button
             variant="contained"
@@ -93,7 +102,7 @@ export default function CompetenceManager() {
             }}
           >
             <List>
-              {competencesAvialbleToAdd.map((competence) => (
+              {competencesAvailableToAdd.map((competence) => (
                 <ListItem disablePadding key={competence}>
                   <ListItemButton onClick={handleAddCompetence(competence)}>
                     <ListItemText primary={competence} />
@@ -124,7 +133,9 @@ export default function CompetenceManager() {
                 </TableCell>
                 <TableCell>
                   <InputBase
-                    {...register(`competenceProfile.${index}.yearsOfExperience`)}
+                    {...register(`competenceProfile.${index}.yearsOfExperience`, {
+                      valueAsNumber: true,
+                    })}
                   />
                 </TableCell>
                 <TableCell padding="checkbox">
@@ -145,6 +156,9 @@ export default function CompetenceManager() {
           </MenuItem>
         ))}
       </Select> */}
+      <Button variant="contained" type="submit">
+        Send Application
+      </Button>
     </Stack>
   )
 }
