@@ -1,4 +1,6 @@
-// Description: This file contains the functions that interact with the person table in the database
+/**
+ * @fileoverview This file contains all the functions that are used to interact with the database
+ */
 import {
   IncompletePerson,
   IncompletePersonSchema,
@@ -22,7 +24,12 @@ function toPerson(x: any) {
     personId: x.person_id,
   }
 }
-// description: This function insert a person in the database
+/**
+ * Inserts person into a database
+ * @param person - The person to insert as `Person`
+ * @returns void
+ * @requires Database
+ */
 export async function insertPerson(person: Omit<Person, 'personId'>) {
   const response = await queryDatabase(
     `
@@ -44,7 +51,13 @@ export async function insertPerson(person: Omit<Person, 'personId'>) {
 
   return response.rows[0].person_id as number
 }
-// description: This function delete a person in the database
+
+/**
+ * Drops a person row from the database
+ * @param personId - Id of the person to drop as `number`
+ * @returns void
+ * @requires Database
+ */
 export async function dropPerson(personId: number) {
   await queryDatabase(
     `
@@ -54,7 +67,13 @@ export async function dropPerson(personId: number) {
     [personId],
   )
 }
-// description: This function update a person by ID in the database
+
+/**
+ * Calls database and selects a specific person from personId
+ * @param personId - Id of the person to select as `number`
+ * @returns Person
+ * @requires Database
+ */
 export async function selectPersonById(personId: number) {
   const response = await queryDatabase(
     `
@@ -71,7 +90,12 @@ export async function selectPersonById(personId: number) {
 
   return null
 }
-// description: This function update a person by email in the database
+/**
+ * Calls database and selects a specific person from email
+ * @param email - Email of the person
+ * @returns Person
+ * @requires Database
+ */
 export async function selectPersonByEmail(email: string) {
   const response = await queryDatabase(
     `
@@ -88,7 +112,13 @@ export async function selectPersonByEmail(email: string) {
 
   return null
 }
-// description: This function update a person by username in the database
+
+/**
+ * Calls database and selects a specific person from username
+ * @param username - Username of the person
+ * @returns Person | null
+ * @requires Database
+ */
 export async function selectPersonByUsername(username: string) {
   const response = await queryDatabase(
     `
@@ -106,8 +136,10 @@ export async function selectPersonByUsername(username: string) {
 }
 
 /**
- * Function to select all people with a specific entered role
- * @param role a role
+ * Calls database and selects all people with a specific role
+ * @param role - Role to match the people to as `Role`
+ * @returns People[]
+ * @requires Database
  */
 export async function selectPeopleByRole(role: Role) {
   const response = await queryDatabase(
@@ -123,6 +155,14 @@ export async function selectPeopleByRole(role: Role) {
   return peopleSchema.parse(response.rows.map(toPerson))
 }
 
+
+/**
+ * Calls database and updates a person with a specific id
+ * @param personId - Id of the person to update as `number`
+ * @param person - The person to update as `Person`
+ * @returns void
+ * @requires Database
+ */
 export async function selectIncompletePersonByEmail(email: string) {
   const { rowCount, rows } = await queryDatabase(
     `
@@ -138,6 +178,13 @@ export async function selectIncompletePersonByEmail(email: string) {
   return IncompletePersonSchema.parse(toPerson(rows[0]))
 }
 
+/**
+ * Calls database and updates a person with a specific id
+ * @param personId - Id of the person to update as `number`
+ * @param person - The person to update as `Person`
+ * @returns void
+ * @requires Database
+ */
 export async function migratePerson({
   username,
   password,

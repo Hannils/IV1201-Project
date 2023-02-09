@@ -3,6 +3,11 @@ import { CompetenceSchema, UserCompetenceSchema, UserCompetence } from '../../ut
 import { queryDatabase } from './DAO'
 import { z } from 'zod'
 
+/**
+ * Util function for parsing db output to match scheme of competenceProfile
+ * @param x database output
+ * @returns Object matching CompetenceProfile scheme
+ */
 function toCompetenceProfile(x: any) {
   if (!x) return null
   return {
@@ -14,6 +19,11 @@ function toCompetenceProfile(x: any) {
   }
 }
 
+/**
+ * Util function for parsing db output to match scheme of competenceProfile
+ * @param x Database output
+ * @returns Object matching Competence scheme
+ */
 function toCompetence(x: any) {
   if (!x) return null
   return {
@@ -22,7 +32,11 @@ function toCompetence(x: any) {
   }
 }
 
-// This function returns the role_id (the role type) of a role
+/**
+ * Calls database and selects all competences
+ * @returns Competence[]
+ * @requires Database
+ */
 export async function selectCompetence() {
   const response = await queryDatabase(`SELECT * FROM competence`, [])
   const competencesSchema = z.array(CompetenceSchema)
@@ -30,7 +44,13 @@ export async function selectCompetence() {
   return competencesSchema.parse(response.rows.map(toCompetence))
 }
 
-export async function selectCompetenceProfile(personId: string) {
+
+/**
+ * Calls database and selects a competence profile for a specific person
+ * @param personId - Id of the person as `number`
+ * @returns CompetenceProfile[]
+ */
+export async function selectCompetenceProfile(personId: number) {
   const response = await queryDatabase(
     `
         SELECT competence.competence_id, years_of_experience, name FROM public.competence_profile
@@ -42,7 +62,13 @@ export async function selectCompetenceProfile(personId: string) {
 
   return z.array(UserCompetenceSchema).parse(response.rows.map(toCompetenceProfile))
 }
-
+/**
+ * Calls database and inserts a competence profile for a specific person
+ * @param  {UserCompetence} userCompetence - Competence to be inserted as `UserCompetence`
+ * @param  {number} personId - Id of the person to insert into as `number`
+ * @returns void
+ * @requires Database
+  */
 export async function insertUserCompetence(
   userCompetence: UserCompetence,
   personId: number,
@@ -55,7 +81,13 @@ export async function insertUserCompetence(
     [personId, userCompetence.competence.competenceId, userCompetence.yearsOfExperience],
   )
 }
-
+/**
+ * Calls database and deletes a competence profile for a specific person
+ * @param  {number} personId - Id of the person as `number`
+ * @param  {number} competenceId - Id of the competence to remove as `number`
+ * @returns void
+ * @requires Database
+  */
 export async function dropUserCompetence({
   personId,
   competenceId,
@@ -71,7 +103,14 @@ export async function dropUserCompetence({
     [personId, competenceId],
   )
 }
-
+/**
+ * Calls database and updates a competence profile for a specific person
+ * @param  {number} personId - Id of the person as `number`
+ * @param  {number} competenceId - Id of the competence to update as `number`
+ * @param  {number} yearsOfExperience - `number`
+ * @returns void
+ * @requires Database
+*/
 export async function updateUserCompetence({
   personId,
   competenceId,

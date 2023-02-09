@@ -18,3 +18,33 @@
    - eslint-plugin-react - elint with react
    - eslint-plugin-simple-import-sort - sort imports
    - eslint-plugin-unused-imports - Remove unused imports
+
+
+
+
+# JSDoc how-to
+
+### Example general fucntion
+```TypeScript
+/**
+ * Calls database and selects a competence profile for a specific person (Short description)
+ * @param personId - Id of the person as `number` (Describe the param and type)
+ * @returns CompetenceProfile[] (Return type)
+ */
+function selectCompetenceProfile(personId: number) {
+  /* ... */
+}
+```
+
+### Example endpoint
+```TypeScript
+/**
+ * This method Signs in an existing user
+ * @param req - Request containing  `username: string` & `password: string`
+ * @param res - Either `200` or `404`
+ * @returns
+ */
+const getCompetences: express.RequestHandler = async (req, res) => {
+/* ... */
+}
+```

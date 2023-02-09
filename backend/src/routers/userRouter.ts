@@ -99,9 +99,11 @@ const signInParams = z.object({
 
 /**
  * This method Signs in an existing user
- * @param req - Request containing  `username: string` & `password: string`
+ * 
+ * @param req - Body:  {`username: string` & `password: string`}
  * @param res - Either `200` or `404`
  * @returns
+ * 
  */
 const signInUser: express.RequestHandler = async (req, res) => {
   try {

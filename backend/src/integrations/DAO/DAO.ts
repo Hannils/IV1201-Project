@@ -1,9 +1,14 @@
-// Description: This file contains the functions to connect to the database and execute queries
+/**
+ * This file contains the functions to connect to the database and execute the queries
+ * 
+ */
 import { Client, QueryResult } from 'pg'
 
 
 let client: Client | undefined
-
+/**
+ * This function initialize the database connection
+ */
 export async function initDatabase() {
   client = new Client({
     host: process.env.DATABASE_HOST,
@@ -17,6 +22,9 @@ export async function initDatabase() {
   await client.connect()
   console.log('Database connected successfully')
 }
+/**
+ * Description: This function execute the query and return the result
+ */
 
 export async function queryDatabase(query: string, data: any[]): Promise<QueryResult<any>> {
   return new Promise((resolve, reject) => {

@@ -16,6 +16,12 @@ const updateParams = z.object({
   applicationStatus: z.string(),
 })
 
+/**
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 const getCompetences: express.RequestHandler = async (req, res) => {
   try {
     const response = await selectCompetence()
@@ -25,7 +31,13 @@ const getCompetences: express.RequestHandler = async (req, res) => {
     return res.sendStatus(500)
   }
 }
-
+/**
+ * 
+ * @param req 
+ * @param res 
+ * @returns
+ * @requires  
+ */
 const getCompetenceProfile: express.RequestHandler = async (req, res) => {
   try {
     const competenceProfile = await selectCompetenceProfile(req.params.personId)
@@ -37,6 +49,12 @@ const getCompetenceProfile: express.RequestHandler = async (req, res) => {
   }
 }
 
+/**
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 const createUserCompetence: express.RequestHandler = async (req, res) => {
   let competence: UserCompetence, personId: number
 
@@ -62,7 +80,12 @@ const manageUserParams = z.object({
   personId: z.preprocess((n) => Number(n), z.number()),
   competenceId: z.preprocess((n) => Number(n), z.number()),
 })
-
+/**
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 const deleteUserCompetence: express.RequestHandler = async (req, res) => {
   try {
     const params = manageUserParams.parse(req.params)
@@ -76,7 +99,12 @@ const deleteUserCompetence: express.RequestHandler = async (req, res) => {
 
   res.sendStatus(200)
 }
-
+/**
+ * 
+ * @param req 
+ * @param res 
+ * @returns 
+ */
 const patchUserCompetence: express.RequestHandler = async (req, res) => {
   try {
     const params = manageUserParams.parse(req.params)
