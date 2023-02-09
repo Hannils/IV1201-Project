@@ -10,7 +10,7 @@ Frontend code is placed in `frontend` folder
 
 ## Database
 
-Database SQP is placed in `database` folder
+Database SQL is placed in `database` folder
  
 
 
