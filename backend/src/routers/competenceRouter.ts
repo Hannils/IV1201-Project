@@ -9,7 +9,7 @@ import {
   selectCompetenceProfile,
   updateUserCompetence,
 } from '../integrations/DAO/competenceDAO'
-import { UserCompetence, UserCompetenceSchema } from '../util/Types'
+import { UserCompetence, UserCompetenceSchema, Competence } from '../util/Types'
 
 const updateParams = z.object({
   personId: z.string(),
@@ -17,10 +17,13 @@ const updateParams = z.object({
 })
 
 /**
- * 
- * @param req 
- * @param res 
- * @returns 
+ * This method retrieves all competences
+ * @param req - Request
+ * @param res - 
+ * - `200`: Sends Competences as Competence[]
+ * - `500`: Database or internal error
+ * @returns `void`
+ * @authorization none
  */
 const getCompetences: express.RequestHandler = async (req, res) => {
   try {
@@ -32,15 +35,17 @@ const getCompetences: express.RequestHandler = async (req, res) => {
   }
 }
 /**
- * 
- * @param req 
- * @param res 
- * @returns
- * @requires  
+ * This method retrieves competenceProfile for specific person
+ * @param req - Request containing `personId` as number
+ * @param res -
+ * - `200`: sends `competenceProfile` as {@link UserCompetenceSchema} 
+ * - `500`: Database or internal error
+ * @returns `void`
+ * @authorization `[Applicant | Recruiter]`
  */
 const getCompetenceProfile: express.RequestHandler = async (req, res) => {
   try {
-    const competenceProfile = await selectCompetenceProfile(req.params.personId)
+    const competenceProfile = await selectCompetenceProfile(req.params.personId as unknown as number)
 
     res.json(competenceProfile)
   } catch (error: any) {
@@ -50,10 +55,17 @@ const getCompetenceProfile: express.RequestHandler = async (req, res) => {
 }
 
 /**
- * 
- * @param req 
- * @param res 
- * @returns 
+ * This method creates a userCompetence for specific person
+ * @param req - Request containing body
+ * @param res -
+ * - `200`: Success
+ * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
+ * - `500`: Database or internal error
+ * @body
+ * - `competence`
+ * - `yearsOfExperience`
+ * @returns `void`
+ * @authorization `Applicant`
  */
 const createUserCompetence: express.RequestHandler = async (req, res) => {
   let competence: UserCompetence, personId: number
@@ -80,11 +92,17 @@ const manageUserParams = z.object({
   personId: z.preprocess((n) => Number(n), z.number()),
   competenceId: z.preprocess((n) => Number(n), z.number()),
 })
+
+
 /**
- * 
- * @param req 
- * @param res 
- * @returns 
+ * This method deletes competenceProfile for specific person
+ * @param req - Request containing `personId` as number & `competenceId` as number
+ * @param res -
+ * - `200`: OK 
+ * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
+ * - `500`: Database or internal error
+ * @returns `void`
+ * @authorization `Applicant`
  */
 const deleteUserCompetence: express.RequestHandler = async (req, res) => {
   try {
@@ -100,10 +118,27 @@ const deleteUserCompetence: express.RequestHandler = async (req, res) => {
   res.sendStatus(200)
 }
 /**
+ * This method patches competenceProfile for specific person
+ * @param req - Request containing body
+ * @param res - 
+ * - `200`: Successful update.
+ * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
+ * - `500`: Database or internal error
+ * @body 
+ * - `yearsOfExperience`: number
+ * - `competenceId`: number
+ * - `personId`: number
  * 
- * @param req 
- * @param res 
- * @returns 
+ * @returnBody
+ * **200**
+ * - jasd
+ * - asd
+ * 
+ * **500**
+ *  - asd
+ * - asd
+ * @returns `void`
+ * @authorization `Applicant`
  */
 const patchUserCompetence: express.RequestHandler = async (req, res) => {
   try {
@@ -122,7 +157,6 @@ const patchUserCompetence: express.RequestHandler = async (req, res) => {
 }
 
 const competenceRouter = express.Router()
-
 competenceRouter.get('/', asyncHandler(getCompetences))
 competenceRouter.get('/:personId', isAuthorized(), asyncHandler(getCompetenceProfile))
 competenceRouter.post('/:personId', isAuthorized(), asyncHandler(createUserCompetence))

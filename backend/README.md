@@ -24,27 +24,33 @@
 
 # JSDoc how-to
 
-### Example general fucntion
+## Document express endpoint
 ```TypeScript
 /**
- * Calls database and selects a competence profile for a specific person (Short description)
- * @param personId - Id of the person as `number` (Describe the param and type)
- * @returns CompetenceProfile[] (Return type)
+ * This method creates a new user and sends response
+ * @param req - Contains the request data
+ * @param res - Contains the response data
+ * - `200`: 200 success description
+ * - `400`: 400 bad request description
+ * - `500`: 500 server error description
+ * @requestParams
+ * - `param1`: description
+ * - `param2`: description
+ * - `param2`: description
+ * @requestBody 
+ * - `key1` Description kinda like:
+ * - `key2` follows {@link schemas.firstnameSchema},
+ * 
+ * @responseBody
+ * **200**
+ * - `key1`: value1
+ * - `key2`: value2
+ * 
+ * **500**
+ *  - `key1`: value1
+ *  - `key2`: value2
+ * 
+ * @returns `void`
+ * @authorization none | Role | Role[]
  */
-function selectCompetenceProfile(personId: number) {
-  /* ... */
-}
-```
-
-### Example endpoint
-```TypeScript
-/**
- * This method Signs in an existing user
- * @param req - Request containing  `username: string` & `password: string`
- * @param res - Either `200` or `404`
- * @returns
- */
-const getCompetences: express.RequestHandler = async (req, res) => {
-/* ... */
-}
 ```

@@ -9,128 +9,77 @@ const updateParams = z.object({
     applicationStatus: z.string()
 })
 /**
- * @swagger
- * /applications:
- *  get:
- *   description: Get all applications
- *  tags:
- *  - Applications
- * responses:
- * 200:
- * description: OK
- * 400:
- * description: Bad Request
- * 401:
- * description: Unauthorized
- * 403:
- * description: Forbidden
- * 404:
- * description: Not Found
- * 500:
- * description: Internal Server Error
- * 503:
- * description: Service Unavailable
- * 504:
- * description: Gateway Timeout
+ * This method gets all applications 
+ * @param req - Request containing body
+ * @param res - 
+ * - `200`: Successful creation. return body will contain
+ * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
+ * - `500`: Database or internal error
+ * @body 
  * 
+ * @returns an array of applications
+ * @authorization when the user is not an applicant but a recruiter
  */
 const getApplications: express.RequestHandler = async (req, res) => {
 
 }
 /**
- * /applications/{personId}:
- * get:
- * description: Get application
- * tags:
- * - Applications
- * parameters:
- * - in: path
- * name: personId
- * schema:
- * type: string
- * required: true
- * description: The person id
+ * This method get a single application  
+ * @param req - Request containing body
+ * @param res - 
+ * - `200`: Successful creation. return body will contain
+ * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
+ * - `500`: Database or internal error
+ * @body 
+ * 
+ * @returns an application object
+ * @authorization when the user is not an applicant but a recruiter
  */
 const getApplication: express.RequestHandler = async (req, res) => {
 
 }
 /**
- * /applications/{personId}:
- * patch:
- * description: Update application
- * tags:
- * - Applications
- * parameters:
- * - in: path
- * name: personId
- * schema:
- * type: string
- * required: true
- * description: The person id
- * - in: body
- * name: application
- * schema:
- * type: object
- * required:
- * - applicationStatus
- * properties:
- * applicationStatus:
- * type: string
- * description: The application status
- * responses:
- * 200:
- * description: OK
- * 400:
- * description: Bad Request
- * 401:
- * description: Unauthorized
- * 403:
- *  description: Forbidden
- * 404:
- *  description: Not Found
- * 500:
- * description: Internal Server Error
- * 503:
- * description: Service Unavailable
- * 504:
- * description: Gateway Timeout
+ * This method updates a single application
+ * @param req - Request containing body
+ * @param res - 
+ * - `200`: Successful creation. return body will contain
+ * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
+ * - `500`: Database or internal error
+ * @body 
  * 
+ * @returns an array of applications
+ * @authorization when the user is the application owner.
  */
 const updateApplication: express.RequestHandler = async (req, res) => {
   req.params.personId
 }
 
 /**
- * /applications/{personId}:  
- * delete:
- * description: Delete application
- * tags:
- * - Applications
- * parameters:
- * - in: path
- * name: personId
- * schema:
- * type: string
- * required: true
- * description: The person id
+ * This method inserts a single application
+ * @param req - Request containing body
+ * @param res - 
+ * - `200`: Successful creation. return body will contain
+ * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
+ * - `500`: Database or internal error
+ * @body 
+ * 
+ * @returns an array of applications
+ * @authorization 
  */
 const insertApplication: express.RequestHandler = async (req, res) => {
     
 }
 /**
- * /applications/{personId}:
- * delete:
- * description: Delete application
- * tags:
- * - Applications
- * parameters:
- * - in: path
- * name: personId
- * schema:
- * type: string
- * required: true
- * description: The person id
- *
+ * This method deletes a single application
+ * @param req - Request containing body
+ * @param res - 
+ * - `200`: Successful creation. return body will contain
+ * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
+ * - `500`: Database or internal error
+ * @body 
+ * 
+ * @returns an array of applications
+ * @authorization when the user is not an applicant but a recruiter
  */
 const deleteApplication: express.RequestHandler = async (req, res) => {}
 

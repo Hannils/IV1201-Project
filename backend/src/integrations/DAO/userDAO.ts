@@ -1,6 +1,3 @@
-/**
- * @fileoverview This file contains all the functions that are used to interact with the database
- */
 import {
   IncompletePerson,
   IncompletePersonSchema,
@@ -16,6 +13,11 @@ const PERSON_SELECT = `person_id, username, person.name as firstname, surname as
 
 const PERSON_VALIDATOR = `person.username IS NOT NULL AND person.password IS NOT NULL AND person.salt IS NOT NULL`
 
+/**
+ * Util function for parsing db output to match scheme of {@link Person}
+ * @param x Database output
+ * @returns Person as {@link Person}
+ */
 function toPerson(x: any) {
   if (!x) return null
   return {
@@ -26,8 +28,8 @@ function toPerson(x: any) {
 }
 /**
  * Inserts person into a database
- * @param person - The person to insert as `Person`
- * @returns void
+ * @param person - The person to insert as {@link Person}
+ * @returns `void`
  * @requires Database
  */
 export async function insertPerson(person: Omit<Person, 'personId'>) {
@@ -55,7 +57,7 @@ export async function insertPerson(person: Omit<Person, 'personId'>) {
 /**
  * Drops a person row from the database
  * @param personId - Id of the person to drop as `number`
- * @returns void
+ * @returns `void`
  * @requires Database
  */
 export async function dropPerson(personId: number) {
@@ -71,7 +73,7 @@ export async function dropPerson(personId: number) {
 /**
  * Calls database and selects a specific person from personId
  * @param personId - Id of the person to select as `number`
- * @returns Person
+ * @returns Person as {@link Person}
  * @requires Database
  */
 export async function selectPersonById(personId: number) {
@@ -92,8 +94,8 @@ export async function selectPersonById(personId: number) {
 }
 /**
  * Calls database and selects a specific person from email
- * @param email - Email of the person
- * @returns Person
+ * @param email - Email of the person as `string`
+ * @returns Person as {@link Person}
  * @requires Database
  */
 export async function selectPersonByEmail(email: string) {
@@ -115,8 +117,8 @@ export async function selectPersonByEmail(email: string) {
 
 /**
  * Calls database and selects a specific person from username
- * @param username - Username of the person
- * @returns Person | null
+ * @param username - Username of the person as `string`
+ * @returns Person as {@link Person} | `null`
  * @requires Database
  */
 export async function selectPersonByUsername(username: string) {
@@ -137,8 +139,8 @@ export async function selectPersonByUsername(username: string) {
 
 /**
  * Calls database and selects all people with a specific role
- * @param role - Role to match the people to as `Role`
- * @returns People[]
+ * @param role - Role to match the people to as {@link Role}
+ * @returns Multiple people as {@link Person}[]
  * @requires Database
  */
 export async function selectPeopleByRole(role: Role) {
@@ -159,8 +161,8 @@ export async function selectPeopleByRole(role: Role) {
 /**
  * Calls database and updates a person with a specific id
  * @param personId - Id of the person to update as `number`
- * @param person - The person to update as `Person`
- * @returns void
+ * @param person - Person to update as {@link Person}
+ * @returns `void`
  * @requires Database
  */
 export async function selectIncompletePersonByEmail(email: string) {
@@ -181,8 +183,8 @@ export async function selectIncompletePersonByEmail(email: string) {
 /**
  * Calls database and updates a person with a specific id
  * @param personId - Id of the person to update as `number`
- * @param person - The person to update as `Person`
- * @returns void
+ * @param person - Person to update as {@link Person}
+ * @returns `void`
  * @requires Database
  */
 export async function migratePerson({

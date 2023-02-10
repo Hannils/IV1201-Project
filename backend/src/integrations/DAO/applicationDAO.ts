@@ -1,10 +1,3 @@
-/**
- * This function calls database and retrieves an id
- * Description: This file contains the functions that interact with the role table in the database    
- * @param role the name of the role as Role 
- * @returns the id of the role
- */
-
 import {
     IncompletePerson,
     IncompletePersonSchema,

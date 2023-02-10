@@ -28,6 +28,8 @@ export const PersonSchema = z.object({
   salt: z.string(),
 })
 
+export type CompetenceProfile = Array<UserCompetence>
+
 export type Person = z.infer<typeof PersonSchema>
 
 export const IncompletePersonSchema = z.object({

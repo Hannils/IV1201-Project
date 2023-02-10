@@ -5,10 +5,10 @@ import tokenManager from '../util/tokenManager'
 /**
  * A middleware for checking and verifying a request's authorization token.
  * After this middleware a current user object will be stored in `res.locals`
- * @param req The express request as `Request`
- * @param res The express response as `Response`
- * @param next The express next function as `NextFunction`
- * @returns void
+ * @param req The express request as {@link Request}
+ * @param res The express response as {@link Response}
+ * @param next The express next function as {@link NextFunction}
+ * @returns `void`
  * @requires Database
  */
 async function useAuth(req: Request, res: Response, next: NextFunction) {

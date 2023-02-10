@@ -13,14 +13,28 @@ import {
 import isAuthorized from '../util/isAuthorized'
 import { IncompletePerson, Person } from '../util/Types'
 import * as schemas from '../util/schemas'
-import tokenManager from '../util/tokenManager'
+import tokenManager, { TokenManager } from '../util/tokenManager'
 
-const migrationTokenStore = new Map<string, number>()
+const migrationTokenStore = new TokenManager()
 
 const getTokenParams = z.object({
   email: schemas.emailSchema,
 })
-
+/**
+ * This method Signs in an existing user
+ * @param req - Request containing body
+ * @param res - 
+ * - `200`: Sends `token` as `string` & `user` as {@link Person} in body
+ * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
+ * - `500`: Database or internal error
+ * @body 
+ * - `email`: {@link schemas.usernameSchema},
+ * 
+ * @responseBody
+ * 
+ * @returns `void`
+ * @authorization none
+ */
 const generateToken: express.RequestHandler = async (req, res) => {
   let email: string
 
@@ -32,26 +46,20 @@ const generateToken: express.RequestHandler = async (req, res) => {
       : res.sendStatus(500) // Should never happen
   }
 
-  let user: IncompletePerson | null
-
   try {
-    user = await selectIncompletePersonByEmail(email)
+    const user = await selectIncompletePersonByEmail(email)
+    if (user === null) return res.status(404).send('USER_NOT_FOUND')
+
+    const token = await migrationTokenStore.createToken(user.personId)
+    console.info(
+      `[SENT IN AN EMAIL]: A token was generated: "${token}" for user: ${user.email}`,
+    )
+
+    res.sendStatus(200)
   } catch (error: any) {
     console.error(error.message)
-    return res.status(500).send('Database Error')
+    res.sendStatus(500)
   }
-
-  if (user === null) return res.status(404).send('USER_NOT_FOUND')
-
-  const token = crypto.randomUUID()
-
-  migrationTokenStore.set(token, user.personId)
-
-  console.info(
-    `[SENT IN AN EMAIL]: A token was generated: "${token}" for user: ${user.email}`,
-  )
-
-  res.sendStatus(200)
 }
 
 const validateTokenParams = z.string().uuid()
@@ -65,7 +73,7 @@ const validateToken: express.RequestHandler = async (req, res) => {
     return res.sendStatus(400)
   }
 
-  if (migrationTokenStore.get(token) === undefined) return res.sendStatus(404)
+  if (migrationTokenStore.validateToken(token) === null) return res.sendStatus(404)
   res.sendStatus(200)
 }
 
@@ -86,11 +94,9 @@ const migrateUser: express.RequestHandler = async (req, res) => {
       : res.sendStatus(500) // Should never happen
   }
 
-  const personId = migrationTokenStore.get(data.token)
+  const personId = migrationTokenStore.validateToken(data.token)
 
-  if (personId === undefined) {
-    return res.sendStatus(404)
-  }
+  if (personId === null) return res.sendStatus(404)
 
   const salt = crypto.randomBytes(16).toString('hex')
   let password: string

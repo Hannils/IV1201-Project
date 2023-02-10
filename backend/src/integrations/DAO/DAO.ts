@@ -1,10 +1,4 @@
-/**
- * This file contains the functions to connect to the database and execute the queries
- * 
- */
 import { Client, QueryResult } from 'pg'
-
-
 let client: Client | undefined
 /**
  * This function initialize the database connection
@@ -23,12 +17,21 @@ export async function initDatabase() {
   console.log('Database connected successfully')
 }
 /**
- * Description: This function execute the query and return the result
+ * Executes query and returns result
+ * @param query - Query to execute as `string`
+ * @param data - Optional data to execute with query as `any[]`
+ * @returns - Result from query as {@link QueryResult}
+ * @example ```javascript 
+ * await queryDatabase(`SELECT * FROM TABLE WHERE id = $1`, [dataToReplacewith$1])
+ * ```
  */
 
-export async function queryDatabase(query: string, data: any[]): Promise<QueryResult<any>> {
+export async function queryDatabase(
+  query: string,
+  data: any[],
+): Promise<QueryResult> {
   return new Promise((resolve, reject) => {
-    if (client === undefined) throw new Error('Client not initialized')
+    if (client === undefined) return reject('Client not initialized')
     client.query(query, data, (err, res) => {
       if (err) {
         console.error(err)
@@ -38,5 +41,3 @@ export async function queryDatabase(query: string, data: any[]): Promise<QueryRe
     })
   })
 }
-
-
