@@ -1,7 +1,8 @@
+import crypto from 'crypto'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
-import crypto from 'crypto'
 import { z, ZodIssue } from 'zod'
+
 import {
   insertPerson,
   selectPersonByEmail,
@@ -9,9 +10,9 @@ import {
   selectPersonByUsername,
 } from '../integrations/DAO/userDAO'
 import isAuthorized from '../util/isAuthorized'
-import { Person } from '../util/Types'
 import * as schemas from '../util/schemas'
 import tokenManager from '../util/tokenManager'
+import { Person } from '../util/Types'
 
 const createUserParams = z.object({
   username: schemas.usernameSchema,
@@ -24,11 +25,11 @@ const createUserParams = z.object({
 /**
  * This method creates a new user and sends response
  * @param req - Request containing body
- * @param res - 
+ * @param res -
  * - `200`: Sends `token` as `string` & `user` as {@link Person} in body
  * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
  * - `500`: Database or internal error
- * @body 
+ * @body
  * - `username`: {@link schemas.usernameSchema},
  * - `firstname`: {@link schemas.firstnameSchema},
  * - `lastname`: {@link schemas.lastnameSchema},
@@ -110,11 +111,11 @@ const signInParams = z.object({
 /**
  * This method Signs in an existing user
  * @param req - Request containing body
- * @param res - 
+ * @param res -
  * - `200`: Sends `token` as `string` & `user` as {@link Person} in body
  * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
  * - `500`: Database or internal error
- * @body 
+ * @body
  * - `username`: {@link schemas.usernameSchema},
  * - `password`: {@link schemas.passwordSchema},
  * @returns `void`
@@ -173,7 +174,7 @@ const signInUser: express.RequestHandler = async (req, res) => {
 /**
  * This method gets the current user
  * @param req - Request containing body
- * @param res - 
+ * @param res -
  * - `200`: Sends `user` as {@link Person} in body
  * - `404`: User not found
  * - `500`: Database or internal error
@@ -184,11 +185,11 @@ const getUser: express.RequestHandler = async (req, res) => {
   const { personId } = res.locals.currentUser
   try {
     const person = await selectPersonById(personId)
-    if(person === null) return res.sendStatus(404)
+    if (person === null) return res.sendStatus(404)
     res.json(person)
   } catch (e: any) {
     console.error(e.message)
-    res.sendStatus(400);
+    res.sendStatus(400)
   }
 }
 

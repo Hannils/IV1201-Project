@@ -38,4 +38,4 @@ export const passwordSchema = z
     message: 'Password should be longer than 5 characters',
   })
 
-  export const yearsOfExperienceSchema = z.number().min(0).max(100)
+export const yearsOfExperienceSchema = z.number().min(0).max(100)

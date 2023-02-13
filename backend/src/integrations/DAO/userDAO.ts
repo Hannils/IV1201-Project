@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 import {
   IncompletePerson,
   IncompletePersonSchema,
@@ -7,7 +9,6 @@ import {
 } from '../../util/Types'
 import { queryDatabase } from './DAO'
 import { getRoleId } from './roleDAO'
-import { z } from 'zod'
 
 const PERSON_SELECT = `person_id, username, person.name as firstname, surname as lastname, role.name as role, email, person_number, password, salt`
 
@@ -156,7 +157,6 @@ export async function selectPeopleByRole(role: Role) {
   const peopleSchema = z.array(PersonSchema)
   return peopleSchema.parse(response.rows.map(toPerson))
 }
-
 
 /**
  * Calls database and updates a person with a specific id

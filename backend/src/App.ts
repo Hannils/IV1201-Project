@@ -1,15 +1,14 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
-
-import userRouter from './routers/userRouter'
-import useAuth from './middlewares/useAuth'
 import path from 'path'
 
 import { initDatabase } from './integrations/DAO/DAO'
-import userMigrationRouter from './routers/userMigrationRouter'
+import useAuth from './middlewares/useAuth'
 import applicationRouter from './routers/applicationRouter'
 import competenceRouter from './routers/competenceRouter'
+import userMigrationRouter from './routers/userMigrationRouter'
+import userRouter from './routers/userRouter'
 
 dotenv.config()
 
@@ -26,7 +25,7 @@ if (process.env.JEST_WORKER_ID === undefined) {
  * If database connection fails, exit process.
  */
 async function init() {
-    console.log("Initializing backend...")
+  console.log('Initializing backend...')
   await initDatabase()
 
   const app = initServer()

@@ -7,7 +7,6 @@ import {
 } from '../../util/Types'
 import { queryDatabase } from './DAO'
 
-
 /**
  * Gets the role id from a role name
  * @param role - Name of the role as `Role`

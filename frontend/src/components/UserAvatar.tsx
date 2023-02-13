@@ -1,5 +1,5 @@
 import { Avatar, AvatarProps, Skeleton } from '@mui/material'
-import React, { forwardRef, useMemo, ForwardRefRenderFunction } from 'react'
+import React, { forwardRef, ForwardRefRenderFunction, useMemo } from 'react'
 
 import { Person } from '../util/Types'
 

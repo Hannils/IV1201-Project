@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState, PropsWithChildren } from 'react'
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+
 import api from '../api/api'
 import { Person } from './Types'
 

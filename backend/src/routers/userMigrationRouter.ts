@@ -1,7 +1,8 @@
+import crypto from 'crypto'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
-import crypto from 'crypto'
 import { z } from 'zod'
+
 import {
   insertPerson,
   migratePerson,
@@ -11,9 +12,9 @@ import {
   selectPersonByUsername,
 } from '../integrations/DAO/userDAO'
 import isAuthorized from '../util/isAuthorized'
-import { IncompletePerson, Person } from '../util/Types'
 import * as schemas from '../util/schemas'
 import tokenManager, { TokenManager } from '../util/tokenManager'
+import { IncompletePerson, Person } from '../util/Types'
 
 const migrationTokenStore = new TokenManager()
 
@@ -23,15 +24,15 @@ const getTokenParams = z.object({
 /**
  * This method Signs in an existing user
  * @param req - Request containing body
- * @param res - 
+ * @param res -
  * - `200`: Sends `token` as `string` & `user` as {@link Person} in body
  * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
  * - `500`: Database or internal error
- * @body 
+ * @body
  * - `email`: {@link schemas.usernameSchema},
- * 
+ *
  * @responseBody
- * 
+ *
  * @returns `void`
  * @authorization none
  */

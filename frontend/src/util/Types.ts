@@ -1,7 +1,6 @@
 export type Role = 'recruiter' | 'applicant'
 export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
-
 export interface Person {
   personId: number
   username: string

@@ -1,7 +1,7 @@
 import express from 'express'
 import asyncHandler from 'express-async-handler'
-import isAuthorized from '../util/isAuthorized'
 import z from 'zod'
+
 import {
   dropUserCompetence,
   insertUserCompetence,
@@ -9,7 +9,8 @@ import {
   selectCompetenceProfile,
   updateUserCompetence,
 } from '../integrations/DAO/competenceDAO'
-import { UserCompetence, UserCompetenceSchema, Competence } from '../util/Types'
+import isAuthorized from '../util/isAuthorized'
+import { Competence, UserCompetence, UserCompetenceSchema } from '../util/Types'
 
 const updateParams = z.object({
   personId: z.string(),
@@ -19,7 +20,7 @@ const updateParams = z.object({
 /**
  * This method retrieves all competences
  * @param req - Request
- * @param res - 
+ * @param res -
  * - `200`: Sends Competences as Competence[]
  * - `500`: Database or internal error
  * @returns `void`
@@ -38,14 +39,16 @@ const getCompetences: express.RequestHandler = async (req, res) => {
  * This method retrieves competenceProfile for specific person
  * @param req - Request containing `personId` as number
  * @param res -
- * - `200`: sends `competenceProfile` as {@link UserCompetenceSchema} 
+ * - `200`: sends `competenceProfile` as {@link UserCompetenceSchema}
  * - `500`: Database or internal error
  * @returns `void`
  * @authorization `[Applicant | Recruiter]`
  */
 const getCompetenceProfile: express.RequestHandler = async (req, res) => {
   try {
-    const competenceProfile = await selectCompetenceProfile(req.params.personId as unknown as number)
+    const competenceProfile = await selectCompetenceProfile(
+      req.params.personId as unknown as number,
+    )
 
     res.json(competenceProfile)
   } catch (error: any) {
@@ -93,12 +96,11 @@ const manageUserParams = z.object({
   competenceId: z.preprocess((n) => Number(n), z.number()),
 })
 
-
 /**
  * This method deletes competenceProfile for specific person
  * @param req - Request containing `personId` as number & `competenceId` as number
  * @param res -
- * - `200`: OK 
+ * - `200`: OK
  * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
  * - `500`: Database or internal error
  * @returns `void`
@@ -120,20 +122,20 @@ const deleteUserCompetence: express.RequestHandler = async (req, res) => {
 /**
  * This method patches competenceProfile for specific person
  * @param req - Request containing body
- * @param res - 
+ * @param res -
  * - `200`: Successful update.
  * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
  * - `500`: Database or internal error
- * @body 
+ * @body
  * - `yearsOfExperience`: number
  * - `competenceId`: number
  * - `personId`: number
- * 
+ *
  * @returnBody
  * **200**
  * - jasd
  * - asd
- * 
+ *
  * **500**
  *  - asd
  * - asd

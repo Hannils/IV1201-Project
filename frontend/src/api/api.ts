@@ -46,7 +46,6 @@ export interface AuthResponse {
   token: string
 }
 
-
 /**
  * Function used to get the token from the local storage
  * @returns headers object with authorization token
@@ -56,19 +55,16 @@ function getAuthedHeaders() {
 }
 
 const api = {
-
-/**
- * Function to send sign up request
- * @param signUpParams Information needed for sign-up request as {@link SignInRequest}
- * @returns Expects response containing information about the user that signed up as {@link Person}
- */
+  /**
+   * Function to send sign up request
+   * @param signUpParams Information needed for sign-up request as {@link SignInRequest}
+   * @returns Expects response containing information about the user that signed up as {@link Person}
+   */
   signUp: (signUpParams: SignUpRequest) =>
-    axios
-      .post<AuthResponse>(`${API_URL}/user`, signUpParams)
-      .then(({ data }) => {
-        window.localStorage.setItem('token', data.token)
-        return data.user
-      }),
+    axios.post<AuthResponse>(`${API_URL}/user`, signUpParams).then(({ data }) => {
+      window.localStorage.setItem('token', data.token)
+      return data.user
+    }),
 
   /**
    * Function to send sign in request
@@ -76,12 +72,10 @@ const api = {
    * @returns Expects response containing information about the user that signed in as {@link Person}
    */
   signIn: async (signInParams: SignInRequest) =>
-    axios
-      .post<AuthResponse>(`${API_URL}/user/signin`, signInParams)
-      .then(({ data }) => {
-        window.localStorage.setItem('token', data.token)
-        return data.user
-      }),
+    axios.post<AuthResponse>(`${API_URL}/user/signin`, signInParams).then(({ data }) => {
+      window.localStorage.setItem('token', data.token)
+      return data.user
+    }),
 
   /**
    * Function to send request to get a migration token
@@ -99,17 +93,22 @@ const api = {
   validateMigrationToken: async (token: string) =>
     axios.get(`${API_URL}/user-migration/token/${token}`),
 
-
   /**
    * Function to migrate a pre-existing user from the old db to the new db
    * @param migratingUserObject Object containing token, new username and new password of the migrating user
    * @returns Expected response is the migrated user as {@link Person}
-   */  
-  migrateUser: async (migratingUserObject: { token: string; username: string; password: string }) =>
-    axios.put<AuthResponse>(`${API_URL}/user-migration`, migratingUserObject).then(({ data }) => {
-      window.localStorage.setItem('token', data.token)
-      return data.user
-    }),
+   */
+  migrateUser: async (migratingUserObject: {
+    token: string
+    username: string
+    password: string
+  }) =>
+    axios
+      .put<AuthResponse>(`${API_URL}/user-migration`, migratingUserObject)
+      .then(({ data }) => {
+        window.localStorage.setItem('token', data.token)
+        return data.user
+      }),
 
   /**
    * Function to get the currently authenticated user
@@ -162,12 +161,12 @@ const api = {
    * @param userCompetence New user competence to insert as {@link UserCompetence}
    * @param personId Id of the person to insert a user competence for as `number`
    * @returns Expects response of 200 OK as `statuscode`
-   */    
+   */
   createUserCompetence: async (userCompetence: UserCompetence, personId: number) =>
     axios.post(`${API_URL}/competence/${personId}`, userCompetence, {
       ...getAuthedHeaders(),
     }),
-  
+
   /**
    * Function to delete a user competence from a person
    * @param Object Id of the person as `number` and competenceId as `number`
@@ -183,7 +182,7 @@ const api = {
     axios.delete(`${API_URL}/competence/${personId}/${competenceId}`, {
       ...getAuthedHeaders(),
     }),
-  
+
   /**
    * Function to update a user competence
    * @param Object Contains personId as `number`, competenceId as `number` and yearsOfExperience as `number`

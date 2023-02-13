@@ -1,4 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express'
+
 import { Role } from './Types'
 
 /**
@@ -7,7 +8,7 @@ import { Role } from './Types'
  * @returns A middleware to check if request can access
  */
 function isAuthorized(hasRole?: Array<Role>) {
-  return (req: Request, res: Response, next: Function) => {
+  const handler: RequestHandler = (req, res, next) => {
     if (res.locals.currentUser === null) return res.sendStatus(401)
 
     const { role } = res.locals.currentUser
@@ -18,6 +19,7 @@ function isAuthorized(hasRole?: Array<Role>) {
 
     return res.sendStatus(403)
   }
+  return handler
 }
 
 export default isAuthorized

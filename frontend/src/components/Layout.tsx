@@ -11,7 +11,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import React, { ReactElement, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 import useUser from '../util/auth'
