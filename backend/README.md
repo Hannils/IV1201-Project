@@ -84,7 +84,7 @@
 <summary><b>Security</b></summary>
 
 - Security for user information
-  - All the user passwords are hashed in the database using Crypto which is an inbuilt resource within Node. A table was added in the db for handling and storing the salt which was used in the hashing process. The hashing algorithm used is [sha256](https://en.wikipedia.org/wiki/SHA-2)
+  - All the user passwords are hashed in the database using Crypto which is an built-in resource within Node. A table was added in the db for handling and storing the salt which was used in the hashing process. The hashing algorithm used is [sha256](https://en.wikipedia.org/wiki/SHA-2)
 - Security for endpoints
   - The endpoints are access-controlled by the role of each user. Theses roles are saved in the correspondent row in the database for each user. 
 - CORS
