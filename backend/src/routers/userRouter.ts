@@ -39,7 +39,7 @@ const createUserParams = z.object({
  * @returns `void`
  * @authorization none
  */
-const createUser: express.RequestHandler = async (req, res) => {
+export const createUser: express.RequestHandler = async (req, res) => {
   let user: z.infer<typeof createUserParams>
 
   try {
@@ -60,7 +60,7 @@ const createUser: express.RequestHandler = async (req, res) => {
       })
     })
   } catch (error: any) {
-    console.error(error.message)
+    console.error("Hashing Error: ", error.message) 
     return res.sendStatus(500)
   }
 
@@ -76,8 +76,9 @@ const createUser: express.RequestHandler = async (req, res) => {
   try {
     personId = await insertPerson(person)
   } catch (error: any) {
-    console.error(error.message)
-    return res.status(500).send('Database Error')
+    res.status(500).send('Database Error')
+    console.error("Database error: ", error.message)
+    throw new Error("Database error occurred at /user/createUser\n Error: " +  error.message) 
   }
 
   let token: string
@@ -85,7 +86,7 @@ const createUser: express.RequestHandler = async (req, res) => {
   try {
     token = await tokenManager.createToken(personId)
   } catch (error: any) {
-    console.error(error.message)
+    console.error("Token manager error: ", error.message)
     return res.sendStatus(500)
   }
 
@@ -121,7 +122,7 @@ const signInParams = z.object({
  * @returns `void`
  * @authorization none
  */
-const signInUser: express.RequestHandler = async (req, res) => {
+export const signInUser: express.RequestHandler = async (req, res) => {
   try {
     const params = signInParams.parse(req.body)
     const user = await selectPersonByUsername(params.username)
@@ -181,7 +182,7 @@ const signInUser: express.RequestHandler = async (req, res) => {
  * @returns `void`
  * @authorization `[Applicant | Recruiter]`
  */
-const getUser: express.RequestHandler = async (req, res) => {
+export const getUser: express.RequestHandler = async (req, res) => {
   const { personId } = res.locals.currentUser
   try {
     const person = await selectPersonById(personId)

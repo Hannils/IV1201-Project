@@ -24,15 +24,17 @@ if (process.env.JEST_WORKER_ID === undefined) {
  * Start Express server. Connect to database and start server.
  * If database connection fails, exit process.
  */
-async function init() {
+export async function init() {
   console.log('Initializing backend...')
   await initDatabase()
 
   const app = initServer()
 
-  app.listen(process.env.PORT, () => {
-    console.log(`[server]: Server is running at https://localhost:${process.env.PORT}`)
+  await new Promise<void>((resolve) => {
+    app.listen(process.env.PORT, resolve)
   })
+  
+  console.log(`[server]: Server is running at https://localhost:${process.env.PORT}`)
 }
 /**
  * Initialize the server
