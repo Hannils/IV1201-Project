@@ -5,12 +5,34 @@ export interface TokenEntry {
   expires: Date
 }
 
-export class TokenManager {
-  static #TOKEN_VALIDITY = 1000 * 60 * 60 * 24
-  #tokenStore
+const generateToken = async () =>
+  new Promise<string>((resolve, reject) =>
+    crypto.randomBytes(64, (err, key) =>
+      err ? reject(err) : resolve(key.toString('hex')),
+    ),
+  )
 
-  constructor() {
+const defaultValidity = 1000 * 60 * 60 * 24
+
+type TokenGenerator = () => Promise<string> | string
+
+export class TokenManager {
+  #tokenStore
+  #tokenValidity
+  #tokenGenerator
+
+  /**
+   * 
+   * @param tokenValidity How long a token is valid in ms
+   * @param tokenGenerator a generator function for the identifiers/tokens
+   */
+  constructor(
+    tokenValidity: number | null = null,
+    tokenGenerator: TokenGenerator | null = null,
+  ) {
     this.#tokenStore = new Map<string, TokenEntry>()
+    this.#tokenValidity = tokenValidity ?? defaultValidity
+    this.#tokenGenerator = tokenGenerator ?? generateToken
   }
 
   /**
@@ -19,15 +41,11 @@ export class TokenManager {
    * @returns the generated token as `string`
    */
   async createToken(personId: number) {
-    const token = await new Promise<string>((resolve, reject) =>
-      crypto.randomBytes(64, (err, key) =>
-        err ? reject(err) : resolve(key.toString('hex')),
-      ),
-    )
+    const token = await this.#tokenGenerator()
 
     this.#tokenStore.set(token, {
       personId,
-      expires: new Date(Date.now() + TokenManager.#TOKEN_VALIDITY),
+      expires: new Date(Date.now() + this.#tokenValidity),
     })
 
     return token
@@ -48,7 +66,7 @@ export class TokenManager {
 
     this.#tokenStore.set(token, {
       personId,
-      expires: new Date(Date.now() + TokenManager.#TOKEN_VALIDITY),
+      expires: new Date(Date.now() + this.#tokenValidity),
     })
 
     return personId

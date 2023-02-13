@@ -16,7 +16,10 @@ import * as schemas from '../util/schemas'
 import tokenManager, { TokenManager } from '../util/tokenManager'
 import { IncompletePerson, Person } from '../util/Types'
 
-const migrationTokenStore = new TokenManager()
+/**
+ * Create the token store. Generate uuids and keep them valid for 10 minuts
+ */
+const migrationTokenStore = new TokenManager(1000 * 60 * 10, crypto.randomUUID)
 
 const getTokenParams = z.object({
   email: schemas.emailSchema,

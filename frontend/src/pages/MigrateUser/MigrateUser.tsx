@@ -23,12 +23,12 @@ export default function MigrateUser() {
   const navigate = useNavigate()
 
   const getTokenMutation = useMutation({
-    mutationFn: (email: string) => api.getMigrationToken({ email }),
+    mutationFn: (email: string) => api.getMigrationToken(email),
     onSuccess: () => setCurrentStep(1),
   })
 
   const validateTokenMutation = useMutation({
-    mutationFn: (token: string) => api.validateMigrationToken({ token }),
+    mutationFn: (token: string) => api.validateMigrationToken(token),
     onSuccess: (_, token) => {
       setUsedToken(token)
       setCurrentStep(2)
