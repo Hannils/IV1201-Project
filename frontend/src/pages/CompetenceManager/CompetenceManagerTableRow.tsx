@@ -16,6 +16,7 @@ import { useAuthedUser } from '../../components/WithAuth'
 import { validateWithZod, yearsOfExperienceSchema } from '../../util/schemas'
 import { FormValues } from './CompetenceManagerTypes'
 import { UserCompetence } from '../../util/Types'
+import { useCompetenceManager } from './CompetenceManagerContext'
 
 export default function CompetenceManagerTableRow({
   index,
@@ -24,37 +25,12 @@ export default function CompetenceManagerTableRow({
   index: number
   field: UserCompetence
 }) {
-  const inputName =
-    `competenceProfile.${index}.yearsOfExperience` satisfies FieldPath<FormValues>
+  const { deleteMutation, updateMutation } = useCompetenceManager()
 
-  const user = useAuthedUser()
-  const queryClient = useQueryClient()
+  const handleUpdate = () => {
 
-  const { register, getFieldState, watch, formState } = useFormContext<FormValues>()
-  const validationState = getFieldState(inputName, formState)
+  }
 
-  const deleteMutation = useMutation({
-    mutationFn: (competenceId: number) =>
-      api.deleteUserCompetence({ competenceId, personId: user.personId }),
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ['competence_profile'] })
-      onDelete()
-    },
-    onError: (error) => console.error(error),
-  })
-
-  const updateMutation = useMutation({
-    mutationFn: async () => {
-      if (validationState.invalid) return
-      return api.updateUserCompetence({
-        competenceId: field.competence.competenceId,
-        personId: user.personId,
-        yearsOfExperience: watch(inputName),
-      })
-    },
-    onSuccess: () => queryClient.removeQueries({ queryKey: ['competence_profile'] }),
-    onError: (error) => console.error(error),
-  })
 
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -63,17 +39,17 @@ export default function CompetenceManagerTableRow({
       </TableCell>
       <TableCell width={300}>
         <InputBase
-          {...register(inputName, {
+          /* {...register(inputName, {
             valueAsNumber: true,
             validate: (v) => validateWithZod(v, yearsOfExperienceSchema),
-            onBlur: () => updateMutation.mutate(),
-          })}
+            onBlur: handleUpdate,
+          })} */
         />
-        {validationState.error && (
+        {/* {validationState.error && (
           <Typography variant="body2" color="error">
             {validationState.error.message}
           </Typography>
-        )}
+        )} */}
         {updateMutation.isError && updateMutation.error instanceof Error && (
           <Typography variant="body2" color="error">
             {updateMutation.error.message}
