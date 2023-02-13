@@ -17,12 +17,11 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 import useUser from '../util/auth'
 import UserAvatar from './UserAvatar'
 
-interface LayoutProps {
-  children?: ReactElement
-}
-
-export default function Layout(props: LayoutProps) {
-  const { children } = props
+/**
+ * The layout compoent is rendered for all pages.
+ * It contains global UI elements.
+ */
+export default function Layout() {
   const [user] = useUser()
   const navigate = useNavigate()
 

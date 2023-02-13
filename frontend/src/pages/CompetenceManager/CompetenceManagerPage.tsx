@@ -21,9 +21,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import React, { useMemo, useState } from 'react'
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
-import api from '../../../api/api'
-import { useAuthedUser } from '../../../components/WithAuth'
-import { Competence, CompetenceProfile, UserCompetence } from '../../../util/Types'
+import api from '../../api/api'
+import { useAuthedUser } from '../../components/WithAuth'
+import { Competence, CompetenceProfile, UserCompetence } from '../../util/Types'
 import CompetenceManagerTableRow from './CompetenceManagerTableRow'
 import { FormValues } from './CompetenceManagerTypes'
 

@@ -11,9 +11,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import React from 'react'
 import { FieldArrayWithId, FieldPath, useFormContext } from 'react-hook-form'
 
-import api from '../../../api/api'
-import { useAuthedUser } from '../../../components/WithAuth'
-import { validateWithZod, yearsOfExperienceSchema } from '../../../util/schemas'
+import api from '../../api/api'
+import { useAuthedUser } from '../../components/WithAuth'
+import { validateWithZod, yearsOfExperienceSchema } from '../../util/schemas'
 import { FormValues } from './CompetenceManagerTypes'
 
 export default function CompetenceManagerTableRow({

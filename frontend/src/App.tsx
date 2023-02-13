@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import Layout from './components/Layout'
 import WithAuth from './components/WithAuth'
-import CompetenceManager from './pages/Home/CompetenceManager/CompetenceManager'
+import CompetenceManager from './pages/CompetenceManager/CompetenceManager'
 import Home from './pages/Home/Home'
 import MigrateUser from './pages/MigrateUser/MigrateUser'
 import Signin from './pages/Signin/Signin'

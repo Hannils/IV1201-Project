@@ -1,15 +1,29 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-
+import { createContext, useContext, useEffect, useState, PropsWithChildren } from 'react'
 import api from '../api/api'
 import { Person } from './Types'
 
-const authContext = createContext<
-  [Person | null, boolean, React.Dispatch<React.SetStateAction<Person | null>>]
->([null, true, () => null])
+type SetUserHandler = (user: Person | null) => void
 
+/**
+ * The accessible data from the provided context
+ */
+type AuthContextData = [Person | null, boolean, SetUserHandler]
+
+/**
+ * Authcontext, context to keep track of user in both
+ * an authenticated, and unauthenticated state
+ */
+const authContext = createContext<AuthContextData>([null, true, () => null])
+
+/**
+ * Custom hook to access current user data
+ */
 const useUser = () => useContext(authContext)
 
-export const AuthProvider = (props: any) => {
+/**
+ * Provider for the {@link authContext}
+ */
+export const AuthProvider = (props: PropsWithChildren) => {
   const [user, setUser] = useState<Person | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -20,7 +34,9 @@ export const AuthProvider = (props: any) => {
       .finally(() => setLoading(false))
   }, [])
 
-  return <authContext.Provider {...props} value={[user, loading, setUser]} />
+  const handleSetUser: SetUserHandler = (user) => setUser(user)
+
+  return <authContext.Provider {...props} value={[user, loading, handleSetUser]} />
 }
 
 export default useUser

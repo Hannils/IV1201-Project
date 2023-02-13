@@ -1,40 +1,46 @@
 import { Avatar, AvatarProps, Skeleton } from '@mui/material'
-import React, { forwardRef, useMemo } from 'react'
+import React, { forwardRef, useMemo, ForwardRefRenderFunction } from 'react'
 
 import { Person } from '../util/Types'
 
+/**
+ * user: The userdata of the user for the avatar
+ * isLoading: if it should render a loading animation
+ */
 interface UserAvatarProps extends AvatarProps {
   user: Person
   isLoading?: boolean
 }
 
-export default forwardRef<HTMLDivElement, UserAvatarProps>(function UserAvatar(
-  { user, isLoading, ...props },
-  ref,
-) {
+type UserAvatarRenderer = ForwardRefRenderFunction<HTMLDivElement, UserAvatarProps>
+
+/**
+ * User avatar compoent will render an avatar for a user, showing their initials if available
+ * @param props data for the component to render {@link UserAvatarProps}
+ */
+const UserAvatar: UserAvatarRenderer = (props, ref) => {
+  const { user, isLoading, ...AvatarProps } = props
   const initials = useMemo<string>(
-    () => (user === null || user.username === null ? '' : getInitials(user.username)),
+    () => (user === null ? '' : (user.firstname[0] + user.lastname[0]).toUpperCase()),
     [user],
   )
 
   if (isLoading) {
     return (
-      <Avatar sx={{ bgcolor: 'transparent' }}>
+      <Avatar sx={{ bgcolor: 'transparent', ...AvatarProps.sx }} {...AvatarProps}>
         <Skeleton variant="circular" animation="wave" width="100%" height="100%" />
       </Avatar>
     )
   }
 
   return (
-    <Avatar ref={ref} {...props}>
+    <Avatar ref={ref} {...AvatarProps}>
       {initials}
     </Avatar>
   )
-})
-
-function getInitials(name: string): string {
-  const rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu')
-  const initials = [...name.matchAll(rgx)] || []
-
-  return ((initials.shift()?.[1] || '') + (initials.pop()?.[1] || '')).toUpperCase()
 }
+
+/**
+ * Forward the ref if any implementations wants to anchor to the avatar
+ */
+export default forwardRef<HTMLDivElement, UserAvatarProps>(UserAvatar)

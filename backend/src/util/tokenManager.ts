@@ -1,23 +1,14 @@
 import crypto from 'crypto'
 
-/**
- * The data that every token is linked to
- */
 export interface TokenEntry {
   personId: number
   expires: Date
 }
 
-/**
- * A token manager for generating and validating auth tokens
- */
 export class TokenManager {
   static #TOKEN_VALIDITY = 1000 * 60 * 60 * 24
   #tokenStore
 
-  /**
-   * Create a new instance of the tokenManager
-   */
   constructor() {
     this.#tokenStore = new Map<string, TokenEntry>()
   }
@@ -25,7 +16,7 @@ export class TokenManager {
   /**
    * Creates a new token linked to a personId
    * @param personId the id to link the token to
-   * @returns the generated token
+   * @returns the generated token as `string`
    */
   async createToken(personId: number) {
     const token = await new Promise<string>((resolve, reject) =>
@@ -45,7 +36,7 @@ export class TokenManager {
   /**
    * Validate a token
    * @param token the token to check
-   * @returns `null` if token is invalid or expired `personId` of the person with the specific token
+   * @returns `null` if token is invalid or expired | `personId` of the person with the specific token
    */
   validateToken(token: string) {
     const tokenEntry = this.#tokenStore.get(token)
