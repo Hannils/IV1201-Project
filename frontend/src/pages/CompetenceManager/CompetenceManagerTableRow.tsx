@@ -15,15 +15,14 @@ import api from '../../api/api'
 import { useAuthedUser } from '../../components/WithAuth'
 import { validateWithZod, yearsOfExperienceSchema } from '../../util/schemas'
 import { FormValues } from './CompetenceManagerTypes'
+import { UserCompetence } from '../../util/Types'
 
 export default function CompetenceManagerTableRow({
   index,
   field,
-  onDelete,
 }: {
   index: number
-  field: FieldArrayWithId<FormValues, 'competenceProfile', 'id'>
-  onDelete: () => void
+  field: UserCompetence
 }) {
   const inputName =
     `competenceProfile.${index}.yearsOfExperience` satisfies FieldPath<FormValues>

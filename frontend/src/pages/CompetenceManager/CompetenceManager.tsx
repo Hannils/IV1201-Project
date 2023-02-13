@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import api from '../../api/api'
 import { useAuthedUser } from '../../components/WithAuth'
 import CompetenceManagerPage from './CompetenceManagerPage'
+import CompetenceManagerProvider from './CompetenceManagerContext'
 
 export default function CompetenceManager() {
   const user = useAuthedUser()
@@ -19,9 +20,11 @@ export default function CompetenceManager() {
     return <p>Something bad happend</p>
 
   return (
-    <CompetenceManagerPage
+    <CompetenceManagerProvider
       availableCompetences={availableCompetencesQuery.data}
       competenceProfile={competenceProfileQuery.data}
-    />
+    >
+      <CompetenceManagerPage />
+    </CompetenceManagerProvider>
   )
 }
