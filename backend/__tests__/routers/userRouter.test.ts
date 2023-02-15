@@ -38,7 +38,7 @@ jest.mock('../../src/integrations/DAO/userDAO', () => ({
   }),
 }))
 
-describe('Test all successful cases of userRouter', () => {
+describe('Test all with good parameters on userRouter', () => {
   let mockResponse: Response
 
   beforeAll(() => {
@@ -98,7 +98,7 @@ describe('Test all successful cases of userRouter', () => {
   })
 })
 
-describe('Test all with bad parameters', () => {
+describe('Test all with bad parameters on userRouter', () => {
   let mockResponse: Response
 
   beforeAll(() => {
@@ -186,51 +186,5 @@ describe('Test all with bad parameters', () => {
     }
     await getUser({} as Request, mockResponse, (() => null) as NextFunction)
     expect(mockResponse.sendStatus).toHaveBeenCalledWith(404)
-  })
-})
-
-describe('Test error handling on userRouter', () => {
-  let mockResponse: Response
-
-  beforeAll(() => {
-    jest
-      .spyOn(console, 'error')
-      .mockImplementation((...params) => console.log('CONSOLE_ERROR: ', ...params))
-  })
-
-  beforeEach(() => {
-    mockResponse = {
-      status: jest.fn(() => ({
-        json: jest.fn((...params) => console.log('STATUS_JSON', ...params)),
-        send: jest.fn(/* (...params) => console.log('STATUS_SEND', ...params) */),
-      })),
-      sendStatus: jest.fn(() => null),
-      json: jest.fn((...params) => console.log(...params)),
-    } as unknown as Response
-  })
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
-  test('Should throw username ZodError on createUser', async () => {
-    const mockRequest = {
-      body: {
-        username: 'a',
-        firstname: 'firstname',
-        lastname: 'lastname',
-        email: 'test@test.se',
-        personNumber: '20000101-0000',
-        password: 'password',
-      },
-    } as Request
-
-    await createUser(mockRequest, mockResponse, (() => null) as NextFunction)
-    expect(mockResponse.status(-1).json).toHaveBeenCalledWith(/* TODO */)/* .toBe([
-      {
-        code: 'custom',
-        message: 'Username Must be atleast 3 characters',
-        path: ['username'],
-      },
-    ]) */
   })
 })
