@@ -26,7 +26,7 @@ const updateParams = z.object({
  * @returns `void`
  * @authorization none
  */
-const getCompetences: express.RequestHandler = async (req, res) => {
+export const getCompetences: express.RequestHandler = async (req, res) => {
   try {
     const response = await selectCompetence()
     res.json(response)
@@ -44,12 +44,12 @@ const getCompetences: express.RequestHandler = async (req, res) => {
  * @returns `void`
  * @authorization `[Applicant | Recruiter]`
  */
-const getCompetenceProfile: express.RequestHandler = async (req, res) => {
+export const getCompetenceProfile: express.RequestHandler = async (req, res) => {
   try {
     const competenceProfile = await selectCompetenceProfile(
       req.params.personId as unknown as number,
     )
-
+    if (competenceProfile === null || competenceProfile === undefined) res.sendStatus(400)
     res.json(competenceProfile)
   } catch (error: any) {
     console.error(error.message)
@@ -70,14 +70,14 @@ const getCompetenceProfile: express.RequestHandler = async (req, res) => {
  * @returns `void`
  * @authorization `Applicant`
  */
-const createUserCompetence: express.RequestHandler = async (req, res) => {
+export const createUserCompetence: express.RequestHandler = async (req, res) => {
   let competence: UserCompetence, personId: number
 
   try {
     competence = UserCompetenceSchema.parse(req.body)
     personId = z.number().parse(Number(req.params.personId))
   } catch (error) {
-    console.error(error)
+    console.error("This is error: ", error)
     return res.sendStatus(400)
   }
 
@@ -106,7 +106,7 @@ const manageUserParams = z.object({
  * @returns `void`
  * @authorization `Applicant`
  */
-const deleteUserCompetence: express.RequestHandler = async (req, res) => {
+export const deleteUserCompetence: express.RequestHandler = async (req, res) => {
   try {
     const params = manageUserParams.parse(req.params)
     await dropUserCompetence(params)
@@ -142,7 +142,7 @@ const deleteUserCompetence: express.RequestHandler = async (req, res) => {
  * @returns `void`
  * @authorization `Applicant`
  */
-const patchUserCompetence: express.RequestHandler = async (req, res) => {
+export const patchUserCompetence: express.RequestHandler = async (req, res) => {
   try {
     const params = manageUserParams.parse(req.params)
     const yearsOfExperience = z.number().parse(req.body.yearsOfExperience)
