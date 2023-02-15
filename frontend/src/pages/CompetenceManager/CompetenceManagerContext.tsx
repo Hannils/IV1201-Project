@@ -49,18 +49,22 @@ export default function CompetenceManagerProvider({
     addMutation: useMutation({
       mutationFn: (competence: UserCompetence) =>
         api.createUserCompetence(competence, user.personId),
-      /* onMutate: () => setCreateAnchor(null),
       onSuccess: (_, userCompetence) => {
         queryClient.removeQueries({ queryKey: ['competence_profile'] })
-        competences.prepend(userCompetence)
-      }, */
+        console.log("userCompetence", userCompetence)
+        setCompetences((c) => [userCompetence, ...c])
+      },
       onError: (error) => console.error(error),
     }),
     deleteMutation: useMutation({
       mutationFn: (competenceId: number) =>
         api.deleteUserCompetence({ competenceId, personId: user.personId }),
-      onSuccess: () => {
+      onMutate: (competenceId) => competenceId,
+      onSuccess: (_, competenceId) => {
         queryClient.removeQueries({ queryKey: ['competence_profile'] })
+        setCompetences((cs) =>
+          cs.filter((c) => c.competence.competenceId !== competenceId),
+        )
       },
       onError: (error) => console.error(error),
     }),
@@ -77,10 +81,12 @@ export default function CompetenceManagerProvider({
           competenceId,
           yearsOfExperience,
         }),
+      onMutate: ({ competenceId }) => competenceId,
       onSuccess: () => queryClient.removeQueries({ queryKey: ['competence_profile'] }),
       onError: (error) => console.error(error),
     }),
   } satisfies CompetenceManagerData
+
   return (
     <competenceManagerContext.Provider value={contextData}>
       {children}

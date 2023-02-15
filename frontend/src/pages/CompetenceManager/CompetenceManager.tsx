@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import api from '../../api/api'
 import { useAuthedUser } from '../../components/WithAuth'
-import CompetenceManagerPage from './CompetenceManagerPage'
+import CompetenceManagerPage from './views/CompetenceManagerPage'
 import CompetenceManagerProvider from './CompetenceManagerContext'
 
 export default function CompetenceManager() {
