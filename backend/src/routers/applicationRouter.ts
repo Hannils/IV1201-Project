@@ -1,14 +1,11 @@
-import express from 'express'
+import express, { application } from 'express'
 import asyncHandler from 'express-async-handler'
-import z from 'zod'
+import z, { ZodError } from 'zod'
+import { insertApplication } from '../integrations/DAO/applicationDAO'
 
 import isAuthorized from '../util/isAuthorized'
 import { ApplicationStatus, Person } from '../util/Types'
 
-const updateParams = z.object({
-  personId: z.string(),
-  applicationStatus: z.string(),
-})
 /**
  * This method gets all applications
  * @param req - Request containing body
@@ -21,7 +18,15 @@ const updateParams = z.object({
  * @returns an array of applications
  * @authorization when the user is not an applicant but a recruiter
  */
-const getApplications: express.RequestHandler = async (req, res) => {}
+const getApplications: express.RequestHandler = async (req, res) => {
+  try {
+    //const response = selectApplications()
+    //res.json(response)
+  } catch (error: any) {
+    console.error(error.message)
+    return res.sendStatus(500)
+  }
+}
 /**
  * This method get a single application
  * @param req - Request containing body
@@ -34,7 +39,18 @@ const getApplications: express.RequestHandler = async (req, res) => {}
  * @returns an application object
  * @authorization when the user is not an applicant but a recruiter
  */
-const getApplication: express.RequestHandler = async (req, res) => {}
+const getApplication: express.RequestHandler = async (req, res) => {
+  try {
+  const personId = z.number().parse(req.params)
+   //const application = await selectApplication(personId)
+   res.json(application)
+  } catch (error: any) {
+    return error instanceof ZodError
+    ? res.status(400).json(error.message)
+    : res.status(500)
+  }
+
+}
 /**
  * This method updates a single application
  * @param req - Request containing body
@@ -47,12 +63,21 @@ const getApplication: express.RequestHandler = async (req, res) => {}
  * @returns an array of applications
  * @authorization when the user is the application owner.
  */
-const updateApplication: express.RequestHandler = async (req, res) => {
-  req.params.personId
+const patchApplication: express.RequestHandler = async (req, res) => {
+  try {
+    const personId = z.number().parse(req.params.personId)
+    const applicationStatus = req.body.applicationStatus
+    //await updateApplication(personId, applicationStatus)
+  } catch (error: any) {
+    console.error(error.message)
+    return error instanceof ZodError
+    ? res.status(400).json(error.message)
+    : res.sendStatus(500)
+  }
 }
 
 /**
- * This method inserts a single application
+ * This method creates a single application
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -63,7 +88,18 @@ const updateApplication: express.RequestHandler = async (req, res) => {
  * @returns an array of applications
  * @authorization
  */
-const insertApplication: express.RequestHandler = async (req, res) => {}
+const createApplication: express.RequestHandler = async (req, res) => {
+  try {
+    const personId = z.number().parse(req.params.personId)
+    const application = await insertApplication(personId)
+  } catch (error: any) {
+    console.error(error.message)
+    return error instanceof ZodError
+    ? res.status(400).json(error.message)
+    : res.sendStatus(500)
+  }
+
+}
 /**
  * This method deletes a single application
  * @param req - Request containing body
@@ -76,16 +112,30 @@ const insertApplication: express.RequestHandler = async (req, res) => {}
  * @returns an array of applications
  * @authorization when the user is not an applicant but a recruiter
  */
-const deleteApplication: express.RequestHandler = async (req, res) => {}
+const deleteApplication: express.RequestHandler = async (req, res) => {
+  try {
+    const personId = z.number().parse(req.params.personId)
+    //await dropApplication(personId)
+  } catch (error: any) {
+    console.error(error.message)
+    return error instanceof ZodError
+    ? res.status(400).json(error.message)
+    : res.sendStatus(500)
+  }
+}
 
 const applicationRouter = express.Router()
 applicationRouter.get('/', asyncHandler(getApplications))
-applicationRouter.get('/:id', asyncHandler(getApplication))
+applicationRouter.get('/:personId', asyncHandler(getApplication))
+applicationRouter.post(
+  '/:personId',
+   isAuthorized(['applicant', 'recruiter']),
+   asyncHandler(createApplication))
 
 applicationRouter.patch(
   '/:personId/',
   isAuthorized(['recruiter']),
-  asyncHandler(updateApplication),
+  asyncHandler(patchApplication),
 )
 applicationRouter.delete(
   '/:personId/',
