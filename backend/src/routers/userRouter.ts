@@ -60,7 +60,7 @@ export const createUser: express.RequestHandler = async (req, res) => {
       })
     })
   } catch (error: any) {
-    console.error("Hashing Error: ", error.message) 
+    console.error('Hashing Error: ', error.message)
     return res.sendStatus(500)
   }
 
@@ -77,8 +77,10 @@ export const createUser: express.RequestHandler = async (req, res) => {
     personId = await insertPerson(person)
   } catch (error: any) {
     res.status(500).send('Database Error')
-    console.error("Database error: ", error.message)
-    throw new Error("Database error occurred at /user/createUser\n Error: " +  error.message) 
+    console.error('Database error: ', error.message)
+    throw new Error(
+      'Database error occurred at /user/createUser\n Error: ' + error.message,
+    )
   }
 
   let token: string
@@ -86,7 +88,7 @@ export const createUser: express.RequestHandler = async (req, res) => {
   try {
     token = await tokenManager.createToken(personId)
   } catch (error: any) {
-    console.error("Token manager error: ", error.message)
+    console.error('Token manager error: ', error.message)
     return res.sendStatus(500)
   }
 
@@ -172,6 +174,24 @@ export const signInUser: express.RequestHandler = async (req, res) => {
     res.sendStatus(400)
   }
 }
+
+/**
+ * This method Signs in an existing user
+ * @param req - Request containing body
+ * @param res -
+ * - `200`: User is successfully signed out
+ * - `500`: Database or internal error
+ * @returns `void`
+ * @authorization `Yes`
+ */
+export const signOutUser: express.RequestHandler = (req, res) => {
+  const token: string = res.locals.currentToken
+
+  tokenManager.deleteToken(token)
+
+  res.sendStatus(200)
+}
+
 /**
  * This method gets the current user
  * @param req - Request containing body
@@ -180,7 +200,7 @@ export const signInUser: express.RequestHandler = async (req, res) => {
  * - `404`: User not found
  * - `500`: Database or internal error
  * @returns `void`
- * @authorization `[Applicant | Recruiter]`
+ * @authorization `Yes`
  */
 export const getUser: express.RequestHandler = async (req, res) => {
   const { personId } = res.locals.currentUser
@@ -199,5 +219,6 @@ const userRouter = express.Router()
 userRouter.get('/', isAuthorized(), asyncHandler(getUser))
 userRouter.post('/', asyncHandler(createUser))
 userRouter.post('/signin', asyncHandler(signInUser))
+userRouter.post('/signout', isAuthorized(), asyncHandler(signOutUser))
 
 export default userRouter

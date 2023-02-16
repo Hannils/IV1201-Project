@@ -78,6 +78,15 @@ const api = {
     }),
 
   /**
+   * Function to send sign out request
+   * @returns Promise that resolves if sign out was successful
+   */
+  signOut: async () =>
+    axios
+      .post(`${API_URL}/user/signout`, null, { ...getAuthedHeaders() })
+      .then(() => window.localStorage.removeItem('token')),
+
+  /**
    * Function to send request to get a migration token
    * @param email User email that the token will correspond to as `string`
    * @returns Expects response containing token for migrating user as `string`

@@ -22,7 +22,7 @@ export class TokenManager {
   #tokenGenerator
 
   /**
-   * 
+   *
    * @param tokenValidity How long a token is valid in ms
    * @param tokenGenerator a generator function for the identifiers/tokens
    */
@@ -70,6 +70,14 @@ export class TokenManager {
     })
 
     return personId
+  }
+
+  /**
+   * Delete a token.
+   * @param token the token of the entry delete
+   */
+  deleteToken(token: string) {
+    this.#tokenStore.delete(token)
   }
 }
 

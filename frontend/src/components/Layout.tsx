@@ -2,6 +2,7 @@ import { AccountCircleRounded, LogoutRounded } from '@mui/icons-material'
 import {
   AppBar,
   Box,
+  CircularProgress,
   Container,
   Divider,
   IconButton,
@@ -16,14 +17,23 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 
 import useUser from '../util/auth'
 import UserAvatar from './UserAvatar'
+import api from '../api/api'
+import { useMutation } from '@tanstack/react-query'
+import ErrorHandler from './ErrorHandler'
 
 /**
  * The layout compoent is rendered for all pages.
  * It contains global UI elements.
  */
 export default function Layout() {
-  const [user] = useUser()
-  const navigate = useNavigate()
+  const [user, , setUser] = useUser()
+  const signoutMutation = useMutation({
+    mutationFn: () => api.signOut(),
+    onSuccess: () => {
+      setIsProfileOpen(false)
+      setUser(null)
+    },
+  })
 
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false)
   const avatarRef = useRef(null)
@@ -78,7 +88,7 @@ export default function Layout() {
               Sign in
             </MenuItem>
           ) : (
-            <MenuItem component={Link} to="/account" onClick={onClicker()}>
+            <MenuItem onClick={onClicker()}>
               <ListItemIcon>
                 <AccountCircleRounded />
               </ListItemIcon>
@@ -90,11 +100,20 @@ export default function Layout() {
               Create an account
             </MenuItem>
           ) : (
-            <MenuItem onClick={onClicker(() => navigate('/signin'))}>
+            <MenuItem onClick={() => signoutMutation.mutate()}>
               <ListItemIcon>
-                <LogoutRounded fontSize="small" />
+                {signoutMutation.isLoading ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  <LogoutRounded fontSize="small" />
+                )}
               </ListItemIcon>
               Sign out
+            </MenuItem>
+          )}
+          {signoutMutation.isError && (
+            <MenuItem sx={{ pointerEvents: 'none' }}>
+              <ErrorHandler size="small" isError={true} error={signoutMutation.error} />
             </MenuItem>
           )}
         </Menu>

@@ -64,7 +64,6 @@ export default function CompetenceManagerProvider({
         api.createUserCompetence(competence, user.personId),
       onSuccess: (_, userCompetence) => {
         queryClient.removeQueries({ queryKey: ['competence_profile'] })
-        console.log('userCompetence', userCompetence)
         setCompetences((c) => [userCompetence, ...c])
       },
       onError: (error) => console.error(error),

@@ -45,7 +45,7 @@ export default function ErrorHandler(props: ErrorHandlerProps) {
       <ErrorRenderer
         size={size}
         heading="There was an error with the request"
-        body={'Further info: ' + error.message}
+        body={(size === 'large' ? 'Further info: ' : '') + error.message}
       />
     )
 

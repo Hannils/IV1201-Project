@@ -23,8 +23,10 @@ async function useAuth(req: Request, res: Response, next: NextFunction) {
 
       const person = await selectPersonById(personId)
 
-      if (person !== null)
+      if (person !== null) {
+        res.locals.currentToken = token
         res.locals.currentUser = { personId: person.personId, role: person.role }
+      }
     } catch (e: any) {
       console.error(e.message)
     }

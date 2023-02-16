@@ -116,25 +116,24 @@ const migrateUser: express.RequestHandler = async (req, res) => {
     return res.sendStatus(500)
   }
 
-  await migratePerson({
-    ...data,
-    password,
-    salt,
-    personId,
-  })
-
-  const user = await selectPersonById(personId)
-
-  let token: string
-
   try {
-    token = await tokenManager.createToken(personId)
+    await migratePerson({
+      ...data,
+      password,
+      salt,
+      personId,
+    })
+
+    const user = await selectPersonById(personId)
+
+    migrationTokenStore.deleteToken(data.token)
+
+    const token = await tokenManager.createToken(personId)
+    res.json({ token, user })
   } catch (error: any) {
     console.error(error.message)
-    return res.sendStatus(500)
+    res.sendStatus(500)
   }
-
-  res.json({ token, user })
 }
 
 const userMigrationRouter = express.Router()
