@@ -12,7 +12,7 @@ interface ValidateTokenSubmitEvent extends FormEvent<HTMLFormElement> {
 export default function ValidateTokenStep({
   mutator,
 }: {
-  mutator: UseMutationResult<AxiosResponse<any, any>, unknown, string, unknown>
+  mutator: UseMutationResult<AxiosResponse<unknown, unknown>, unknown, string, unknown>
 }) {
   const submit = (e: ValidateTokenSubmitEvent) => {
     e.preventDefault()

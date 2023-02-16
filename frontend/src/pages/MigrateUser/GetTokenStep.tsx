@@ -12,7 +12,7 @@ interface GetTokenSubmitEvent extends FormEvent<HTMLFormElement> {
 export default function GetTokenStep({
   mutator,
 }: {
-  mutator: UseMutationResult<AxiosResponse<any, any>, unknown, string, unknown>
+  mutator: UseMutationResult<AxiosResponse<unknown, unknown>, unknown, string, unknown>
 }) {
   const submit = (e: GetTokenSubmitEvent) => {
     e.preventDefault()

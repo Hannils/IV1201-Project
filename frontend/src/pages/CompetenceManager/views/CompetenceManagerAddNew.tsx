@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react'
-import { useCompetenceManager } from '../CompetenceManagerContext'
+import { AddRounded } from '@mui/icons-material'
 import {
   Button,
   CircularProgress,
@@ -9,8 +8,10 @@ import {
   ListItemText,
   Popover,
 } from '@mui/material'
-import { AddRounded } from '@mui/icons-material'
+import React, { useMemo, useState } from 'react'
+
 import { Competence } from '../../../util/Types'
+import { useCompetenceManager } from '../CompetenceManagerContext'
 
 export default function CompetenceManagerAddNew() {
   const [createAnchor, setCreateAnchor] = useState<HTMLButtonElement | null>(null)
@@ -35,6 +36,7 @@ export default function CompetenceManagerAddNew() {
       <Button
         variant="contained"
         onClick={(e) => setCreateAnchor(e.currentTarget)}
+        disabled={addMutation.isLoading}
         startIcon={
           addMutation.isLoading ? (
             <CircularProgress color="inherit" size={16} />

@@ -1,33 +1,8 @@
-import { AddRounded } from '@mui/icons-material'
-import {
-  Button,
-  CircularProgress,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Paper,
-  Popover,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import React, { useMemo, useState } from 'react'
-import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
+import { Stack, Typography } from '@mui/material'
+import React from 'react'
 
-import api from '../../../api/api'
-import { useAuthedUser } from '../../../components/WithAuth'
-import { Competence, CompetenceProfile, UserCompetence } from '../../../util/Types'
-import CompetenceManagerTable from './CompetenceManagerTable'
-import { FormValues } from '../CompetenceManagerTypes'
-import { useCompetenceManager } from '../CompetenceManagerContext'
 import CompetenceManagerAddNew from './CompetenceManagerAddNew'
+import CompetenceManagerTable from './CompetenceManagerTable'
 
 export default function CompetenceManagerPage() {
   return (

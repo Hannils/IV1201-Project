@@ -1,22 +1,35 @@
-import { createContext, useContext, PropsWithChildren, useState } from 'react'
+import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query'
+import { AxiosError, AxiosResponse } from 'axios'
+import { createContext, PropsWithChildren, useContext, useState } from 'react'
+
 import api from '../../api/api'
 import { useAuthedUser } from '../../components/WithAuth'
-import { UseMutationResult, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Competence, CompetenceProfile, UserCompetence } from '../../util/Types'
-import { AxiosResponse } from 'axios'
+
+interface UpdateParams {
+  yearsOfExperience: number
+  competenceId: number
+}
 
 interface CompetenceManagerData {
   competences: CompetenceProfile
   availableCompetences: Competence[]
-  addMutation: UseMutationResult<any, unknown, UserCompetence, unknown>
-  deleteMutation: UseMutationResult<any, unknown, number, unknown>
-  updateMutation: UseMutationResult<
-    any,
+  addMutation: UseMutationResult<
+    AxiosResponse<unknown, unknown>,
     unknown,
-    {
-      yearsOfExperience: number
-      competenceId: number
-    },
+    UserCompetence,
+    unknown
+  >
+  deleteMutation: UseMutationResult<
+    AxiosResponse<unknown, unknown>,
+    unknown,
+    number,
+    unknown
+  >
+  updateMutation: UseMutationResult<
+    AxiosResponse<unknown, unknown>,
+    unknown,
+    UpdateParams,
     unknown
   >
 }
@@ -51,12 +64,17 @@ export default function CompetenceManagerProvider({
         api.createUserCompetence(competence, user.personId),
       onSuccess: (_, userCompetence) => {
         queryClient.removeQueries({ queryKey: ['competence_profile'] })
-        console.log("userCompetence", userCompetence)
+        console.log('userCompetence', userCompetence)
         setCompetences((c) => [userCompetence, ...c])
       },
       onError: (error) => console.error(error),
     }),
-    deleteMutation: useMutation({
+    deleteMutation: useMutation<
+      AxiosResponse<unknown, unknown>,
+      AxiosError,
+      number,
+      number
+    >({
       mutationFn: (competenceId: number) =>
         api.deleteUserCompetence({ competenceId, personId: user.personId }),
       onMutate: (competenceId) => competenceId,
@@ -68,14 +86,13 @@ export default function CompetenceManagerProvider({
       },
       onError: (error) => console.error(error),
     }),
-    updateMutation: useMutation({
-      mutationFn: async ({
-        yearsOfExperience,
-        competenceId,
-      }: {
-        yearsOfExperience: number
-        competenceId: number
-      }) =>
+    updateMutation: useMutation<
+      AxiosResponse<unknown, unknown>,
+      AxiosError,
+      UpdateParams,
+      number
+    >({
+      mutationFn: async ({ yearsOfExperience, competenceId }: UpdateParams) =>
         api.updateUserCompetence({
           personId: user.personId,
           competenceId,

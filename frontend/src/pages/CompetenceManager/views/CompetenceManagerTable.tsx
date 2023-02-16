@@ -1,64 +1,57 @@
 import { DeleteRounded } from '@mui/icons-material'
-import {
-  CircularProgress,
-  IconButton,
-  InputBase,
-  TableCell,
-  TableRow,
-  Typography,
-} from '@mui/material'
-
-import {
-  Button,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Paper,
-  Popover,
-  Stack,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-} from '@mui/material'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { IconButton, InputBase, LinearProgress, TableCell, TableRow } from '@mui/material'
+import { Paper, Table, TableBody, TableContainer, TableHead } from '@mui/material'
 import React, { useState } from 'react'
-import { FieldArrayWithId, FieldPath, useFormContext } from 'react-hook-form'
 
-import api from '../../../api/api'
-import { useAuthedUser } from '../../../components/WithAuth'
-import { validateWithZod, yearsOfExperienceSchema } from '../../../util/schemas'
-import { FormValues } from '../CompetenceManagerTypes'
+import ErrorHandler from '../../../components/ErrorHandler'
+import { yearsOfExperienceSchema } from '../../../util/schemas'
 import { UserCompetence } from '../../../util/Types'
 import { useCompetenceManager } from '../CompetenceManagerContext'
-import { ZodError } from 'zod'
 
 export default function CompetenceManagerTable() {
-  const { competences } = useCompetenceManager()
-
-  console.log(competences)
+  const { competences, deleteMutation, updateMutation } = useCompetenceManager()
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 450 }} aria-label="Table of competences">
-        <TableHead>
-          <TableRow>
-            <TableCell width={400}>Competence</TableCell>
-            <TableCell width={300}>Years&nbsp;of&nbsp;experience</TableCell>
-            <TableCell padding="checkbox"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {competences.map((userCompetence, index) => (
-            <CompetenceTableRow
-              key={userCompetence.competence.competenceId}
-              {...{ userCompetence, index }}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <ErrorHandler
+        size="large"
+        isError={deleteMutation.isError}
+        error={deleteMutation.error}
+        sx={{ width: '100%' }}
+      />
+      <ErrorHandler
+        size="large"
+        isError={updateMutation.isError}
+        error={updateMutation.error}
+        sx={{ width: '100%' }}
+      />
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 450 }} aria-label="Table of competences">
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ border: 0 }} padding="none" height={4.5} colSpan={3}>
+                {(deleteMutation.isLoading || updateMutation.isLoading) && (
+                  <LinearProgress />
+                )}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell width={400}>Competence</TableCell>
+              <TableCell width={300}>Years&nbsp;of&nbsp;experience</TableCell>
+              <TableCell padding="checkbox"></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {competences.map((userCompetence, index) => (
+              <CompetenceTableRow
+                key={userCompetence.competence.competenceId}
+                {...{ userCompetence, index }}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   )
 }
 
@@ -68,17 +61,12 @@ interface CompetenceTableRowProps {
 
 function CompetenceTableRow(props: CompetenceTableRowProps) {
   const { userCompetence } = props
+  const { deleteMutation, updateMutation } = useCompetenceManager()
+
   const [yearsOfExperience, setYearsOfExperience] = useState<number>(
     userCompetence.yearsOfExperience,
   )
-
-  const [localError, setLocalError] = useState<null | string>(null)
-
-  console.log(userCompetence.competence.name, yearsOfExperience)
-
-  const { deleteMutation, updateMutation } = useCompetenceManager()
-
-  console.log(updateMutation.context, deleteMutation.context)
+  const [localError, setLocalError] = useState<null | unknown>(null)
 
   const handleInput: React.ChangeEventHandler<HTMLInputElement> = (e) =>
     setYearsOfExperience(e.target.valueAsNumber)
@@ -92,23 +80,11 @@ function CompetenceTableRow(props: CompetenceTableRowProps) {
         competenceId: userCompetence.competence.competenceId,
       })
     } catch (error: unknown) {
-      if (error instanceof ZodError)
-        setLocalError(error.issues.at(0)?.message || 'Unknown error')
-      else setLocalError('Unknown error')
+      setLocalError(error)
     }
   }
 
-  const handleDelete = () => {
-    deleteMutation.mutate(userCompetence.competence.competenceId)
-  }
-
-  const deleteIsLoading =
-    deleteMutation.isLoading &&
-    deleteMutation.context === userCompetence.competence.competenceId
-
-  const updateIsLoading =
-    updateMutation.isLoading &&
-    updateMutation.context === userCompetence.competence.competenceId
+  const handleDelete = () => deleteMutation.mutate(userCompetence.competence.competenceId)
 
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -123,21 +99,11 @@ function CompetenceTableRow(props: CompetenceTableRowProps) {
           onChange={handleInput}
           onBlur={handleUpdate}
         />
-        {(localError ||
-          (updateMutation.isError && updateMutation.error instanceof Error)) && (
-          <Typography variant="body2" color="error">
-            {localError || updateMutation.error.message}
-          </Typography>
-        )}
-        {updateIsLoading && <CircularProgress color="inherit" size={16} />}
+        <ErrorHandler size="small" isError={localError !== null} error={localError} />
       </TableCell>
       <TableCell padding="checkbox">
-        <IconButton onClick={handleDelete}>
-          {deleteIsLoading ? (
-            <CircularProgress color="inherit" size={16} />
-          ) : (
-            <DeleteRounded />
-          )}
+        <IconButton onClick={handleDelete} disabled={deleteMutation.isLoading}>
+          <DeleteRounded />
         </IconButton>
       </TableCell>
     </TableRow>
