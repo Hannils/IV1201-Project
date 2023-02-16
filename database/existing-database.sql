@@ -4923,11 +4923,31 @@ COPY public.status (status_id, name) FROM stdin;
 3	accepted
 \.
 
+CREATE TABLE public.opportunity (
+    opportunity_id integer NOT NULL,
+    application_period_start date,
+    application_period_end date,
+    name character varying(255),
+    description character varying(255)
+);
+ALTER TABLE public.opportunity OWNER TO postgres;
+ALTER TABLE ONLY public.opportunity
+    ADD CONSTRAINT opportunity_pkey PRIMARY KEY (opportunity_id);
+
+ALTER TABLE public.opportunity ALTER COLUMN opportunity_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.opportunity_opportunity_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
 CREATE TABLE public.application (
     application_id integer NOT NULL,
     person_id integer REFERENCES public.person(person_id),
     status_id integer REFERENCES public.status(status_id),
-    year integer NOT NULL
+    opportunity_id integer REFERENCES public.opportunity(opportunity)
 );
 ALTER TABLE public.status OWNER TO postgres;
 
