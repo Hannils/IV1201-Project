@@ -7,6 +7,7 @@ import { initDatabase } from './integrations/DAO/DAO'
 import useAuth from './middlewares/useAuth'
 import applicationRouter from './routers/applicationRouter'
 import competenceRouter from './routers/competenceRouter'
+import opportunityRouter from './routers/opportunityRouter'
 import userMigrationRouter from './routers/userMigrationRouter'
 import userRouter from './routers/userRouter'
 
@@ -49,6 +50,8 @@ export function initServer() {
   app.use('/user-migration', userMigrationRouter)
   app.use('/application', applicationRouter)
   app.use('/competence', competenceRouter)
+  app.use('/opportunity', opportunityRouter)
+  app.use('/application', applicationRouter)
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('Express + TypeScript Server')

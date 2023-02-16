@@ -1,4 +1,5 @@
 import {
+  ApplicationSchema,
   IncompletePerson,
   IncompletePersonSchema,
   Person,
@@ -6,6 +7,7 @@ import {
   Role,
 } from '../../util/Types'
 import { queryDatabase } from './DAO'
+import { z } from 'zod'
 
 function toApplication(x: any) {
   if (!x) return null
@@ -24,8 +26,13 @@ function toApplication(x: any) {
  */
 export async function selectApplications() {
   const response = await queryDatabase(`SELECT * FROM application`, [])
+  const applicationScheme = z.array(ApplicationSchema)
+  return ApplicationSchema.parse(response.rows.map(toApplication))
+}
 
-  return response.rows[0].role_id
+export async function selectApplication(applicationId: number) {
+  const response = await queryDatabase(`SELECT * FROM application WHERE application_id = $1`, [applicationId])
+  return 
 }
 
 

@@ -1,13 +1,11 @@
 import express, { application } from 'express'
 import asyncHandler from 'express-async-handler'
 import z, { ZodError } from 'zod'
-import { insertApplication } from '../integrations/DAO/applicationDAO'
-
+import { selectOpportunity, selectOpportunities, insertOpportunity, updateOpportunity } from '../integrations/DAO/opportunityDAO'
 import isAuthorized from '../util/isAuthorized'
-import { ApplicationStatus, Person } from '../util/Types'
 
 /**
- * This method gets all applications
+ * This method gets all opportunities
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -15,20 +13,20 @@ import { ApplicationStatus, Person } from '../util/Types'
  * - `500`: Database or internal error
  * @body
  *
- * @returns an array of applications
+ * @returns an array of opportunities
  * @authorization when the user is not an applicant but a recruiter
  */
-const getApplications: express.RequestHandler = async (req, res) => {
+const getOpportunities: express.RequestHandler = async (req, res) => {
   try {
-    //const response = selectApplications()
-    //res.json(response)
+    const response = selectOpportunities()
+    res.json(response)
   } catch (error: any) {
     console.error(error.message)
     return res.sendStatus(500)
   }
 }
 /**
- * This method get a single application
+ * This method get a single opportunity
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -36,14 +34,16 @@ const getApplications: express.RequestHandler = async (req, res) => {
  * - `500`: Database or internal error
  * @body
  *
- * @returns an application object
+ * @returns an opportunity object
  * @authorization when the user is not an applicant but a recruiter
  */
-const getApplication: express.RequestHandler = async (req, res) => {
+const getOpportunity: express.RequestHandler = async (req, res) => {
   try {
-  const personId = z.number().parse(req.params)
-   //const application = await selectApplication(personId)
-   res.json(application)
+  //const opportunityId = req.params
+  
+  const opportunityId = req.params.opportunityId as unknown as number
+   const opportunity = await selectOpportunity(opportunityId)
+   res.json(opportunity)
   } catch (error: any) {
     return error instanceof ZodError
     ? res.status(400).json(error.message)
@@ -52,7 +52,7 @@ const getApplication: express.RequestHandler = async (req, res) => {
 
 }
 /**
- * This method updates a single application
+ * This method updates a single 
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -60,14 +60,14 @@ const getApplication: express.RequestHandler = async (req, res) => {
  * - `500`: Database or internal error
  * @body
  *
- * @returns an array of applications
- * @authorization when the user is the application owner.
+ * @returns an array of opportunitys
+ * @authorization when the user is the opportunity owner.
  */
-const patchApplication: express.RequestHandler = async (req, res) => {
+const patchOpportunity: express.RequestHandler = async (req, res) => {
   try {
-    const personId = z.number().parse(req.params.personId)
-    const applicationStatus = req.body.applicationStatus
-    //await updateApplication(personId, applicationStatus)
+    const opportunityId = z.number().parse(req.params.opportunityId)
+    const { periodStart, periodEnd, name, description } = req.body
+    await updateOpportunity(opportunityId, periodStart, periodEnd, name, description)
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
@@ -77,7 +77,7 @@ const patchApplication: express.RequestHandler = async (req, res) => {
 }
 
 /**
- * This method creates a single application
+ * This method creates a single opportunity
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -85,13 +85,13 @@ const patchApplication: express.RequestHandler = async (req, res) => {
  * - `500`: Database or internal error
  * @body
  *
- * @returns an array of applications
+ * @returns an array of opportunitys
  * @authorization
  */
-const createApplication: express.RequestHandler = async (req, res) => {
+const createOpportunity: express.RequestHandler = async (req, res) => {
   try {
-    const personId = z.number().parse(req.params.personId)
-    const application = await insertApplication(personId)
+    const { periodStart, periodEnd, name, description } = req.body
+    const opportunity = await insertOpportunity(periodStart, periodEnd, name, description)
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
@@ -101,7 +101,7 @@ const createApplication: express.RequestHandler = async (req, res) => {
 
 }
 /**
- * This method deletes a single application
+ * This method deletes a single opportunity
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -109,13 +109,13 @@ const createApplication: express.RequestHandler = async (req, res) => {
  * - `500`: Database or internal error
  * @body
  *
- * @returns an array of applications
+ * @returns an array of opportunitys
  * @authorization when the user is not an applicant but a recruiter
  */
-const deleteApplication: express.RequestHandler = async (req, res) => {
+const deleteOpportunity: express.RequestHandler = async (req, res) => {
   try {
     const personId = z.number().parse(req.params.personId)
-    //await dropApplication(personId)
+    //await dropOpportunity(personId)
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
@@ -124,23 +124,23 @@ const deleteApplication: express.RequestHandler = async (req, res) => {
   }
 }
 
-const applicationRouter = express.Router()
-applicationRouter.get('/', asyncHandler(getApplications))
-applicationRouter.get('/:opportunityId/:personId', asyncHandler(getApplication))
-applicationRouter.post(
-  '/:opportunityId/:personId',
+const opportunityRouter = express.Router()
+opportunityRouter.get('/', asyncHandler(getOpportunities))
+opportunityRouter.get('/:opportunityId', asyncHandler(getOpportunity))
+opportunityRouter.post(
+  '/:opportunityId',
    isAuthorized(['applicant', 'recruiter']),
-   asyncHandler(createApplication))
+   asyncHandler(createOpportunity))
 
-applicationRouter.patch(
-  '/:opportunityId/:personId',
+opportunityRouter.patch(
+  '/:opportunityId/',
   isAuthorized(['recruiter']),
-  asyncHandler(patchApplication),
+  asyncHandler(patchOpportunity),
 )
-applicationRouter.delete(
-  '/:opportunityId/:personId',
+opportunityRouter.delete(
+  '/:opportunityId/',
   isAuthorized(['applicant', 'recruiter']),
-  asyncHandler(deleteApplication),
+  asyncHandler(deleteOpportunity),
 )
 
-export default applicationRouter
+export default opportunityRouter
