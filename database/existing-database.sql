@@ -4928,7 +4928,7 @@ CREATE TABLE public.opportunity (
     application_period_start date,
     application_period_end date,
     name character varying(255),
-    description character varying(255)
+    description character varying(8192)
 );
 ALTER TABLE public.opportunity OWNER TO postgres;
 ALTER TABLE ONLY public.opportunity
@@ -4942,6 +4942,12 @@ ALTER TABLE public.opportunity ALTER COLUMN opportunity_id ADD GENERATED ALWAYS 
     NO MAXVALUE
     CACHE 1
 );
+
+COPY public.opportunity (opportunity_id, application_period_start, application_period_end, name, description) FROM stdin;
+1	2023-01-01	2023-03-31	spring_season	We are seeking enthusiastic and energetic individuals to join our team for the upcoming spring season at [Insert Amusement Park Name]. As a seasonal amusement park staff member, you will have the opportunity to work in a fun, dynamic environment and help create unforgettable experiences for our guests.
+2	2023-05-01	2023-09-01	summer_season	### Seasonal Amusement Park Staff Location: [Insert Amusement Park Name and Location] Job Type: Seasonal, Full-Time Duration: Summer Season (May - September) #### Description We are seeking enthusiastic and energetic individuals to join our team for the upcoming summer season at [Insert Amusement Park Name]. As a seasonal amusement park staff member, you will have the opportunity to work in a fun, dynamic environment and help create unforgettable experiences for our guests. #### Responsibilities Operate rides and attractions to ensure guest safety and satisfaction Greet guests and provide friendly customer service Sell tickets, merchandise, and food items Maintain clean and organized work areas Assist with park events and activities Uphold park policies and procedures #### Qualifications Must be at least 16 years old High school diploma or equivalent Ability to work a flexible schedule, including weekends and holidays Excellent communication and customer service skills Positive attitude and willingness to work as part of a team Ability to stand for extended periods and perform physical tasks Previous experience in customer service or hospitality is a plus, but not required Benefits: Competitive pay and employee discounts Fun and engaging work environment Opportunity to gain valuable work experience and develop new skills Potential for advancement and future employment opportunities
+3	2023-10-01	2023-10-31	fall_season	### Halloween Event Staff Location: [Insert Event Name and Location] Job Type: Seasonal, Part-Time Duration: October #### Description We are looking for individuals who are enthusiastic about Halloween and who love to create fun and spooky experiences for our guests. As a Halloween Event Staff member, you will play an important role in bringing our Halloween event to life and creating a memorable experience for our visitors. #### Responsibilities Greet guests and provide friendly customer service Operate attractions and activities Assist with event setup and breakdown Help create a spooky and festive atmosphere Ensure the safety of all guests Maintain a clean and organized work area Uphold event policies and procedures #### Qualifications Must be at least 18 years old High school diploma or equivalent Ability to work a flexible schedule, including evenings and weekends Excellent communication and customer service skills Ability to stand for extended periods and perform physical tasks Enthusiasm for Halloween and creating a spooky atmosphere Previous experience in customer service, event planning, or entertainment is a plus, but not required Benefits: Competitive pay and employee discounts Fun and engaging work environment Opportunity to gain valuable work experience and develop new skills Free admission to the event on days off Join our team and be a part of creating a spooky and exciting Halloween event that will be talked about for years to come!
+\.
 
 CREATE TABLE public.application (
     application_id integer NOT NULL,
