@@ -34,7 +34,7 @@ export async function init() {
   await new Promise<void>((resolve) => {
     app.listen(process.env.PORT, resolve)
   })
-  
+
   console.log(`[server]: Server is running at https://localhost:${process.env.PORT}`)
 }
 /**

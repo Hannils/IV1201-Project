@@ -12,14 +12,14 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import React, { useRef, useState } from 'react'
-import { Link, Outlet, useNavigate } from 'react-router-dom'
-
-import useUser from '../util/auth'
-import UserAvatar from './UserAvatar'
-import api from '../api/api'
 import { useMutation } from '@tanstack/react-query'
+import React, { useRef, useState } from 'react'
+import { Link, Outlet } from 'react-router-dom'
+
+import api from '../api/api'
+import useUser from '../util/auth'
 import ErrorHandler from './ErrorHandler'
+import UserAvatar from './UserAvatar'
 
 /**
  * The layout compoent is rendered for all pages.

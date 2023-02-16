@@ -1,13 +1,7 @@
-import {
-  ApplicationSchema,
-  IncompletePerson,
-  IncompletePersonSchema,
-  Person,
-  PersonSchema,
-  Role,
-} from '../../util/Types'
-import { queryDatabase } from './DAO'
 import { z } from 'zod'
+
+import { ApplicationSchema } from '../../util/Types'
+import { queryDatabase } from './DAO'
 
 function toApplication(x: any) {
   if (!x) return null
@@ -15,7 +9,7 @@ function toApplication(x: any) {
     applicationId: x.application_id,
     personId: x.person_id,
     statusId: x.status_id,
-    year: x.year
+    year: x.year,
   }
 }
 
@@ -31,12 +25,16 @@ export async function selectApplications() {
 }
 
 export async function selectApplication(applicationId: number) {
-  const response = await queryDatabase(`SELECT * FROM application WHERE application_id = $1`, [applicationId])
-  return 
+  const response = await queryDatabase(
+    `SELECT * FROM application WHERE application_id = $1`,
+    [applicationId],
+  )
+  return
 }
 
-
-
 export async function insertApplication(personId: number) {
-  const response = await queryDatabase(`INSERT INTO application(person_id, status_id, year) VALUES($1, $2, $3)`, [personId, 1, 2023])
+  const response = await queryDatabase(
+    `INSERT INTO application(person_id, status_id, year) VALUES($1, $2, $3)`,
+    [personId, 1, 2023],
+  )
 }

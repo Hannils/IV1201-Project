@@ -1,10 +1,9 @@
 import express, { application } from 'express'
 import asyncHandler from 'express-async-handler'
 import z, { ZodError } from 'zod'
-import { insertApplication } from '../integrations/DAO/applicationDAO'
 
+import { insertApplication } from '../integrations/DAO/applicationDAO'
 import isAuthorized from '../util/isAuthorized'
-import { ApplicationStatus, Person } from '../util/Types'
 
 /**
  * This method gets all applications
@@ -41,15 +40,14 @@ const getApplications: express.RequestHandler = async (req, res) => {
  */
 const getApplication: express.RequestHandler = async (req, res) => {
   try {
-  const personId = z.number().parse(req.params)
-   //const application = await selectApplication(personId)
-   res.json(application)
+    const personId = z.number().parse(req.params)
+    //const application = await selectApplication(personId)
+    res.json(application)
   } catch (error: any) {
     return error instanceof ZodError
-    ? res.status(400).json(error.message)
-    : res.status(500)
+      ? res.status(400).json(error.message)
+      : res.status(500)
   }
-
 }
 /**
  * This method updates a single application
@@ -71,8 +69,8 @@ const patchApplication: express.RequestHandler = async (req, res) => {
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
-    ? res.status(400).json(error.message)
-    : res.sendStatus(500)
+      ? res.status(400).json(error.message)
+      : res.sendStatus(500)
   }
 }
 
@@ -95,10 +93,9 @@ const createApplication: express.RequestHandler = async (req, res) => {
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
-    ? res.status(400).json(error.message)
-    : res.sendStatus(500)
+      ? res.status(400).json(error.message)
+      : res.sendStatus(500)
   }
-
 }
 /**
  * This method deletes a single application
@@ -119,8 +116,8 @@ const deleteApplication: express.RequestHandler = async (req, res) => {
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
-    ? res.status(400).json(error.message)
-    : res.sendStatus(500)
+      ? res.status(400).json(error.message)
+      : res.sendStatus(500)
   }
 }
 
@@ -129,8 +126,9 @@ applicationRouter.get('/', asyncHandler(getApplications))
 applicationRouter.get('/:opportunityId/:personId', asyncHandler(getApplication))
 applicationRouter.post(
   '/:opportunityId/:personId',
-   isAuthorized(['applicant', 'recruiter']),
-   asyncHandler(createApplication))
+  isAuthorized(['applicant', 'recruiter']),
+  asyncHandler(createApplication),
+)
 
 applicationRouter.patch(
   '/:opportunityId/:personId',

@@ -1,11 +1,10 @@
 import crypto from 'crypto'
 import express from 'express'
 import asyncHandler from 'express-async-handler'
-import { z, ZodIssue } from 'zod'
+import { z } from 'zod'
 
 import {
   insertPerson,
-  selectPersonByEmail,
   selectPersonById,
   selectPersonByUsername,
 } from '../integrations/DAO/userDAO'

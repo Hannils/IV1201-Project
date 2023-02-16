@@ -1,17 +1,22 @@
-import express, { application } from 'express'
+import express from 'express'
 import asyncHandler from 'express-async-handler'
 import z, { ZodError } from 'zod'
+
 import {
-  selectOpportunity,
-  selectOpportunities,
-  insertOpportunity,
-  updateOpportunity,
   dropOpportunity,
+  insertOpportunity,
+  selectApplicableOpportunities,
+  selectApplicableOpportunity,
+  selectOpportunities,
+  selectOpportunity,
+  updateOpportunity,
 } from '../integrations/DAO/opportunityDAO'
 import isAuthorized from '../util/isAuthorized'
+import { Role } from '../util/Types'
 
 /**
- * This method gets all opportunities
+ * This method gets all opportunities.
+ * For applicants only the applicable ones are returned
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -24,7 +29,10 @@ import isAuthorized from '../util/isAuthorized'
  */
 const getOpportunities: express.RequestHandler = async (req, res) => {
   try {
-    const response = selectOpportunities()
+    const isApplicant = res.locals.currentUser.role === ('applicant' satisfies Role)
+    const response = isApplicant
+      ? await selectApplicableOpportunities()
+      : await selectOpportunities()
     res.json(response)
   } catch (error: any) {
     console.error(error.message)
@@ -32,7 +40,8 @@ const getOpportunities: express.RequestHandler = async (req, res) => {
   }
 }
 /**
- * This method get a single opportunity
+ * This method get a single opportunity.
+ * Must be applicable for applicant to be able to fetch
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -45,8 +54,14 @@ const getOpportunities: express.RequestHandler = async (req, res) => {
  */
 const getOpportunity: express.RequestHandler = async (req, res) => {
   try {
+    const isApplicant = res.locals.currentUser.role === ('applicant' satisfies Role)
     const opportunityId = Number(req.params.opportunityId)
-    const opportunity = await selectOpportunity(opportunityId)
+    if (isNaN(opportunityId)) return res.sendStatus(400)
+    const opportunity = isApplicant
+      ? await selectApplicableOpportunity(opportunityId)
+      : await selectOpportunity(opportunityId)
+
+    if (opportunity === null) return res.sendStatus(404)
     res.json(opportunity)
   } catch (error: any) {
     res.sendStatus(500)

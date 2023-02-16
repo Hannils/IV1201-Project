@@ -5,6 +5,7 @@ import WithAuth from './components/WithAuth'
 import CompetenceManager from './pages/CompetenceManager/CompetenceManager'
 import Home from './pages/Home/Home'
 import MigrateUser from './pages/MigrateUser/MigrateUser'
+import Opportunity from './pages/Opportunity/Opportunity'
 import Signin from './pages/Signin/Signin'
 import Signup from './pages/Signup/Signup'
 
@@ -21,7 +22,10 @@ function App() {
             path="/competences"
             element={<WithAuth allowedRoles={['applicant']} Page={CompetenceManager} />}
           />
-          {/* <Route path="/account" element={<WithAuth Page={Account} />} /> */}
+          <Route
+            path="/opportunity/:id"
+            element={<WithAuth allowedRoles={['applicant']} Page={Opportunity} />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

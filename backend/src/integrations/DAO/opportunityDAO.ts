@@ -1,7 +1,7 @@
-import { Competence, CompetenceSchema, OpportunitySchema
-} from '../../util/Types'
+import { z } from 'zod'
+
+import { OpportunitySchema } from '../../util/Types'
 import { queryDatabase } from './DAO'
-import { z } from "zod"
 
 function toOpportunity(x: any) {
   if (!x) return null
@@ -20,15 +20,45 @@ function toOpportunity(x: any) {
  */
 export async function selectOpportunities() {
   const response = await queryDatabase(`SELECT * FROM opportunity`, [])
-  response.rows.map(res => console.log(res))
+  response.rows.map((res) => console.log(res))
   const opportunitySchema = z.array(OpportunitySchema)
   return opportunitySchema.parse(response.rows.map(toOpportunity))
 }
 
+/**
+ * Calls database and retrieves all opportunity
+ * @returns Opportunities as {@link Opportunity}[]
+ */
+export async function selectApplicableOpportunities() {
+  const response = await queryDatabase(
+    `
+        SELECT * FROM public.opportunity
+        WHERE NOW() BETWEEN application_period_start AND application_period_end
+    `,
+    [],
+  )
+  return z.array(OpportunitySchema).parse(response.rows.map(toOpportunity))
+}
 
 export async function selectOpportunity(opportunityId: number) {
-    const response = await queryDatabase(`SELECT * FROM opportunity WHERE opportunity_id = $1`, [opportunityId])
-    return response.rows[0]
+  const response = await queryDatabase(
+    `SELECT * FROM opportunity WHERE opportunity_id = $1`,
+    [opportunityId],
+  )
+  if (response.rowCount === 0) return null
+  return OpportunitySchema.parse(toOpportunity(response.rows[0]))
+}
+
+export async function selectApplicableOpportunity(opportunityId: number) {
+  const response = await queryDatabase(
+    `
+        SELECT * FROM opportunity 
+        WHERE opportunity_id = $1 AND NOW() BETWEEN application_period_start AND application_period_end
+    `,
+    [opportunityId],
+  )
+  if (response.rowCount === 0) return null
+  return OpportunitySchema.parse(toOpportunity(response.rows[0]))
 }
 
 /**
@@ -52,7 +82,7 @@ export async function insertOpportunity(
 
 /**
  * Calls database and updaes a specified opportunity
- * @param opportunityId Id of a specific oppurtunity as `number`
+ * @param opportunityId Id of a specific opportunity as `number`
  * @param periodStart date of the start of the opportunity as `Date`
  * @param periodEnd date of the end of the opportunity as `Date`
  * @param name Identifies the opportunity as `string`
@@ -71,9 +101,9 @@ export async function updateOpportunity(
   )
 }
 
-
 export async function dropOpportunity(opportunityId: number) {
-    const response = await queryDatabase(`DELETE FROM opportunity WHERE opportunity_id = $1`, [opportunityId])
+  const response = await queryDatabase(
+    `DELETE FROM opportunity WHERE opportunity_id = $1`,
+    [opportunityId],
+  )
 }
-
-

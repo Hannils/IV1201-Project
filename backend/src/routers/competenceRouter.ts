@@ -10,7 +10,7 @@ import {
   updateUserCompetence,
 } from '../integrations/DAO/competenceDAO'
 import isAuthorized from '../util/isAuthorized'
-import { Competence, UserCompetence, UserCompetenceSchema } from '../util/Types'
+import { UserCompetence, UserCompetenceSchema } from '../util/Types'
 
 const updateParams = z.object({
   personId: z.string(),
@@ -46,9 +46,7 @@ export const getCompetences: express.RequestHandler = async (req, res) => {
  */
 export const getCompetenceProfile: express.RequestHandler = async (req, res) => {
   try {
-    const competenceProfile = await selectCompetenceProfile(
-      Number(req.params.personId),
-    )
+    const competenceProfile = await selectCompetenceProfile(Number(req.params.personId))
     if (competenceProfile === null || competenceProfile === undefined) res.sendStatus(400)
     res.json(competenceProfile)
   } catch (error: any) {
@@ -77,7 +75,7 @@ export const createUserCompetence: express.RequestHandler = async (req, res) => 
     competence = UserCompetenceSchema.parse(req.body)
     personId = z.number().parse(Number(req.params.personId))
   } catch (error) {
-    console.error("This is error: ", error)
+    console.error('This is error: ', error)
     return res.sendStatus(400)
   }
 

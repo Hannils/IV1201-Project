@@ -1,13 +1,7 @@
 // Description: This file contains the functions that interact with the role table in the database
 import { z } from 'zod'
 
-import {
-  Competence,
-  CompetenceProfile,
-  CompetenceSchema,
-  UserCompetence,
-  UserCompetenceSchema,
-} from '../../util/Types'
+import { CompetenceSchema, UserCompetence, UserCompetenceSchema } from '../../util/Types'
 import { queryDatabase } from './DAO'
 
 /**

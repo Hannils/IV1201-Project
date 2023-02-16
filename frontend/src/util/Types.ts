@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 export type Role = 'recruiter' | 'applicant'
 export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
@@ -37,3 +39,13 @@ export interface AvailabilityPeriod {
   startDate: Date
   endDate: Date
 }
+
+export const OpportunitySchema = z.object({
+  opportunityId: z.number(),
+  applicationPeriodStart: z.coerce.date(),
+  applicationPeriodEnd: z.coerce.date(),
+  name: z.string(),
+  description: z.string(),
+})
+
+export type Opportunity = z.infer<typeof OpportunitySchema>

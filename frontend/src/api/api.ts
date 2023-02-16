@@ -1,9 +1,11 @@
 import axios from 'axios'
+import { z } from 'zod'
 
 import {
   ApplicationStatus,
   Competence,
   CompetenceProfile,
+  OpportunitySchema,
   Person,
   UserApplication,
   UserCompetence,
@@ -211,6 +213,15 @@ const api = {
       { yearsOfExperience },
       { ...getAuthedHeaders() },
     ),
+
+  getOpportunities: async () =>
+    axios
+      .get(`${API_URL}/opportunity`, { ...getAuthedHeaders() })
+      .then((res) => z.array(OpportunitySchema).parse(res.data)),
+  getOpportunity: async (opportunityId: number) =>
+    axios
+      .get(`${API_URL}/opportunity/${opportunityId}`, { ...getAuthedHeaders() })
+      .then((res) => OpportunitySchema.parse(res.data)),
 }
 
 export default api

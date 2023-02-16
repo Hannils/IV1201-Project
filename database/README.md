@@ -29,11 +29,11 @@ This table is used to keep track of applications
 <details>
   <summary>application</summary>
 
-The application table contains the status of an application for a specific oppurtunity.
+The application table contains the status of an application for a specific opportunity.
 application_id: FK with application table
 person_id: FK with person table
 status_id: FK with status table
-year: The year of the oppurtunity to keep track of what year the status corresponds to. TODO change to oppurtunity_id
+year: The year of the opportunity to keep track of what year the status corresponds to. TODO change to opportunity_id
 </details>
 <details>
   <summary>Opputunity</summary>

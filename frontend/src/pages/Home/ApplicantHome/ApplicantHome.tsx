@@ -1,4 +1,10 @@
 import {
+  ArrowForwardIosRounded,
+  DateRangeRounded,
+  HandshakeRounded,
+  SchoolRounded,
+} from '@mui/icons-material'
+import {
   Box,
   Button,
   Card,
@@ -6,27 +12,22 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Grid,
+  Container,
   List,
-  ListItem,
+  ListItemButton,
   ListItemText,
   Skeleton,
   Stack,
   Typography,
 } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { Application, CompetenceProfile } from '../../../util/Types'
-import {
-  ArrowForwardIosRounded,
-  DateRangeRounded,
-  HandshakeRounded,
-  SchoolRounded,
-} from '@mui/icons-material'
-import { useQuery } from '@tanstack/react-query'
 import api from '../../../api/api'
+import ErrorHandler from '../../../components/ErrorHandler'
 import { useAuthedUser } from '../../../components/WithAuth'
+import { Opportunity } from '../../../util/Types'
 
 const pages = [
   {
@@ -49,8 +50,21 @@ const pages = [
   },
 ]
 
+const timeFormatter = new Intl.RelativeTimeFormat('en', { style: 'short' })
+const dayInMilis = 1000 * 60 * 60 * 24
+
 export default function ApplicantHome() {
   const { firstname } = useAuthedUser()
+  const {
+    data: opportunities,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Opportunity[] | null[]>(['opportunity'], () => api.getOpportunities(), {
+    placeholderData: new Array(2).fill(null),
+  })
+
+  console.log(opportunities, isLoading)
   return (
     <Stack spacing={5}>
       <Box>
@@ -65,7 +79,7 @@ export default function ApplicantHome() {
         }}
       >
         {pages.map(({ link, heading, text, Icon }) => (
-          <Card>
+          <Card key={link}>
             <CardActionArea component={Link} to={link}>
               <CardMedia sx={{ p: 2, display: 'grid', placeItems: 'center' }}>
                 <Icon color="primary" sx={{ fontSize: 70 }} />
@@ -84,6 +98,46 @@ export default function ApplicantHome() {
             </CardActions>
           </Card>
         ))}
+      </Box>
+      <Box>
+        <Container maxWidth="sm">
+          <Typography variant="h1">Open opportunities</Typography>
+          <ErrorHandler size="large" isError={isError} error={error} />
+          {!isError &&
+            opportunities !== undefined &&
+            (opportunities.length === 0 ? (
+              <Typography>No open opportunities right now. Check back later.</Typography>
+            ) : (
+              <List>
+                {opportunities.map((opp, index) => (
+                  <ListItemButton
+                    key={index}
+                    disabled={opp === null}
+                    component={Link}
+                    to={`/opportunity/${opp?.opportunityId}`}
+                  >
+                    {opp === null ? (
+                      <Skeleton width="100%" height="70px" />
+                    ) : (
+                      <ListItemText
+                        primary={opp.name}
+                        secondary={
+                          'Application period ends ' +
+                          timeFormatter.format(
+                            Math.round(
+                              (opp.applicationPeriodEnd.getTime() - Date.now()) /
+                                dayInMilis,
+                            ),
+                            'days',
+                          )
+                        }
+                      />
+                    )}
+                  </ListItemButton>
+                ))}
+              </List>
+            ))}
+        </Container>
       </Box>
     </Stack>
   )

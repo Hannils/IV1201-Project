@@ -4,22 +4,20 @@ export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
 export const OpportunitySchema = z.object({
   opportunityId: z.number(),
-  periodStart: z.date(),
-  periodEnd: z.date(),
+  applicationPeriodStart: z.coerce.date(),
+  applicationPeriodEnd: z.coerce.date(),
   name: z.string(),
-  desription: z.string()
+  description: z.string(),
 })
 
 export type Opportunity = z.infer<typeof OpportunitySchema>
-
 
 export const ApplicationSchema = z.object({
   applicationId: z.number(),
   personId: z.number(),
   statusId: z.number(),
-  opportunityId: z.number()
+  opportunityId: z.number(),
 })
-
 
 export const CompetenceSchema = z.object({
   competenceId: z.number(),

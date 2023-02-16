@@ -4,17 +4,12 @@ import asyncHandler from 'express-async-handler'
 import { z } from 'zod'
 
 import {
-  insertPerson,
   migratePerson,
   selectIncompletePersonByEmail,
-  selectPersonByEmail,
   selectPersonById,
-  selectPersonByUsername,
 } from '../integrations/DAO/userDAO'
-import isAuthorized from '../util/isAuthorized'
 import * as schemas from '../util/schemas'
 import tokenManager, { TokenManager } from '../util/tokenManager'
-import { IncompletePerson, Person } from '../util/Types'
 
 /**
  * Create the token store. Generate uuids and keep them valid for 10 minuts

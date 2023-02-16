@@ -1,10 +1,4 @@
-import {
-  IncompletePerson,
-  IncompletePersonSchema,
-  Person,
-  PersonSchema,
-  Role,
-} from '../../util/Types'
+import { Role } from '../../util/Types'
 import { queryDatabase } from './DAO'
 
 /**

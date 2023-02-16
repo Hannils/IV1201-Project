@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 import { selectPersonById } from '../integrations/DAO/userDAO'
 import tokenManager from '../util/tokenManager'

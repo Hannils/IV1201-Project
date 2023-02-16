@@ -1,7 +1,7 @@
-import { CircularProgress } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 
 import api from '../../api/api'
+import FullPageLoader from '../../components/FullPageLoader'
 import { useAuthedUser } from '../../components/WithAuth'
 import CompetenceManagerProvider from './CompetenceManagerContext'
 import CompetenceManagerPage from './views/CompetenceManagerPage'
@@ -14,7 +14,7 @@ export default function CompetenceManager() {
   )
 
   if (availableCompetencesQuery.isLoading || competenceProfileQuery.isLoading)
-    return <CircularProgress />
+    return <FullPageLoader />
 
   if (!availableCompetencesQuery.isSuccess || !competenceProfileQuery.isSuccess)
     return <p>Something bad happend</p>
