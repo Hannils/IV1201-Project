@@ -4947,9 +4947,9 @@ CREATE TABLE public.application (
     application_id integer NOT NULL,
     person_id integer REFERENCES public.person(person_id),
     status_id integer REFERENCES public.status(status_id),
-    opportunity_id integer REFERENCES public.opportunity(opportunity)
+    opportunity_id integer REFERENCES public.opportunity(opportunity_id)
 );
-ALTER TABLE public.status OWNER TO postgres;
+ALTER TABLE public.application OWNER TO postgres;
 
 
 ALTER TABLE ONLY public.application
