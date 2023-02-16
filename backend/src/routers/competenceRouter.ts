@@ -47,7 +47,7 @@ export const getCompetences: express.RequestHandler = async (req, res) => {
 export const getCompetenceProfile: express.RequestHandler = async (req, res) => {
   try {
     const competenceProfile = await selectCompetenceProfile(
-      req.params.personId as unknown as number,
+      Number(req.params.personId),
     )
     if (competenceProfile === null || competenceProfile === undefined) res.sendStatus(400)
     res.json(competenceProfile)

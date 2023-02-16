@@ -1,7 +1,13 @@
 import express, { application } from 'express'
 import asyncHandler from 'express-async-handler'
 import z, { ZodError } from 'zod'
-import { selectOpportunity, selectOpportunities, insertOpportunity, updateOpportunity } from '../integrations/DAO/opportunityDAO'
+import {
+  selectOpportunity,
+  selectOpportunities,
+  insertOpportunity,
+  updateOpportunity,
+  dropOpportunity,
+} from '../integrations/DAO/opportunityDAO'
 import isAuthorized from '../util/isAuthorized'
 
 /**
@@ -14,7 +20,7 @@ import isAuthorized from '../util/isAuthorized'
  * @body
  *
  * @returns an array of opportunities
- * @authorization when the user is not an applicant but a recruiter
+ * @authorization `Yes`
  */
 const getOpportunities: express.RequestHandler = async (req, res) => {
   try {
@@ -35,24 +41,19 @@ const getOpportunities: express.RequestHandler = async (req, res) => {
  * @body
  *
  * @returns an opportunity object
- * @authorization when the user is not an applicant but a recruiter
+ * @authorization `Yes`
  */
 const getOpportunity: express.RequestHandler = async (req, res) => {
   try {
-  //const opportunityId = req.params
-  
-  const opportunityId = req.params.opportunityId as unknown as number
-   const opportunity = await selectOpportunity(opportunityId)
-   res.json(opportunity)
+    const opportunityId = Number(req.params.opportunityId)
+    const opportunity = await selectOpportunity(opportunityId)
+    res.json(opportunity)
   } catch (error: any) {
-    return error instanceof ZodError
-    ? res.status(400).json(error.message)
-    : res.status(500)
+    res.sendStatus(500)
   }
-
 }
 /**
- * This method updates a single 
+ * This method updates a single
  * @param req - Request containing body
  * @param res -
  * - `200`: Successful creation. return body will contain
@@ -61,7 +62,7 @@ const getOpportunity: express.RequestHandler = async (req, res) => {
  * @body
  *
  * @returns an array of opportunitys
- * @authorization when the user is the opportunity owner.
+ * @authorization `Recruiter`
  */
 const patchOpportunity: express.RequestHandler = async (req, res) => {
   try {
@@ -71,8 +72,8 @@ const patchOpportunity: express.RequestHandler = async (req, res) => {
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
-    ? res.status(400).json(error.message)
-    : res.sendStatus(500)
+      ? res.status(400).json(error.message)
+      : res.sendStatus(500)
   }
 }
 
@@ -86,19 +87,18 @@ const patchOpportunity: express.RequestHandler = async (req, res) => {
  * @body
  *
  * @returns an array of opportunitys
- * @authorization
+ * @authorization `Recruiter`
  */
 const createOpportunity: express.RequestHandler = async (req, res) => {
   try {
     const { periodStart, periodEnd, name, description } = req.body
-    const opportunity = await insertOpportunity(periodStart, periodEnd, name, description)
+    await insertOpportunity(periodStart, periodEnd, name, description)
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
-    ? res.status(400).json(error.message)
-    : res.sendStatus(500)
+      ? res.status(400).json(error.message)
+      : res.sendStatus(500)
   }
-
 }
 /**
  * This method deletes a single opportunity
@@ -110,17 +110,17 @@ const createOpportunity: express.RequestHandler = async (req, res) => {
  * @body
  *
  * @returns an array of opportunitys
- * @authorization when the user is not an applicant but a recruiter
+ * @authorization `Recruiter`
  */
 const deleteOpportunity: express.RequestHandler = async (req, res) => {
   try {
-    const personId = z.number().parse(req.params.personId)
-    //await dropOpportunity(personId)
+    const personId = z.number().parse(Number(req.params.personId))
+    await dropOpportunity(personId)
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
-    ? res.status(400).json(error.message)
-    : res.sendStatus(500)
+      ? res.status(400).json(error.message)
+      : res.sendStatus(500)
   }
 }
 
@@ -129,8 +129,9 @@ opportunityRouter.get('/', asyncHandler(getOpportunities))
 opportunityRouter.get('/:opportunityId', asyncHandler(getOpportunity))
 opportunityRouter.post(
   '/:opportunityId',
-   isAuthorized(['applicant', 'recruiter']),
-   asyncHandler(createOpportunity))
+  isAuthorized(['recruiter']),
+  asyncHandler(createOpportunity),
+)
 
 opportunityRouter.patch(
   '/:opportunityId/',
@@ -139,7 +140,7 @@ opportunityRouter.patch(
 )
 opportunityRouter.delete(
   '/:opportunityId/',
-  isAuthorized(['applicant', 'recruiter']),
+  isAuthorized(['recruiter']),
   asyncHandler(deleteOpportunity),
 )
 
