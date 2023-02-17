@@ -2,6 +2,16 @@ import { z } from 'zod'
 export type Role = 'recruiter' | 'applicant'
 export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
+export const AvailabilitySchema = z.object({
+  availabilityId: z.number(),
+  personId: z.number(),
+  fromDate: z.coerce.date(),
+  toDate: z.coerce.date()
+})
+
+export type Availability = z.infer<typeof AvailabilitySchema>
+
+
 export const OpportunitySchema = z.object({
   opportunityId: z.number(),
   applicationPeriodStart: z.coerce.date(),
