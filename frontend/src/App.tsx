@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import Layout from './components/Layout'
 import WithAuth from './components/WithAuth'
+import Availability from './pages/Availability/Availability'
 import CompetenceManager from './pages/CompetenceManager/CompetenceManager'
 import Home from './pages/Home/Home'
 import MigrateUser from './pages/MigrateUser/MigrateUser'
@@ -21,6 +22,10 @@ function App() {
           <Route
             path="/competences"
             element={<WithAuth allowedRoles={['applicant']} Page={CompetenceManager} />}
+          />
+          <Route
+            path="/availability"
+            element={<WithAuth allowedRoles={['applicant']} Page={Availability} />}
           />
           <Route
             path="/opportunity/:id"

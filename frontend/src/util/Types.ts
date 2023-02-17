@@ -49,3 +49,12 @@ export const OpportunitySchema = z.object({
 })
 
 export type Opportunity = z.infer<typeof OpportunitySchema>
+
+export const AvailabilitySchema = z.object({
+  availabilityId: z.number(),
+  personId: z.number(),
+  fromDate: z.coerce.date(),
+  toDate: z.coerce.date(),
+})
+
+export type Availability = z.infer<typeof AvailabilitySchema>

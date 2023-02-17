@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import {
   ApplicationStatus,
+  AvailabilitySchema,
   Competence,
   CompetenceProfile,
   OpportunitySchema,
@@ -222,6 +223,11 @@ const api = {
     axios
       .get(`${API_URL}/opportunity/${opportunityId}`, { ...getAuthedHeaders() })
       .then((res) => OpportunitySchema.parse(res.data)),
+
+  getAvailabilityForPerson: async (personId: number) =>
+    axios
+      .get(`${API_URL}/availability/${personId}`, { ...getAuthedHeaders() })
+      .then((res) => z.array(AvailabilitySchema).parse(res.data)),
 }
 
 export default api

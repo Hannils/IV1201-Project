@@ -1,6 +1,6 @@
 import express from 'express'
 import asyncHandler from 'express-async-handler'
-import { dropAvailability, insertAvailability, selectAvailabilities, selectAvailability, updateAvailability } from '../integrations/DAO/availabilityDAO'
+import { dropAvailability, insertAvailability, selectAvailabilities, selectAvailabilitiesByPersonId, updateAvailability } from '../integrations/DAO/availabilityDAO'
 import isAuthorized from '../util/isAuthorized'
 import { AvailabilitySchema } from '../util/Types'
 import { z } from 'zod'
@@ -19,8 +19,12 @@ const createParams = z.object({
  * @returns `void`
  */
 export const getAvailability: express.RequestHandler = async (req, res) => {
+    const personId = Number(req.params.personId)
+
+    if(isNaN(personId)) return res.sendStatus(400)
+
     try {
-        const response = await selectAvailability(Number(req.params.avaialbilityId))
+        const response = await selectAvailabilitiesByPersonId(personId)
         res.json(response)
     } catch (error: any) {
         console.error(error.message)
@@ -107,8 +111,7 @@ export const patchAvailability: express.RequestHandler = async (req, res) => {
 
 const availabilityRouter = express.Router()
 
-availabilityRouter.get('/:availabilityId', isAuthorized(), asyncHandler(getAvailability))
-availabilityRouter.get('/', isAuthorized(), asyncHandler(getAvailabilities))
+availabilityRouter.get('/:personId', isAuthorized(), asyncHandler(getAvailability))
 availabilityRouter.post('/:personId', isAuthorized(), asyncHandler(createAvailability))
 availabilityRouter.delete('/:availabilityId', isAuthorized(), asyncHandler(deleteAvailability))
 export default availabilityRouter
