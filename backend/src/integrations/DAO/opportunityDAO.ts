@@ -2,7 +2,13 @@ import { z } from 'zod'
 
 import { OpportunitySchema } from '../../util/Types'
 import { queryDatabase } from './DAO'
+import { Opportunity } from '../../util/Types'
 
+/**
+ * Util function for parsing db output to match scheme of {@link Opportunity}
+ * @param x Database output
+ * @returns Opportunity as {@link Opportunity}
+ */
 function toOpportunity(x: any) {
   if (!x) return null
   return {
@@ -15,7 +21,7 @@ function toOpportunity(x: any) {
 }
 
 /**
- * Calls database and retrieves all opportunity
+ * Calls database and retrieves all opportunities
  * @returns Opportunities as {@link Opportunity}[]
  */
 export async function selectOpportunities() {
@@ -40,6 +46,11 @@ export async function selectApplicableOpportunities() {
   return z.array(OpportunitySchema).parse(response.rows.map(toOpportunity))
 }
 
+/**
+ * Calls database and retrieves as specific opportunity
+ * @param opportunityId Id of the opportunity to retrieve as `number`
+ * @returns Opportunity as {@link Opportunity}
+ */
 export async function selectOpportunity(opportunityId: number) {
   const response = await queryDatabase(
     `SELECT * FROM opportunity WHERE opportunity_id = $1`,
@@ -49,6 +60,11 @@ export async function selectOpportunity(opportunityId: number) {
   return OpportunitySchema.parse(toOpportunity(response.rows[0]))
 }
 
+/**
+ * Calls database and retrieves a specific applicable opportunity
+ * @param opportunityId Id of the applicable opportunity to retrieve as `number`
+ * @returns Applicable opportunity as {@link Opportunity}
+ */
 export async function selectApplicableOpportunity(opportunityId: number) {
   const response = await queryDatabase(
     `
@@ -101,6 +117,10 @@ export async function updateOpportunity(
   )
 }
 
+/**
+ * Calls database and drops a specific opportunity row
+ * @param opportunityId Id of the specific opportunity to drop` 
+ */
 export async function dropOpportunity(opportunityId: number) {
   const response = await queryDatabase(
     `DELETE FROM opportunity WHERE opportunity_id = $1`,

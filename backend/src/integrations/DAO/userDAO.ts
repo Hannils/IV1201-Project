@@ -22,7 +22,7 @@ function toPerson(x: any) {
   }
 }
 /**
- * Inserts person into a database
+ * Inserts a person into database
  * @param person - The person to insert as {@link Person}
  * @returns `void`
  * @requires Database

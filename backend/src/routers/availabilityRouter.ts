@@ -10,7 +10,14 @@ const createParams = z.object({
     toDate: z.coerce.date()
 })
 
-
+/**
+ * This method gets a specific availability
+ * @param req - Request containing param
+ * @param res -
+ * - `200`: Successful get. return body will contain Availability as {@link Availability}
+ * - `500`: Database or internal error
+ * @returns `void`
+ */
 export const getAvailability: express.RequestHandler = async (req, res) => {
     try {
         const response = await selectAvailability(Number(req.params.avaialbilityId))
@@ -21,7 +28,14 @@ export const getAvailability: express.RequestHandler = async (req, res) => {
     }
 }
 
-
+/**
+ * This method gets all availabilities
+ * @param req - Request
+ * @param res -
+ * - `200`: Successful get.
+ * - `500`: Database or internal error
+ * @returns an array of availabilities
+ */
 export const getAvailabilities: express.RequestHandler = async (req, res) => {
     try {
         const response = await selectAvailabilities()
@@ -32,7 +46,14 @@ export const getAvailabilities: express.RequestHandler = async (req, res) => {
     }
 }
 
-
+/**
+ * This method creates a new availability
+ * @param req . Request containing params and body
+ * @param res -
+ * - `200`: Successful creation.
+ * - `500`: Database or internal error
+ * @returns `void`
+ */
 export const createAvailability: express.RequestHandler = async (req, res) => {
     try {
         const dates = createParams.parse(req.body)
@@ -44,16 +65,34 @@ export const createAvailability: express.RequestHandler = async (req, res) => {
     }
 }
 
-
+/**
+ * This method deletes an availability
+ * @param req - Request containing params
+ * @param res -
+ * - `200`: Successful delete
+ * - `500`: Database or internal error
+ * 
+ * @returns `void`
+ */
 export const deleteAvailability: express.RequestHandler = async (req, res) => {
     try {
         await dropAvailability(Number(req.params.availabilityId))
+        res.sendStatus(200)
     } catch (error: any) {
         console.error(error.message)
         return res.sendStatus(500)
     }
 }
 
+
+/**
+ * This method patches an availability
+ * @param req - Request containing body and params
+ * @param res -
+ * - `200`: Successful patch.
+ * - `500`: Database or internal error
+ * @returns `void`
+ */
 export const patchAvailability: express.RequestHandler = async (req, res) => {
     try {
         const dates = createParams.parse(req.body)
@@ -68,8 +107,8 @@ export const patchAvailability: express.RequestHandler = async (req, res) => {
 
 const availabilityRouter = express.Router()
 
-availabilityRouter.get('/:availabilityId', /* isAuthorized(), */ asyncHandler(getAvailability))
-availabilityRouter.get('/', /* isAuthorized(), */ asyncHandler(getAvailabilities))
+availabilityRouter.get('/:availabilityId', isAuthorized(), asyncHandler(getAvailability))
+availabilityRouter.get('/', isAuthorized(), asyncHandler(getAvailabilities))
 availabilityRouter.post('/:personId', isAuthorized(), asyncHandler(createAvailability))
 availabilityRouter.delete('/:availabilityId', isAuthorized(), asyncHandler(deleteAvailability))
 export default availabilityRouter
