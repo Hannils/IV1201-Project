@@ -25,7 +25,7 @@ function toAvailability(x: any) {
  */
 export async function selectAvailabilitiesByPersonId(personId: number) {
   const response = await queryDatabase(
-    `SELECT * FROM availability WHERE person_id = $1`,
+    `SELECT * FROM availability WHERE person_id = $1 ORDER BY from_date asc`,
     [personId],
   )
   return z.array(AvailabilitySchema).parse(response.rows.map(toAvailability))
@@ -48,10 +48,12 @@ export async function selectAvailabilities() {
  * @param toDate Date fo the end of the available period as `Date`
  */
 export async function insertAvailability(personId: number, fromDate: Date, toDate: Date) {
-  await queryDatabase(
-    `INSERT INTO availability(person_id, from_date, to_date) VALUES($1, $2, $3)`,
+  const res = await queryDatabase(
+    `INSERT INTO availability(person_id, from_date, to_date) VALUES($1, $2, $3) RETURNING availability_id`,
     [personId, fromDate, toDate],
   )
+
+  return res.rows.at(0)?.availability_id as number
 }
 
 /**

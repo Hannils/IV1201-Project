@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import {
   ApplicationStatus,
+  Availability,
   AvailabilitySchema,
   Competence,
   CompetenceProfile,
@@ -228,6 +229,13 @@ const api = {
     axios
       .get(`${API_URL}/availability/${personId}`, { ...getAuthedHeaders() })
       .then((res) => z.array(AvailabilitySchema).parse(res.data)),
+
+  createAvailability: async (data: Omit<Availability, 'availabilityId'>) =>
+    axios
+      .post(`${API_URL}/availability`, data, { ...getAuthedHeaders() })
+      .then((res) => AvailabilitySchema.parse(res.data)),
+  deleteAvailability: async (availabilityId: number) =>
+    axios.delete(`${API_URL}/availability/${availabilityId}`, { ...getAuthedHeaders() }),
 }
 
 export default api

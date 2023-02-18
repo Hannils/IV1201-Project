@@ -21,7 +21,6 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     const internalRef = useRef<HTMLInputElement>(null)
 
     const inputRef = (typeof externalRef !== 'function' && externalRef) || internalRef
-    const [value, setValue] = useState<null | Date>(null)
     const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
@@ -36,7 +35,6 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       setIsOpen(false)
-      setValue(e.target.valueAsDate)
       onChange?.(e)
     }
 
@@ -73,7 +71,7 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           }}
         >
           <MenuItem value="placeholder">
-            {value?.toLocaleDateString() || 'No date specified'}
+            {inputRef.current?.valueAsDate?.toLocaleDateString() || 'No date specified'}
           </MenuItem>
         </TextField>
       </Box>
