@@ -3,7 +3,6 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { createContext, PropsWithChildren, useContext, useState } from 'react'
 
 import api from '../../api/api'
-import { useAuthedUser } from '../../components/WithAuth'
 import { Competence, CompetenceProfile, UserCompetence } from '../../util/Types'
 
 interface UpdateParams {
@@ -52,7 +51,6 @@ export default function CompetenceManagerProvider({
   competenceProfile,
   children,
 }: PropsWithChildren<CompetenceManagerProviderProps>) {
-  const user = useAuthedUser()
   const queryClient = useQueryClient()
   const [competences, setCompetences] = useState<CompetenceProfile>(competenceProfile)
 

@@ -10,14 +10,13 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
+import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { useParams } from 'react-router-dom'
 
 import api from '../../api/api'
-import { Opportunity } from '../../util/Types'
-import { useMutation } from '@tanstack/react-query'
 import ErrorHandler from '../../components/ErrorHandler'
+import { Opportunity } from '../../util/Types'
 
 interface OpportunityPageProps {
   opportunity: Opportunity
@@ -43,10 +42,13 @@ export default function OpportunityPage({
       <Typography variant="h1">{opportunity.name}</Typography>
       <ReactMarkdown
         components={{
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           p: ({ node, ...props }) => <Typography {...props} mt="1em" />,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           h3: ({ node, ...props }) => (
             <Typography {...props} mt="1em" gutterBottom variant="h3" />
           ),
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           h4: ({ node, ...props }) => (
             <Typography {...props} mt="1em" gutterBottom variant="h4" />
           ),
@@ -85,7 +87,7 @@ export default function OpportunityPage({
         </DialogContent>
         <DialogActions>
           <Button onClick={setModal(false)}>Cancel</Button>
-          <Button onClick={() => applyMutation.mutate()} autoFocus variant="contained">
+          <Button onClick={() => applyMutation.mutate()} variant="contained">
             Apply
           </Button>
         </DialogActions>

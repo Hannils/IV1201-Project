@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import Layout from './components/Layout'
 import WithAuth from './components/WithAuth'
+import Applications from './pages/Applcations/Applications'
 import Availability from './pages/Availability/Availability'
 import CompetenceManager from './pages/CompetenceManager/CompetenceManager'
 import Home from './pages/Home/Home'
@@ -9,7 +10,6 @@ import MigrateUser from './pages/MigrateUser/MigrateUser'
 import Opportunity from './pages/Opportunity/Opportunity'
 import Signin from './pages/Signin/Signin'
 import Signup from './pages/Signup/Signup'
-import Applications from './pages/Applcations/Applications'
 
 function App() {
   return (

@@ -1,18 +1,11 @@
+import { Box, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import api from '../../api/api'
-import FullPageLoader from '../../components/FullPageLoader'
-import ErrorHandler from '../../components/ErrorHandler'
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Stack,
-  Typography,
-} from '@mui/material'
 import { Link } from 'react-router-dom'
+
+import api from '../../api/api'
+import ErrorHandler from '../../components/ErrorHandler'
+import FullPageLoader from '../../components/FullPageLoader'
 
 export default function Applications() {
   const {

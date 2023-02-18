@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import React, { useState } from 'react'
-import ReactMarkdown from 'react-markdown'
+import React from 'react'
 import { useParams } from 'react-router-dom'
 
 import api from '../../api/api'
