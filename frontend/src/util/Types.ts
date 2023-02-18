@@ -16,10 +16,6 @@ export interface Person {
   role: Role
 }
 
-export interface UserApplication extends Application {
-  user: Person
-}
-
 export interface Competence {
   name: string
   competenceId: number

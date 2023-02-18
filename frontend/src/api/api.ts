@@ -11,7 +11,6 @@ import {
   CompetenceProfile,
   OpportunitySchema,
   Person,
-  UserApplication,
   UserCompetence,
 } from '../util/Types'
 
@@ -133,15 +132,6 @@ const api = {
     axios
       .get<Person>(`${API_URL}/user`, { ...getAuthedHeaders() })
       .then((res) => res.data),
-
-  /**
-   * Function to get all of the registered applications
-   * @returns Expected response contains all of the registered applications as {@link UserApplication}[]
-   */
-
-  getApplications: async () =>
-    axios.get<UserApplication[]>(`${API_URL}/application`).then((res) => res.data),
-
   /**
    * Function to update an applications status
    * @param data Object containing the new application_status as {@link ApplicationStatus} and a personId as `number`
@@ -242,6 +232,12 @@ const api = {
         ...getAuthedHeaders(),
       })
       .then(({ data }) => (data === null ? null : ApplicationSchema.parse(data))),
+  getApplications: async () =>
+    axios
+      .get<Application | null>(`${API_URL}/application`, {
+        ...getAuthedHeaders(),
+      })
+      .then(({ data }) => z.array(ApplicationSchema).parse(data)),
 }
 
 export default api

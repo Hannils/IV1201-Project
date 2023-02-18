@@ -9,6 +9,7 @@ import MigrateUser from './pages/MigrateUser/MigrateUser'
 import Opportunity from './pages/Opportunity/Opportunity'
 import Signin from './pages/Signin/Signin'
 import Signup from './pages/Signup/Signup'
+import Applications from './pages/Applcations/Applications'
 
 function App() {
   return (
@@ -22,6 +23,10 @@ function App() {
           <Route
             path="/competences"
             element={<WithAuth allowedRoles={['applicant']} Page={CompetenceManager} />}
+          />
+          <Route
+            path="/applications"
+            element={<WithAuth allowedRoles={['applicant']} Page={Applications} />}
           />
           <Route
             path="/availability"

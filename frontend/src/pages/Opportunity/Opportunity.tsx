@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import api from '../../api/api'
 import ErrorHandler from '../../components/ErrorHandler'
 import FullPageLoader from '../../components/FullPageLoader'
-import type { Opportunity } from '../../util/Types'
+import type { Application, Opportunity } from '../../util/Types'
 import OpportunityPage from './OpportunityPage'
 
 export default function Opportunity() {
@@ -27,7 +27,12 @@ export default function Opportunity() {
         .getQueryData<Opportunity[]>(['opportunity'])
         ?.find((d) => d.opportunityId === id),
   })
-  const applicationQuery = useQuery(['application', id], () => api.getApplication(id))
+  const applicationQuery = useQuery(['application', id], () => api.getApplication(id), {
+    initialData: () =>
+      queryClient
+        .getQueryData<Application[]>(['application'])
+        ?.find((d) => d.opportunity.opportunityId === id),
+  })
 
   if (isError) return <ErrorHandler size="large" isError={true} error={error} />
   if (applicationQuery.isError)
@@ -35,5 +40,10 @@ export default function Opportunity() {
   if (applicationQuery.isLoading || isLoading || opportunity === undefined)
     return <FullPageLoader />
 
-  return <OpportunityPage opportunity={opportunity} initialHasApplied={applicationQuery.data !== null} />
+  return (
+    <OpportunityPage
+      opportunity={opportunity}
+      initialHasApplied={applicationQuery.data !== null}
+    />
+  )
 }
