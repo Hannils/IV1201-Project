@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
-import { ApplicationSchema } from '../../util/Types'
+import { ApplicationSchema, Person } from '../../util/Types'
 import { queryDatabase } from './DAO'
-import { Application } from '../../util/Types'
-
+import { Application, Opportunity } from '../../util/Types'
+import { selectStatusId } from './statusDAO'
 
 /**
  * Util function for parsing db output to match scheme of {@link Application}
@@ -15,21 +15,22 @@ function toApplication(x: any) {
   return {
     applicationId: x.application_id,
     personId: x.person_id,
-    statusId: x.status_id,
-    year: x.year,
+    status: x.status,
+    opportunity: {
+      opportunityId: x.opportunity_id,
+      applicationPeriodStart: x.application_period_start,
+      applicationPeriodEnd: x.application_period_end,
+      name: x.name,
+    },
   }
 }
 
-/**
- * Calls database and retrieves all applications
- * @returns All applications as {@link Application}[]
- */
-export async function selectApplications() {
-  const response = await queryDatabase(`SELECT * FROM application`, [])
-  const applicationScheme = z.array(ApplicationSchema)
-  return ApplicationSchema.parse(response.rows.map(toApplication))
-}
-
+const APPLICATION_SELECT =
+  'application_id, person_id, status.name as status, opportunity.name, opportunity.opportunity_id, application_period_start, application_period_end'
+const APPLICATION_JOINS = `
+                            INNER JOIN status ON status.status_id = application.status_id
+                            INNER JOIN opportunity ON opportunity.opportunity_id = application.opportunity_id
+                          `
 
 /**
  * Calls database and retrieves specific application
@@ -38,10 +39,50 @@ export async function selectApplications() {
  */
 export async function selectApplication(applicationId: number) {
   const response = await queryDatabase(
-    `SELECT * FROM application WHERE application_id = $1`,
+    `
+        SELECT ${APPLICATION_SELECT} FROM application
+        ${APPLICATION_JOINS}
+        WHERE application_id = $1
+    `,
     [applicationId],
   )
-  return response
+  if (response.rowCount === 0) return null
+  return ApplicationSchema.parse(toApplication(response.rows[0]))
+}
+
+/**
+ * Calls database and retrieves specific application
+ * @param personId Id of a {@link Person} as `number`
+ * @param opportunityId Id of an {@link Opportunity} as `number`
+ * @returns Application as {@link Application}
+ */
+export async function selectApplicationByPersonAndOpportunity(
+  personId: number,
+  opportunityId: number,
+) {
+  const response = await queryDatabase(
+    `
+        SELECT ${APPLICATION_SELECT} FROM application
+        ${APPLICATION_JOINS}
+        WHERE person_id = $1 AND application.opportunity_id = $2
+    `,
+    [personId, opportunityId],
+  )
+  if (response.rowCount === 0) return null
+  return ApplicationSchema.parse(toApplication(response.rows[0]))
+}
+
+export async function selectApplicationsByPersonId(personId: number) {
+  const response = await queryDatabase(
+    `
+            SELECT ${APPLICATION_SELECT} FROM application
+            ${APPLICATION_JOINS}
+            WHERE person_id = $1
+        `,
+    [personId],
+  )
+
+  return z.array(ApplicationSchema).parse(response.rows.map(toApplication))
 }
 
 /**
@@ -49,10 +90,10 @@ export async function selectApplication(applicationId: number) {
  * @param personId Id of the applications person as `number`
  * @returns `void`
  */
-export async function insertApplication(personId: number) {
-  const response = await queryDatabase(
-    `INSERT INTO application(person_id, status_id, year) VALUES($1, $2, $3)`,
-    [personId, 1, 2023],
+export async function insertApplication(personId: number, opportunityId: number) {
+  await queryDatabase(
+    `INSERT INTO application(person_id, status_id, opportunity_id) VALUES($1, $2, $3)`,
+    [personId, await selectStatusId('unhandled'), opportunityId],
   )
 }
 
@@ -61,5 +102,7 @@ export async function insertApplication(personId: number) {
  * @param applicationId Id of the row to drop
  */
 export async function dropApplication(applicationId: number) {
-  await queryDatabase(`DELETE FROM application WHERE application_id = $1`, [applicationId])
+  await queryDatabase(`DELETE FROM application WHERE application_id = $1`, [
+    applicationId,
+  ])
 }

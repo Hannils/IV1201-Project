@@ -2,6 +2,8 @@ import axios from 'axios'
 import { z } from 'zod'
 
 import {
+  Application,
+  ApplicationSchema,
   ApplicationStatus,
   Availability,
   AvailabilitySchema,
@@ -228,6 +230,18 @@ const api = {
       .then((res) => AvailabilitySchema.parse(res.data)),
   deleteAvailability: async (availabilityId: number) =>
     axios.delete(`${API_URL}/availability/${availabilityId}`, { ...getAuthedHeaders() }),
+
+  createApplication: async (opportunityId: number) =>
+    axios.post(`${API_URL}/application/${opportunityId}`, undefined, {
+      ...getAuthedHeaders(),
+    }),
+
+  getApplication: async (opportunityId: number) =>
+    axios
+      .get<Application | null>(`${API_URL}/application/${opportunityId}`, {
+        ...getAuthedHeaders(),
+      })
+      .then(({ data }) => (data === null ? null : ApplicationSchema.parse(data))),
 }
 
 export default api

@@ -1,7 +1,10 @@
 import { z } from 'zod'
 
 export type Role = 'recruiter' | 'applicant'
-export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
+
+export const ApplicationStatusSchema = z.enum(['unhandled', 'rejected', 'approved'])
+
+export type ApplicationStatus = z.infer<typeof ApplicationStatusSchema>
 
 export interface Person {
   personId: number
@@ -11,12 +14,6 @@ export interface Person {
   personNumber: string
   email: string
   role: Role
-}
-
-export interface Application {
-  competenceProfile: CompetenceProfile
-  availability: Array<AvailabilityPeriod>
-  status: ApplicationStatus
 }
 
 export interface UserApplication extends Application {
@@ -49,6 +46,15 @@ export const OpportunitySchema = z.object({
 })
 
 export type Opportunity = z.infer<typeof OpportunitySchema>
+
+export const ApplicationSchema = z.object({
+  applicationId: z.number(),
+  personId: z.number(),
+  status: ApplicationStatusSchema,
+  opportunity: OpportunitySchema.omit({ description: true }),
+})
+
+export type Application = z.infer<typeof ApplicationSchema>
 
 export const AvailabilitySchema = z.object({
   availabilityId: z.number(),

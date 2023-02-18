@@ -1,16 +1,17 @@
 import { z } from 'zod'
 import { dateInputFormatter } from './IntlFormatters'
 export type Role = 'recruiter' | 'applicant'
-export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
-export const AvailabilitySchema = z
-  .object({
-    availabilityId: z.number(),
-    personId: z.number(),
-    fromDate: z.coerce.date(),
-    toDate: z.coerce.date(),
-  })
-  
+export const ApplicationStatusSchema = z.enum(['unhandled', 'rejected', 'approved'])
+
+export type ApplicationStatus = z.infer<typeof ApplicationStatusSchema>
+
+export const AvailabilitySchema = z.object({
+  availabilityId: z.number(),
+  personId: z.number(),
+  fromDate: z.coerce.date(),
+  toDate: z.coerce.date(),
+})
 
 export type Availability = z.infer<typeof AvailabilitySchema>
 
@@ -27,9 +28,11 @@ export type Opportunity = z.infer<typeof OpportunitySchema>
 export const ApplicationSchema = z.object({
   applicationId: z.number(),
   personId: z.number(),
-  statusId: z.number(),
-  opportunityId: z.number(),
+  status: ApplicationStatusSchema,
+  opportunity: OpportunitySchema.omit({ description: true }),
 })
+
+export type Application = z.infer<typeof ApplicationSchema>
 
 export const CompetenceSchema = z.object({
   competenceId: z.number(),
@@ -71,16 +74,6 @@ export const IncompletePersonSchema = z.object({
 })
 
 export type IncompletePerson = z.infer<typeof IncompletePersonSchema>
-
-export interface Application {
-  competenceProfile: Array<Competence>
-  availability: Array<AvailabilityPeriod>
-  status: ApplicationStatus
-}
-
-export interface UserApplication extends Application {
-  user: Person
-}
 
 export interface AvailabilityPeriod {
   startDate: Date

@@ -1,6 +1,5 @@
-import { Box, Button, Typography } from '@mui/material'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import React from 'react'
+import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { useParams } from 'react-router-dom'
 
@@ -8,6 +7,7 @@ import api from '../../api/api'
 import ErrorHandler from '../../components/ErrorHandler'
 import FullPageLoader from '../../components/FullPageLoader'
 import type { Opportunity } from '../../util/Types'
+import OpportunityPage from './OpportunityPage'
 
 export default function Opportunity() {
   const { id: stringId } = useParams()
@@ -27,29 +27,13 @@ export default function Opportunity() {
         .getQueryData<Opportunity[]>(['opportunity'])
         ?.find((d) => d.opportunityId === id),
   })
+  const applicationQuery = useQuery(['application', id], () => api.getApplication(id))
 
   if (isError) return <ErrorHandler size="large" isError={true} error={error} />
-  if (isLoading || opportunity === undefined) return <FullPageLoader />
+  if (applicationQuery.isError)
+    return <ErrorHandler size="large" isError={true} error={applicationQuery.error} />
+  if (applicationQuery.isLoading || isLoading || opportunity === undefined)
+    return <FullPageLoader />
 
-  return (
-    <Box>
-      <Button variant="contained">Apply for this opportunity</Button>
-      <Typography variant="h1" mt="1em">
-        {opportunity.name}
-      </Typography>
-      <ReactMarkdown
-        components={{
-          p: ({ node, ...props }) => <Typography {...props} mt="1em" />,
-          h3: ({ node, ...props }) => (
-            <Typography {...props} mt="1em" gutterBottom variant="h3" />
-          ),
-          h4: ({ node, ...props }) => (
-            <Typography {...props} mt="1em" gutterBottom variant="h4" />
-          ),
-        }}
-      >
-        {opportunity.description}
-      </ReactMarkdown>
-    </Box>
-  )
+  return <OpportunityPage opportunity={opportunity} initialHasApplied={applicationQuery.data !== null} />
 }
