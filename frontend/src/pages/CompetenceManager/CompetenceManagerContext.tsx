@@ -60,8 +60,7 @@ export default function CompetenceManagerProvider({
     competences,
     availableCompetences,
     addMutation: useMutation({
-      mutationFn: (competence: UserCompetence) =>
-        api.createUserCompetence(competence, user.personId),
+      mutationFn: (competence: UserCompetence) => api.createUserCompetence(competence),
       onSuccess: (_, userCompetence) => {
         queryClient.removeQueries({ queryKey: ['competence_profile'] })
         setCompetences((c) => [userCompetence, ...c])
@@ -74,8 +73,7 @@ export default function CompetenceManagerProvider({
       number,
       number
     >({
-      mutationFn: (competenceId: number) =>
-        api.deleteUserCompetence({ competenceId, personId: user.personId }),
+      mutationFn: (competenceId: number) => api.deleteUserCompetence(competenceId),
       onMutate: (competenceId) => competenceId,
       onSuccess: (_, competenceId) => {
         queryClient.removeQueries({ queryKey: ['competence_profile'] })
@@ -92,11 +90,7 @@ export default function CompetenceManagerProvider({
       number
     >({
       mutationFn: async ({ yearsOfExperience, competenceId }: UpdateParams) =>
-        api.updateUserCompetence({
-          personId: user.personId,
-          competenceId,
-          yearsOfExperience,
-        }),
+        api.updateUserCompetence({ competenceId, yearsOfExperience }),
       onMutate: ({ competenceId }) => competenceId,
       onSuccess: () => queryClient.removeQueries({ queryKey: ['competence_profile'] }),
       onError: (error) => console.error(error),

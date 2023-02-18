@@ -3,14 +3,6 @@ import { dateInputFormatter } from './IntlFormatters'
 export type Role = 'recruiter' | 'applicant'
 export type ApplicationStatus = 'unhandled' | 'rejected' | 'approved'
 
-export const AvailabilityBaseSchema = z
-.object({
-  availabilityId: z.number(),
-  personId: z.number(),
-  fromDate: z.coerce.date(),
-  toDate: z.coerce.date(),
-})
-
 export const AvailabilitySchema = z
   .object({
     availabilityId: z.number(),
@@ -18,11 +10,7 @@ export const AvailabilitySchema = z
     fromDate: z.coerce.date(),
     toDate: z.coerce.date(),
   })
-  .transform(({ fromDate, toDate, ...rest }) => ({
-    ...rest,
-    fromDate: dateInputFormatter.format(fromDate),
-    toDate: dateInputFormatter.format(toDate),
-  }))
+  
 
 export type Availability = z.infer<typeof AvailabilitySchema>
 

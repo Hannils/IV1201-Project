@@ -38,3 +38,18 @@ export async function queryDatabase(query: string, data: any[]): Promise<QueryRe
     })
   })
 }
+
+export async function doTransaction<ResolvedValue = void>(
+  transationFunction: () => Promise<ResolvedValue>,
+) {
+  if (client === undefined) throw new Error('Client not initialized')
+
+  try {
+    await client.query('BEGIN')
+    await transationFunction()
+    await client.query('COMMIT')
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  }
+}

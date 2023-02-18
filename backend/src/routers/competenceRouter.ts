@@ -69,30 +69,22 @@ export const getCompetenceProfile: express.RequestHandler = async (req, res) => 
  * @authorization `Applicant`
  */
 export const createUserCompetence: express.RequestHandler = async (req, res) => {
-  let competence: UserCompetence, personId: number
+  const personId = res.locals.currentUser.personId
 
   try {
-    competence = UserCompetenceSchema.parse(req.body)
-    personId = z.number().parse(Number(req.params.personId))
-  } catch (error) {
-    console.error('This is error: ', error)
-    return res.sendStatus(400)
-  }
+    const competence = UserCompetenceSchema.parse(req.body)
 
-  try {
     await insertUserCompetence(competence, personId)
   } catch (error) {
     console.error(error)
-    return res.sendStatus(500)
+
+    return error instanceof z.ZodError
+      ? res.status(400).json(error.issues)
+      : res.sendStatus(500)
   }
 
   res.sendStatus(200)
 }
-
-const manageUserParams = z.object({
-  personId: z.preprocess((n) => Number(n), z.number()),
-  competenceId: z.preprocess((n) => Number(n), z.number()),
-})
 
 /**
  * This method deletes competenceProfile for specific person
@@ -105,9 +97,10 @@ const manageUserParams = z.object({
  * @authorization `Applicant`
  */
 export const deleteUserCompetence: express.RequestHandler = async (req, res) => {
+  const competenceId = Number(req.params.competenceId)
+  if (isNaN(competenceId)) return res.sendStatus(400)
   try {
-    const params = manageUserParams.parse(req.params)
-    await dropUserCompetence(params)
+    await dropUserCompetence({ competenceId, personId: res.locals.currentUser.personId })
   } catch (error: unknown) {
     console.error(error)
     return error instanceof z.ZodError
@@ -141,11 +134,15 @@ export const deleteUserCompetence: express.RequestHandler = async (req, res) => 
  * @authorization `Applicant`
  */
 export const patchUserCompetence: express.RequestHandler = async (req, res) => {
+  const competenceId = Number(req.params.competenceId)
+  const personId = res.locals.currentUser.personId
+
+  if (isNaN(competenceId)) return res.sendStatus(400)
+
   try {
-    const params = manageUserParams.parse(req.params)
     const yearsOfExperience = z.number().parse(req.body.yearsOfExperience)
 
-    await updateUserCompetence({ ...params, yearsOfExperience })
+    await updateUserCompetence({ competenceId, personId, yearsOfExperience })
   } catch (error: unknown) {
     console.error(error)
     return error instanceof z.ZodError
@@ -159,14 +156,14 @@ export const patchUserCompetence: express.RequestHandler = async (req, res) => {
 const competenceRouter = express.Router()
 competenceRouter.get('/', asyncHandler(getCompetences))
 competenceRouter.get('/:personId', isAuthorized(), asyncHandler(getCompetenceProfile))
-competenceRouter.post('/:personId', isAuthorized(), asyncHandler(createUserCompetence))
+competenceRouter.post('/', isAuthorized(), asyncHandler(createUserCompetence))
 competenceRouter.delete(
-  '/:personId/:competenceId',
+  '/:competenceId',
   isAuthorized(),
   asyncHandler(deleteUserCompetence),
 )
 competenceRouter.patch(
-  '/:personId/:competenceId',
+  '/:competenceId',
   isAuthorized(),
   asyncHandler(patchUserCompetence),
 )

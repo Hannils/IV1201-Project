@@ -175,8 +175,8 @@ const api = {
    * @param personId Id of the person to insert a user competence for as `number`
    * @returns Expects response of 200 OK as `statuscode`
    */
-  createUserCompetence: async (userCompetence: UserCompetence, personId: number) =>
-    axios.post(`${API_URL}/competence/${personId}`, userCompetence, {
+  createUserCompetence: async (userCompetence: UserCompetence) =>
+    axios.post(`${API_URL}/competence`, userCompetence, {
       ...getAuthedHeaders(),
     }),
 
@@ -185,14 +185,8 @@ const api = {
    * @param Object Id of the person as `number` and competenceId as `number`
    * @returns Expected response of 200 OK as `statuscode`
    */
-  deleteUserCompetence: async ({
-    personId,
-    competenceId,
-  }: {
-    personId: number
-    competenceId: number
-  }) =>
-    axios.delete(`${API_URL}/competence/${personId}/${competenceId}`, {
+  deleteUserCompetence: async (competenceId: number) =>
+    axios.delete(`${API_URL}/competence/${competenceId}`, {
       ...getAuthedHeaders(),
     }),
 
@@ -202,16 +196,14 @@ const api = {
    * @returns Expected response of 200 OK as `statuscode`
    */
   updateUserCompetence: async ({
-    personId,
     competenceId,
     yearsOfExperience,
   }: {
-    personId: number
     competenceId: number
     yearsOfExperience: number
   }) =>
     axios.patch(
-      `${API_URL}/competence/${personId}/${competenceId}`,
+      `${API_URL}/competence/${competenceId}`,
       { yearsOfExperience },
       { ...getAuthedHeaders() },
     ),
@@ -232,7 +224,7 @@ const api = {
 
   createAvailability: async (data: Omit<Availability, 'availabilityId'>) =>
     axios
-      .post(`${API_URL}/availability`, data, { ...getAuthedHeaders() })
+      .post(`${API_URL}/availability/${data.personId}`, data, { ...getAuthedHeaders() })
       .then((res) => AvailabilitySchema.parse(res.data)),
   deleteAvailability: async (availabilityId: number) =>
     axios.delete(`${API_URL}/availability/${availabilityId}`, { ...getAuthedHeaders() }),
