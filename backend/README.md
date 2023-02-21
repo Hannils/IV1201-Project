@@ -36,7 +36,7 @@
  *  - `key2`: value2
  * 
  * @returns `void`
- * @authorization none | Role | Role[] | Yes (for all roles)
+ * @authorization `none` OR [`Role`] OR [`Role1` | `Role2`]
  */
 ```
 

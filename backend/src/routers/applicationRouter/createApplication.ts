@@ -4,15 +4,26 @@ import { insertApplication } from '../../integrations/DAO/applicationDAO'
 
 /**
  * This method creates a single application
- * @param req - Request containing body
- * @param res -
- * - `200`: Successful creation. return body will contain
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * - `200`: Successful creation of application.
  * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
- * - `500`: Database or internal error
- * @body
- *
+ * - `500`: Database or internal error 
+ * @requestParams
+ * - `opportunityId`: Id of the opportunity that the application is related to
+ * @requestBody
+ * - `void`
+ * @responseBody
+ * **200**
+ * - `OK`: Default 200 OK message
+ * 
+ * **400**
+ * - `Message`: ZodError message
+ * 
+ * **500**
+ * - `Internal Error`: Default 500 Internal error message
  * @returns `void`
- * @authorization
+ * @authorization [`applicant`]
  */
 export const createApplication: express.RequestHandler = async (req, res) => {
   const { personId } = res.locals.currentUser

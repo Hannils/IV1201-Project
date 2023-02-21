@@ -3,8 +3,8 @@ import { z } from 'zod'
 
 import {
   Application,
-  ApplicationPreview,
   ApplicationSchema,
+  ApplicationStatusState,
   ApplicationStatus,
   Availability,
   AvailabilitySchema,
@@ -13,6 +13,7 @@ import {
   OpportunitySchema,
   Person,
   UserCompetence,
+  ApplicationPreview,
 } from '../util/Types'
 
 const API_URL = 'http://localhost:8888'
@@ -132,6 +133,15 @@ const api = {
   getUser: async () =>
     axios
       .get<Person>(`${API_URL}/user`, { ...getAuthedHeaders() })
+      .then((res) => res.data),
+
+  /**
+   * Function to get the currently authenticated user
+   * @returns Expected response contains the authenticated user as {@link Person}
+   */
+  getUserWithPersonId: async (personId: number) =>
+    axios
+      .get<Person>(`${API_URL}/user/${personId}`, { ...getAuthedHeaders() })
       .then((res) => res.data),
   /**
    * Function to update an applications status

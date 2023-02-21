@@ -14,7 +14,7 @@ import { Role } from '../../util/Types'
  * @body
  *
  * @returns an opportunity object
- * @authorization `Yes`
+ * @authorization `none`
  */
 export const getOpportunity: express.RequestHandler = async (req, res) => {
     try {

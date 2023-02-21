@@ -4,7 +4,7 @@ import { selectCompetence } from '../../integrations/DAO/competenceDAO'
 /**
  * This method retrieves all competences
  * @param req - Request
- * @param res -
+ * @param res - 
  * - `200`: Sends Competences as Competence[]
  * - `500`: Database or internal error
  * @returns `void`

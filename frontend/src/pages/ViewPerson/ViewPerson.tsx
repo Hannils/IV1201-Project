@@ -15,21 +15,31 @@ export default function ViewPerson() {
 
   if (isNaN(personId)) return <p>404</p>
 
-  // placeholder while we don't have endpoint
-  const user = useAuthedUser()
+  const personQuery = useQuery(['person', personId], () =>
+    api.getUserWithPersonId(personId),
+  )
   const competenceProfileQuery = useQuery(['competence_profile', personId], () =>
     api.getCompetenceProfile(personId),
   )
-  const availabilityQuery = useQuery(['availability', user.personId], () =>
+  const availabilityQuery = useQuery(['availability', personId], () =>
     api.getAvailabilityForPerson(personId),
   )
 
-  if (competenceProfileQuery.isLoading || availabilityQuery.isLoading)
+  if (
+    competenceProfileQuery.isLoading ||
+    availabilityQuery.isLoading ||
+    personQuery.isLoading
+  )
     return <FullPageLoader />
 
-  if (competenceProfileQuery.isError || availabilityQuery.isError)
+  if (competenceProfileQuery.isError || availabilityQuery.isError || personQuery.isError)
     return (
       <>
+        <ErrorHandler
+          size="large"
+          isError={personQuery.isError}
+          error={personQuery.error}
+        />
         <ErrorHandler
           size="large"
           isError={competenceProfileQuery.isError}
@@ -45,7 +55,7 @@ export default function ViewPerson() {
 
   return (
     <ViewPersonPage
-      person={user}
+      person={personQuery.data}
       competences={competenceProfileQuery.data}
       availability={availabilityQuery.data}
     />

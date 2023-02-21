@@ -5,15 +5,26 @@ import { dropApplication } from '../../integrations/DAO/applicationDAO'
 
 /**
  * This method deletes a single application
- * @param req - Request containing body
- * @param res -
- * - `200`: Successful delete.
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * - `200`: Successful deletion of application.
  * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
- * - `500`: Database or internal error
- * @body
- *
+ * - `500`: Database or internal error 
+ * @requestParams
+ * - `personId`: Id of the person that the application is related to
+ * @requestBody
+ * - `void`
+ * @responseBody
+ * **200**
+ * - `OK`: Default 200 OK message
+ * 
+ * **400**
+ * - `Message`: ZodError message
+ * 
+ * **500**
+ * - `Internal Error`: Default 500 Internal error message
  * @returns `void`
- * @authorization [applicant]
+ * @authorization [`applicant` | `recruiter`]
  */
 export const deleteApplication: express.RequestHandler = async (req, res) => {
   const personId = Number(req.params.personId)

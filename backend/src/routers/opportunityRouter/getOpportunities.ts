@@ -13,7 +13,7 @@ import { Role } from '../../util/Types'
  * @body
  *
  * @returns an array of opportunities
- * @authorization `Yes`
+ * @authorization `applicant`
  */
 export const getOpportunities: express.RequestHandler = async (req, res) => {
     try {

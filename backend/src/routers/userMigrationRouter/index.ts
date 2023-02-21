@@ -4,6 +4,7 @@ import { TokenManager } from '../../util/tokenManager'
 import { generateToken } from './generateToken'
 import { migrateUser } from './migrateUser'
 import { validateToken } from './validateToken'
+import crypto from 'crypto'
 
 export const migrationTokenStore = new TokenManager(1000 * 60 * 10, crypto.randomUUID)
 
