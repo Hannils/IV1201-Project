@@ -3,11 +3,7 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import { z } from 'zod'
 
-import {
-  migratePerson,
-  selectIncompletePersonByEmail,
-  selectPersonById,
-} from '../integrations/DAO/userDAO'
+import * as userDAO from '../integrations/DAO/userDAO'
 import * as schemas from '../util/schemas'
 import tokenManager, { TokenManager } from '../util/tokenManager'
 
@@ -46,7 +42,7 @@ const generateToken: express.RequestHandler = async (req, res) => {
   }
 
   try {
-    const user = await selectIncompletePersonByEmail(email)
+    const user = await userDAO.selectIncompletePersonByEmail(email)
     if (user === null) return res.status(404).send('USER_NOT_FOUND')
 
     const token = await migrationTokenStore.createToken(user.personId)
@@ -112,14 +108,14 @@ const migrateUser: express.RequestHandler = async (req, res) => {
   }
 
   try {
-    await migratePerson({
+    await userDAO.migratePerson({
       ...data,
       password,
       salt,
       personId,
     })
 
-    const user = await selectPersonById(personId)
+    const user = await userDAO.selectPersonById(personId)
 
     migrationTokenStore.deleteToken(data.token)
 

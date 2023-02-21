@@ -3,11 +3,7 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import { z } from 'zod'
 
-import {
-  insertPerson,
-  selectPersonById,
-  selectPersonByUsername,
-} from '../integrations/DAO/userDAO'
+import * as userDAO from '../integrations/DAO/userDAO'
 import isAuthorized from '../util/isAuthorized'
 import * as schemas from '../util/schemas'
 import tokenManager from '../util/tokenManager'
@@ -73,7 +69,7 @@ export const createUser: express.RequestHandler = async (req, res) => {
   let personId: number
 
   try {
-    personId = await insertPerson(person)
+    personId = await userDAO.insertPerson(person)
   } catch (error: any) {
     res.status(500).send('Database Error')
     console.error('Database error: ', error.message)
@@ -126,7 +122,7 @@ const signInParams = z.object({
 export const signInUser: express.RequestHandler = async (req, res) => {
   try {
     const params = signInParams.parse(req.body)
-    const user = await selectPersonByUsername(params.username)
+    const user = await userDAO.selectPersonByUsername(params.username)
     if (user === null || user === undefined) {
       return res.status(404).send('USER_NOT_FOUND')
     }
@@ -204,7 +200,7 @@ export const signOutUser: express.RequestHandler = (req, res) => {
 export const getUser: express.RequestHandler = async (req, res) => {
   const { personId } = res.locals.currentUser
   try {
-    const person = await selectPersonById(personId)
+    const person = await userDAO.selectPersonById(personId)
     if (person === null) return res.sendStatus(404)
     res.json(person)
   } catch (e: any) {

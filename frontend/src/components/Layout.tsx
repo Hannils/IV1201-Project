@@ -87,14 +87,7 @@ export default function Layout() {
             <MenuItem component={Link} to="/signin" onClick={onClicker()}>
               Sign in
             </MenuItem>
-          ) : (
-            <MenuItem onClick={onClicker()}>
-              <ListItemIcon>
-                <AccountCircleRounded />
-              </ListItemIcon>
-              Account
-            </MenuItem>
-          )}
+          ) : null}
           {user === null ? (
             <MenuItem component={Link} to="/signup" onClick={onClicker()}>
               Create an account

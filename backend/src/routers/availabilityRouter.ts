@@ -1,17 +1,12 @@
 import express from 'express'
 import asyncHandler from 'express-async-handler'
-import {
-  dropAvailability,
-  insertAvailability,
-  selectAvailabilities,
-  selectAvailabilitiesByPersonId,
-  updateAvailability,
-} from '../integrations/DAO/availabilityDAO'
-import isAuthorized from '../util/isAuthorized'
-import { Availability, AvailabilitySchema } from '../util/Types'
 import { z } from 'zod'
+
+import * as avDAO from '../integrations/DAO/availabilityDAO'
 import { doTransaction } from '../integrations/DAO/DAO'
 import { dateInputFormatter } from '../util/IntlFormatters'
+import isAuthorized from '../util/isAuthorized'
+import { AvailabilitySchema } from '../util/schemas'
 
 const createParams = z.object({
   fromDate: z.coerce.date(),
@@ -32,7 +27,7 @@ export const getAvailability: express.RequestHandler = async (req, res) => {
   if (isNaN(personId)) return res.sendStatus(400)
 
   try {
-    const response = await selectAvailabilitiesByPersonId(personId)
+    const response = await avDAO.selectAvailabilitiesByPersonId(personId)
 
     // Remove the timezone from date (kinda hacky fix but works)
     res.json(
@@ -63,7 +58,7 @@ export const createAvailability: express.RequestHandler = async (req, res) => {
   if (personId !== res.locals.currentUser.personId) return res.sendStatus(403)
   try {
     doTransaction(async () => {
-      const existingAvailability = await selectAvailabilitiesByPersonId(personId)
+      const existingAvailability = await avDAO.selectAvailabilitiesByPersonId(personId)
 
       const data = AvailabilitySchema.omit({ availabilityId: true })
         .refine((data) => data.toDate >= data.fromDate, {
@@ -109,7 +104,7 @@ export const createAvailability: express.RequestHandler = async (req, res) => {
         })
         .parse(req.body)
 
-      const availabilityId = await insertAvailability(
+      const availabilityId = await avDAO.insertAvailability(
         data.personId,
         data.fromDate,
         data.toDate,
@@ -147,7 +142,7 @@ export const deleteAvailability: express.RequestHandler = async (req, res) => {
   if (personId !== res.locals.currentUser.personId) return res.sendStatus(403)
 
   try {
-    await dropAvailability(Number(req.params.availabilityId))
+    await avDAO.dropAvailability(Number(req.params.availabilityId))
     res.sendStatus(200)
   } catch (error: any) {
     console.error(error.message)

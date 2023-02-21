@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import {
   Application,
+  ApplicationPreview,
   ApplicationSchema,
   ApplicationStatus,
   Availability,
@@ -134,13 +135,23 @@ const api = {
       .then((res) => res.data),
   /**
    * Function to update an applications status
-   * @param data Object containing the new application_status as {@link ApplicationStatus} and a personId as `number`
+   * @param data Object containing the new application_status as {@link ApplicationStatusState} and a personId as `number`
    * @returns Expects response of 200 OK as `statuscode`
    */
-  updateApplicationStatus: async (data: {
-    status: ApplicationStatus
-    personId: number
-  }) => axios.patch(`${API_URL}/application/${data.personId}`, { status: data.status }),
+  updateApplicationStatus: async ({
+    statusId,
+    applicationId,
+  }: {
+    statusId: number
+    applicationId: number
+  }) =>
+    axios.patch(
+      `${API_URL}/application/status/${applicationId}`,
+      { statusId },
+      {
+        ...getAuthedHeaders(),
+      },
+    ),
 
   /**
    * Function to get all registered competences
@@ -238,6 +249,20 @@ const api = {
         ...getAuthedHeaders(),
       })
       .then(({ data }) => z.array(ApplicationSchema).parse(data)),
+
+  getApplicationsPreview: async (opportunityId: number) =>
+    axios
+      .get<ApplicationPreview[]>(`${API_URL}/application/preview/${opportunityId}`, {
+        ...getAuthedHeaders(),
+      })
+      .then((res) => res.data),
+
+  getApplicationStatuses: async () =>
+    axios
+      .get<ApplicationStatus[]>(`${API_URL}/application-status`, {
+        ...getAuthedHeaders(),
+      })
+      .then((res) => res.data),
 }
 
 export default api

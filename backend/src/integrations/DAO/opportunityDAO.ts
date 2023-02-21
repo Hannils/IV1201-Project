@@ -1,8 +1,7 @@
 import { z } from 'zod'
 
-import { OpportunitySchema } from '../../util/Types'
+import { OpportunitySchema } from '../../util/schemas'
 import { queryDatabase } from './DAO'
-import { Opportunity } from '../../util/Types'
 
 /**
  * Util function for parsing db output to match scheme of {@link Opportunity}
@@ -26,7 +25,6 @@ function toOpportunity(x: any) {
  */
 export async function selectOpportunities() {
   const response = await queryDatabase(`SELECT * FROM opportunity`, [])
-  response.rows.map((res) => console.log(res))
   const opportunitySchema = z.array(OpportunitySchema)
   return opportunitySchema.parse(response.rows.map(toOpportunity))
 }
@@ -119,7 +117,7 @@ export async function updateOpportunity(
 
 /**
  * Calls database and drops a specific opportunity row
- * @param opportunityId Id of the specific opportunity to drop` 
+ * @param opportunityId Id of the specific opportunity to drop`
  */
 export async function dropOpportunity(opportunityId: number) {
   const response = await queryDatabase(

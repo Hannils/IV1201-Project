@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { AvailabilitySchema } from '../../util/Types'
+
+import { AvailabilitySchema } from '../../util/schemas'
 import { queryDatabase } from './DAO'
-import { Availability } from '../../util/Types'
 
 /**
  * Util function for parsing db output to match schmeme of {@link Availability}

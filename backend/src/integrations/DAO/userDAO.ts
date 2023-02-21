@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
-import { IncompletePersonSchema, Person, PersonSchema, Role } from '../../util/Types'
+import { IncompletePersonSchema, PersonSchema } from '../../util/schemas'
+import { Person, Role } from '../../util/Types'
 import { queryDatabase } from './DAO'
 import { getRoleId } from './roleDAO'
 

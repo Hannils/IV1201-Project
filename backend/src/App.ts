@@ -6,6 +6,7 @@ import path from 'path'
 import { initDatabase } from './integrations/DAO/DAO'
 import useAuth from './middlewares/useAuth'
 import applicationRouter from './routers/applicationRouter'
+import applicationStatusRouter from './routers/applicationStatusRouter'
 import availabilityRouter from './routers/availabilityRouter'
 import competenceRouter from './routers/competenceRouter'
 import opportunityRouter from './routers/opportunityRouter'
@@ -54,6 +55,7 @@ export function initServer() {
   app.use('/opportunity', opportunityRouter)
   app.use('/application', applicationRouter)
   app.use('/availability', availabilityRouter)
+  app.use('/application-status', applicationStatusRouter)
 
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('Express + TypeScript Server')

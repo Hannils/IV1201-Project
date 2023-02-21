@@ -2,15 +2,9 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import z from 'zod'
 
-import {
-  dropUserCompetence,
-  insertUserCompetence,
-  selectCompetence,
-  selectCompetenceProfile,
-  updateUserCompetence,
-} from '../integrations/DAO/competenceDAO'
+import * as compDAO from '../integrations/DAO/competenceDAO'
 import isAuthorized from '../util/isAuthorized'
-import { UserCompetence, UserCompetenceSchema } from '../util/Types'
+import { UserCompetenceSchema } from '../util/schemas'
 
 const updateParams = z.object({
   personId: z.string(),
@@ -28,7 +22,7 @@ const updateParams = z.object({
  */
 export const getCompetences: express.RequestHandler = async (req, res) => {
   try {
-    const response = await selectCompetence()
+    const response = await compDAO.selectCompetence()
     res.json(response)
   } catch (error: any) {
     console.error(error.message)
@@ -46,7 +40,9 @@ export const getCompetences: express.RequestHandler = async (req, res) => {
  */
 export const getCompetenceProfile: express.RequestHandler = async (req, res) => {
   try {
-    const competenceProfile = await selectCompetenceProfile(Number(req.params.personId))
+    const competenceProfile = await compDAO.selectCompetenceProfile(
+      Number(req.params.personId),
+    )
     if (competenceProfile === null || competenceProfile === undefined) res.sendStatus(400)
     res.json(competenceProfile)
   } catch (error: any) {
@@ -74,7 +70,7 @@ export const createUserCompetence: express.RequestHandler = async (req, res) => 
   try {
     const competence = UserCompetenceSchema.parse(req.body)
 
-    await insertUserCompetence(competence, personId)
+    await compDAO.insertUserCompetence(competence, personId)
   } catch (error) {
     console.error(error)
 
@@ -100,7 +96,10 @@ export const deleteUserCompetence: express.RequestHandler = async (req, res) => 
   const competenceId = Number(req.params.competenceId)
   if (isNaN(competenceId)) return res.sendStatus(400)
   try {
-    await dropUserCompetence({ competenceId, personId: res.locals.currentUser.personId })
+    await compDAO.dropUserCompetence({
+      competenceId,
+      personId: res.locals.currentUser.personId,
+    })
   } catch (error: unknown) {
     console.error(error)
     return error instanceof z.ZodError
@@ -142,7 +141,7 @@ export const patchUserCompetence: express.RequestHandler = async (req, res) => {
   try {
     const yearsOfExperience = z.number().parse(req.body.yearsOfExperience)
 
-    await updateUserCompetence({ competenceId, personId, yearsOfExperience })
+    await compDAO.updateUserCompetence({ competenceId, personId, yearsOfExperience })
   } catch (error: unknown) {
     console.error(error)
     return error instanceof z.ZodError
@@ -152,6 +151,16 @@ export const patchUserCompetence: express.RequestHandler = async (req, res) => {
 
   res.sendStatus(200)
 }
+/**
+ * This method is for retrieving the competence profile of a specific person.
+ * @param req - Request containing `personId` as number & `competenceId` as number
+ * @param res -
+ * - `200`: OK
+ * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
+ * - `500`: Database or internal error
+ * @returns `void`
+ * @authorization `Applicant`
+ */
 
 const competenceRouter = express.Router()
 competenceRouter.get('/', asyncHandler(getCompetences))

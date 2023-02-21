@@ -1,30 +1,44 @@
 import { z } from 'zod'
 
-export type Role = 'recruiter' | 'applicant'
+const RoleSchema = z.enum(['recruiter', 'applicant'])
+export type Role = z.infer<typeof RoleSchema>
 
-export const ApplicationStatusSchema = z.enum(['unhandled', 'rejected', 'approved'])
+export const ApplicationStatusStateSchema = z.enum(['unhandled', 'rejected', 'accepted'])
+
+export type ApplicationStatusState = z.infer<typeof ApplicationStatusStateSchema>
+
+export const ApplicationStatusSchema = z.object({
+  statusId: z.number(),
+  name: ApplicationStatusStateSchema,
+})
 
 export type ApplicationStatus = z.infer<typeof ApplicationStatusSchema>
 
-export interface Person {
-  personId: number
-  username: string
-  firstname: string
-  lastname: string
-  personNumber: string
-  email: string
-  role: Role
-}
+export const PersonSchema = z.object({
+  personId: z.number(),
+  username: z.string(),
+  firstname: z.string(),
+  lastname: z.string(),
+  role: RoleSchema,
+  email: z.string().email().nullable(),
+  personNumber: z.string().nullable(),
+})
 
-export interface Competence {
-  name: string
-  competenceId: number
-}
+export type Person = z.infer<typeof PersonSchema>
 
-export interface UserCompetence {
-  competence: Competence
-  yearsOfExperience: number
-}
+export const CompetenceSchema = z.object({
+  competenceId: z.number(),
+  name: z.string(),
+})
+
+export type Competence = z.infer<typeof CompetenceSchema>
+
+export const UserCompetenceSchema = z.object({
+  competence: CompetenceSchema,
+  yearsOfExperience: z.number(),
+})
+
+export type UserCompetence = z.infer<typeof UserCompetenceSchema>
 
 export type CompetenceProfile = Array<UserCompetence>
 
@@ -60,3 +74,17 @@ export const AvailabilitySchema = z.object({
 })
 
 export type Availability = z.infer<typeof AvailabilitySchema>
+
+export const ApplicationPreviewSchema = ApplicationSchema.omit({
+  opportunity: true,
+  personId: true,
+}).extend({
+  competences: z.array(UserCompetenceSchema),
+  person: PersonSchema.pick({
+    personId: true,
+    firstname: true,
+    lastname: true,
+  }),
+})
+
+export type ApplicationPreview = z.infer<typeof ApplicationPreviewSchema>

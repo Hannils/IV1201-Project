@@ -10,9 +10,10 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { useParams } from 'react-router-dom'
 
 import api from '../../api/api'
 import ErrorHandler from '../../components/ErrorHandler'
@@ -27,13 +28,18 @@ export default function OpportunityPage({
   opportunity,
   initialHasApplied,
 }: OpportunityPageProps) {
+  const { id: stringId } = useParams()
+  const queryClient = useQueryClient()
   const [showModal, setShowModal] = useState<boolean>(false)
   const [hasApplied, setHasApplied] = useState(initialHasApplied)
   const setModal = (state: boolean) => () => setShowModal(state)
 
   const applyMutation = useMutation({
     mutationFn: () => api.createApplication(opportunity.opportunityId),
-    onSuccess: () => setHasApplied(true),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ['application', Number(stringId)] })
+      setHasApplied(true)
+    },
     onSettled: () => setShowModal(false),
   })
 

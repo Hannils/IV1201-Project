@@ -2,15 +2,7 @@ import express from 'express'
 import asyncHandler from 'express-async-handler'
 import z, { ZodError } from 'zod'
 
-import {
-  dropOpportunity,
-  insertOpportunity,
-  selectApplicableOpportunities,
-  selectApplicableOpportunity,
-  selectOpportunities,
-  selectOpportunity,
-  updateOpportunity,
-} from '../integrations/DAO/opportunityDAO'
+import * as opDAO from '../integrations/DAO/opportunityDAO'
 import isAuthorized from '../util/isAuthorized'
 import { Role } from '../util/Types'
 
@@ -31,8 +23,8 @@ const getOpportunities: express.RequestHandler = async (req, res) => {
   try {
     const isApplicant = res.locals.currentUser.role === ('applicant' satisfies Role)
     const response = isApplicant
-      ? await selectApplicableOpportunities()
-      : await selectOpportunities()
+      ? await opDAO.selectApplicableOpportunities()
+      : await opDAO.selectOpportunities()
     res.json(response)
   } catch (error: any) {
     console.error(error.message)
@@ -58,8 +50,8 @@ const getOpportunity: express.RequestHandler = async (req, res) => {
     const opportunityId = Number(req.params.opportunityId)
     if (isNaN(opportunityId)) return res.sendStatus(400)
     const opportunity = isApplicant
-      ? await selectApplicableOpportunity(opportunityId)
-      : await selectOpportunity(opportunityId)
+      ? await opDAO.selectApplicableOpportunity(opportunityId)
+      : await opDAO.selectOpportunity(opportunityId)
 
     if (opportunity === null) return res.sendStatus(404)
     res.json(opportunity)
@@ -83,7 +75,13 @@ const patchOpportunity: express.RequestHandler = async (req, res) => {
   try {
     const opportunityId = z.number().parse(req.params.opportunityId)
     const { periodStart, periodEnd, name, description } = req.body
-    await updateOpportunity(opportunityId, periodStart, periodEnd, name, description)
+    await opDAO.updateOpportunity(
+      opportunityId,
+      periodStart,
+      periodEnd,
+      name,
+      description,
+    )
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
@@ -107,7 +105,7 @@ const patchOpportunity: express.RequestHandler = async (req, res) => {
 const createOpportunity: express.RequestHandler = async (req, res) => {
   try {
     const { periodStart, periodEnd, name, description } = req.body
-    await insertOpportunity(periodStart, periodEnd, name, description)
+    await opDAO.insertOpportunity(periodStart, periodEnd, name, description)
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
@@ -130,7 +128,7 @@ const createOpportunity: express.RequestHandler = async (req, res) => {
 const deleteOpportunity: express.RequestHandler = async (req, res) => {
   try {
     const personId = z.number().parse(Number(req.params.personId))
-    await dropOpportunity(personId)
+    await opDAO.dropOpportunity(personId)
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
