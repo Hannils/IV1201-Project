@@ -11,9 +11,9 @@ import {
   Typography,
 } from '@mui/material'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import { useRecruiterHome } from './RecruiterHomeContext'
-import { Link } from 'react-router-dom'
 
 export default function RecruiterHomePage() {
   const { applications, updateMutation, statuses } = useRecruiterHome()

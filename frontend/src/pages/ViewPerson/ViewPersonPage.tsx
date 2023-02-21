@@ -1,5 +1,6 @@
 import { Container, List, ListItem, ListItemText, Stack, Typography } from '@mui/material'
 import React from 'react'
+
 import { Availability, CompetenceProfile, Person } from '../../util/Types'
 
 interface ViewPersonPageProps {
