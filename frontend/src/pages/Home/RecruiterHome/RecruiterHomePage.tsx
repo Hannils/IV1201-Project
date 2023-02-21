@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import { useRecruiterHome } from './RecruiterHomeContext'
 
@@ -70,7 +71,9 @@ export default function RecruiterHomePage() {
                 </TextField>
               </TableCell>
               <TableCell>
-                <Button>View</Button>
+                <Button component={Link} to={`/person/${person.personId}`}>
+                  View
+                </Button>
               </TableCell>
             </TableRow>
           ))}
