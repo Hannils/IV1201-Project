@@ -1,6 +1,5 @@
 import express from 'express'
 import { ZodError } from 'zod'
-
 import { insertApplication } from '../../integrations/DAO/applicationDAO'
 
 /**
@@ -18,7 +17,6 @@ import { insertApplication } from '../../integrations/DAO/applicationDAO'
 export const createApplication: express.RequestHandler = async (req, res) => {
   const { personId } = res.locals.currentUser
   const opportunityId = Number(req.params.opportunityId)
-
   if (isNaN(opportunityId)) return res.sendStatus(400)
   try {
     await insertApplication(personId, opportunityId)

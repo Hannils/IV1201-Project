@@ -39,6 +39,20 @@ export async function queryDatabase(query: string, data: any[]): Promise<QueryRe
   })
 }
 
+/**
+ * Executes a transaction using the specified transaction function.
+ * @async
+ * @function doTransaction
+ * @template ResolvedValue
+ * @param {function(): Promise<ResolvedValue>} transactionFunction - The function to execute as part of the transaction.
+ * @returns {Promise<void>} A promise that resolves after the transaction is committed or rejects if there is an error.
+ * @throws {Error} If the client is not initialized or if an error occurs during the transaction.
+ * @description 
+ * This function wraps the specified `transactionFunction` in a database transaction. It executes the function,
+ * then commits the transaction if successful, or rolls back the transaction if there is an error. 
+ * If the function returns a promise that resolves with a value, that value is returned.
+ */
+
 export async function doTransaction<ResolvedValue = void>(
   transationFunction: () => Promise<ResolvedValue>,
 ) {
