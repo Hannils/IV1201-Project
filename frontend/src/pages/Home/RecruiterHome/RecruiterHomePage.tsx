@@ -13,6 +13,7 @@ import {
 import React from 'react'
 
 import { useRecruiterHome } from './RecruiterHomeContext'
+import { Link } from 'react-router-dom'
 
 export default function RecruiterHomePage() {
   const { applications, updateMutation, statuses } = useRecruiterHome()
@@ -70,7 +71,9 @@ export default function RecruiterHomePage() {
                 </TextField>
               </TableCell>
               <TableCell>
-                <Button>View</Button>
+                <Button component={Link} to={`/person/${person.personId}`}>
+                  View
+                </Button>
               </TableCell>
             </TableRow>
           ))}

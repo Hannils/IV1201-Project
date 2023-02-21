@@ -10,6 +10,7 @@ import MigrateUser from './pages/MigrateUser/MigrateUser'
 import Opportunity from './pages/Opportunity/Opportunity'
 import Signin from './pages/Signin/Signin'
 import Signup from './pages/Signup/Signup'
+import ViewPerson from './pages/ViewPerson/ViewPerson'
 
 function App() {
   return (
@@ -31,6 +32,10 @@ function App() {
           <Route
             path="/availability"
             element={<WithAuth allowedRoles={['applicant']} Page={Availability} />}
+          />
+          <Route
+            path="/person/:personId"
+            element={<WithAuth allowedRoles={['recruiter']} Page={ViewPerson} />}
           />
           <Route
             path="/opportunity/:id"
