@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
-import { createUserCompetence, deleteUserCompetence, getCompetenceProfile, getCompetences, patchUserCompetence } from '../../src/routers/competenceRouter'
+import { createUserCompetence } from '../../src/routers/competenceRouter/createUserCompetence'
+import { deleteUserCompetence } from '../../src/routers/competenceRouter/deleteUserCompetence'
+import { getCompetenceProfile } from '../../src/routers/competenceRouter/getCompetenceProfile'
+import { getCompetences } from '../../src/routers/competenceRouter/getCompetences'
+import { patchUserCompetence } from '../../src/routers/competenceRouter/patchUserCompetence'
 import { Competence, CompetenceProfile } from '../../src/util/Types'
 
 jest.mock('../../src/integrations/DAO/competenceDAO', () => ({

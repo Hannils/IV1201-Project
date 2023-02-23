@@ -1,8 +1,10 @@
 import request from 'supertest'
 import { Request, Response, NextFunction } from 'express'
-import { createUser, signInUser, getUser } from '../../src/routers/userRouter'
 import { Person } from '../../src/util/Types'
 import crypto from 'crypto'
+import { createUser } from '../../src/routers/userRouter/createUser'
+import { getUser } from '../../src/routers/userRouter/getUser'
+import { signInUser } from '../../src/routers/userRouter/signInUser'
 
 jest.mock('../../src/integrations/DAO/userDAO', () => ({
   insertPerson: jest.fn(),
@@ -168,7 +170,7 @@ describe('Test all with bad parameters on userRouter', () => {
     }
   })
 
-  test('Should be able to sign in a user', async () => {
+  test('Should not be able to sign in a user', async () => {
     const mockRequest = {
       body: {
         username: 'username',
