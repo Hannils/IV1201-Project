@@ -41,7 +41,7 @@ export async function init() {
 }
 
 const corsOptions = {
-  origin: ["https://recruitment-application.netlify.app/*", "https://recruitment-application.onrender.com/*", "http://localhost:5432/*", "http://localhost:5173/*", "http://localhost:8888/*"]
+  origin: "*"
 }
 /**
  * Initialize the server
