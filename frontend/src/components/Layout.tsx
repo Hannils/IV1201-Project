@@ -21,10 +21,10 @@ import useUser from '../util/auth'
 import ErrorHandler from './ErrorHandler'
 import UserAvatar from './UserAvatar'
 
-/**
- * The layout compoent is rendered for all pages.
- * It contains global UI elements.
- */
+/** 
+* The layout compoent is rendered for all pages.
+* It contains global UI elements.
+*/
 export default function Layout() {
   const [user, , setUser] = useUser()
   const signoutMutation = useMutation({

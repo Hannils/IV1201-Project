@@ -6,6 +6,9 @@ import { useAuthedUser } from '../../components/WithAuth'
 import CompetenceManagerProvider from './CompetenceManagerContext'
 import CompetenceManagerPage from './views/CompetenceManagerPage'
 
+/**
+ * Presenter for competence manager
+ */
 export default function CompetenceManager() {
   const user = useAuthedUser()
   const availableCompetencesQuery = useQuery(['competences'], () => api.getCompetences())

@@ -13,6 +13,9 @@ import React, { useMemo, useState } from 'react'
 import { Competence } from '../../../util/Types'
 import { useCompetenceManager } from '../CompetenceManagerContext'
 
+/**
+ * Component for adding new competences
+ */
 export default function CompetenceManagerAddNew() {
   const [createAnchor, setCreateAnchor] = useState<HTMLButtonElement | null>(null)
   const { competences, availableCompetences, addMutation } = useCompetenceManager()

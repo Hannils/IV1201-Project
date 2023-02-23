@@ -10,7 +10,9 @@ interface GetTokenStepProps {
   mutator: UseMutationResult<unknown, unknown, GetTokenFields, unknown>
   form: UseFormReturn<GetTokenFields>
 }
-
+/**
+ * Component for getting token in migrating user
+ */
 export default function GetTokenStep({ mutator, form }: GetTokenStepProps) {
   const { handleSubmit, register, formState } = form
 

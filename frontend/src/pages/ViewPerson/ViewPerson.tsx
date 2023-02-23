@@ -8,6 +8,9 @@ import FullPageLoader from '../../components/FullPageLoader'
 import { useAuthedUser } from '../../components/WithAuth'
 import ViewPersonPage from './ViewPersonPage'
 
+/**
+ * Main component for viewPerson
+ */
 export default function ViewPerson() {
   const { personId: personIdAsString } = useParams()
 

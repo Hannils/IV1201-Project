@@ -15,7 +15,9 @@ import { AxiosError } from 'axios'
 import SigninPage from './SigninPage'
 import { SignInFields, SignInSchema } from './SigninTypes'
 
-
+/**
+ * Main component for signIn page
+ */
 export default function SignIn() {
   const navigate = useNavigate()
   const [, , setUser] = useUser()

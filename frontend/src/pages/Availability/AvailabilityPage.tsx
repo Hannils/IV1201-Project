@@ -6,6 +6,9 @@ import { useAvailability } from './AvailabilityContext'
 import AddAvailability from './views/AddAvailability'
 import AvailabilityEditor from './views/AvailabilityEditor'
 
+/**
+ * View of availability
+ */
 export default function AvailabilityPage() {
   const { availabilities, deleteMutation } = useAvailability()
 

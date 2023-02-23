@@ -8,6 +8,9 @@ import { useAuthedUser } from '../../components/WithAuth'
 import AvailabilityProvider from './AvailabilityContext'
 import AvailabilityPage from './AvailabilityPage'
 
+/**
+ * Presenter for availability
+ */
 export default function Availability() {
   const user = useAuthedUser()
   const { data, isLoading, isError, error } = useQuery(

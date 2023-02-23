@@ -53,6 +53,9 @@ const pages = [
 const timeFormatter = new Intl.RelativeTimeFormat('en', { style: 'short' })
 const dayInMilis = 1000 * 60 * 60 * 24
 
+/**
+ * Component for applicant home
+ */
 export default function ApplicantHome() {
   const { firstname } = useAuthedUser()
   const {
@@ -64,7 +67,6 @@ export default function ApplicantHome() {
     placeholderData: new Array(2).fill(null),
   })
 
-  console.log(opportunities, isLoading)
   return (
     <Stack spacing={5}>
       <Box>

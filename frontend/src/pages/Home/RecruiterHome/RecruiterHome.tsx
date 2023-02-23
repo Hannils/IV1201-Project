@@ -8,6 +8,9 @@ import FullPageLoader from '../../../components/FullPageLoader'
 import RecruiterHomeProvider from './RecruiterHomeContext'
 import RecruiterHomePage from './RecruiterHomePage'
 
+/**
+ * Presenter for recruiter home
+ */
 export default function RecruiterHome() {
   const [selectedOpportunity, setSelectedOpportunity] = useState<number | null>(null)
   const opportunitiesQuery = useQuery(['opportunity'], () => api.getOpportunities(), {

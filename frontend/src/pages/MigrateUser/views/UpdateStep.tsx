@@ -12,6 +12,9 @@ interface UpdateStepProps {
   form: UseFormReturn<UpdateFields>
 }
 
+/**
+ * Component for updating username and password in migrating user
+ */
 export default function UpdateStep({ mutator, form }: UpdateStepProps) {
   const { handleSubmit, register, formState } = form
 

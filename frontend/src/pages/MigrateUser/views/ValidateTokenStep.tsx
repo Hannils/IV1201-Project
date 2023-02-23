@@ -12,6 +12,9 @@ interface ValidateTokenStepProps {
   goBack: Function
 }
 
+/**
+ * Component for validating token in migrating user
+ */
 export default function ValidateTokenStep({
   mutator,
   form,

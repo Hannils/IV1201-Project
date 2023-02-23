@@ -10,6 +10,9 @@ interface AvailabilityEditorProps {
   index: number
 }
 
+/**
+ * Component for editing availability
+ */
 export default function AvailabilityEditor({ period, index }: AvailabilityEditorProps) {
   const { deleteMutation } = useAvailability()
   return (

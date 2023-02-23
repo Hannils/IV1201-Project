@@ -8,6 +8,9 @@ import FullPageLoader from '../../components/FullPageLoader'
 import type { Application, Opportunity } from '../../util/Types'
 import OpportunityPage from './OpportunityPage'
 
+/**
+ * Main component of opportunity
+ */
 export default function Opportunity() {
   const { id: stringId } = useParams()
   const queryClient = useQueryClient()

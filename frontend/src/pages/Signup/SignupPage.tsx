@@ -12,7 +12,9 @@ interface SignupPageProps {
   form: UseFormReturn<SignupFields>
   mutation: UseMutationResult<Person, AxiosError, SignupFields>
 }
-
+/**
+ * View for signUp page
+ */
 export default function SignupPage({ form, mutation }: SignupPageProps) {
   const { handleSubmit, register, formState } = form
   const { isLoading, mutate } = mutation

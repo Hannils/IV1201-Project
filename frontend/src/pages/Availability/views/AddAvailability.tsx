@@ -5,6 +5,9 @@ import { dateInputFormatter } from '../../../util/IntlFormatters'
 import { useAvailability } from '../AvailabilityContext'
 import DatePicker from './DatePicker'
 
+/**
+ * Component for adding availability
+ */
 export default function AddAvailability() {
   const {
     createForm: { register, formState, watch },

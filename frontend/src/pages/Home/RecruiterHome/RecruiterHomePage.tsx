@@ -15,6 +15,9 @@ import { Link } from 'react-router-dom'
 
 import { useRecruiterHome } from './RecruiterHomeContext'
 
+/**
+ * View For recruiter home
+ */
 export default function RecruiterHomePage() {
   const { applications, updateMutation, statuses } = useRecruiterHome()
   return (

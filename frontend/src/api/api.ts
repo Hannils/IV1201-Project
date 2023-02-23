@@ -14,6 +14,7 @@ import {
   Person,
   UserCompetence,
   ApplicationPreview,
+  Opportunity
 } from '../util/Types'
 
 const API_URL = 'http://localhost:8888'
@@ -137,6 +138,7 @@ const api = {
 
   /**
    * Function to get the currently authenticated user
+   * @param personId Id of user to get
    * @returns Expected response contains the authenticated user as {@link Person}
    */
   getUserWithPersonId: async (personId: number) =>
@@ -145,7 +147,7 @@ const api = {
       .then((res) => res.data),
   /**
    * Function to update an applications status
-   * @param data Object containing the new application_status as {@link ApplicationStatusState} and a personId as `number`
+   * @param data Object containing the new applicationStatus id as `number` and a applcationId as `number`
    * @returns Expects response of 200 OK as `statuscode`
    */
   updateApplicationStatus: async ({
@@ -185,7 +187,6 @@ const api = {
   /**
    * Function to create a new user competence for a specific user
    * @param userCompetence New user competence to insert as {@link UserCompetence}
-   * @param personId Id of the person to insert a user competence for as `number`
    * @returns Expects response of 200 OK as `statuscode`
    */
   createUserCompetence: async (userCompetence: UserCompetence) =>
@@ -195,7 +196,7 @@ const api = {
 
   /**
    * Function to delete a user competence from a person
-   * @param Object Id of the person as `number` and competenceId as `number`
+   * @param competenceId Id of the competence as `number`
    * @returns Expected response of 200 OK as `statuscode`
    */
   deleteUserCompetence: async (competenceId: number) =>
@@ -221,38 +222,78 @@ const api = {
       { ...getAuthedHeaders() },
     ),
 
+  /**
+   * Function to get all opportunities
+   * @returns Expected response of all opportunities as {@link Opportunity}[]
+   */
   getOpportunities: async () =>
     axios
       .get(`${API_URL}/opportunity`, { ...getAuthedHeaders() })
       .then((res) => z.array(OpportunitySchema).parse(res.data)),
+
+  /**
+   * Function to get a specific opportunity
+   * @param opportunityId Id of the opportunity to get as `number`
+   * @returns Expected response of a specific opportunity as {@link Opportunity}
+   */
   getOpportunity: async (opportunityId: number) =>
     axios
       .get(`${API_URL}/opportunity/${opportunityId}`, { ...getAuthedHeaders() })
       .then((res) => OpportunitySchema.parse(res.data)),
 
+
+  /**
+   * Fuction to get all availabilities for a specific person
+   * @param personId Id of the person that the availabilites are related to as `number`
+   * @returns Expected response of All availabilites for a person as {@link Availability}[]
+   */
   getAvailabilityForPerson: async (personId: number) =>
     axios
       .get(`${API_URL}/availability/${personId}`, { ...getAuthedHeaders() })
       .then((res) => z.array(AvailabilitySchema).parse(res.data)),
 
+  /**
+   * Function to create a new availability
+   * @param data Object containing personId as `number`, fromDate as `Date` and toDate as `Date`
+   * @returns Expected response of 200 as `statuscode`
+   */
   createAvailability: async (data: Omit<Availability, 'availabilityId'>) =>
     axios
       .post(`${API_URL}/availability/${data.personId}`, data, { ...getAuthedHeaders() })
       .then((res) => AvailabilitySchema.parse(res.data)),
+
+  /**
+   * Function to delete a specific availability
+   * @param availabilityId Id of the availability to delete as `number`
+   * @returns Expected response of 200 as `statuscode`
+   */
   deleteAvailability: async (availabilityId: number) =>
     axios.delete(`${API_URL}/availability/${availabilityId}`, { ...getAuthedHeaders() }),
 
+  /**
+   * Function to create a new application
+   * @param opportunityId Id of the opportunity that the application relates to.
+   * @returns Expected response of 200 as `statuscode`
+   */
   createApplication: async (opportunityId: number) =>
     axios.post(`${API_URL}/application/${opportunityId}`, undefined, {
       ...getAuthedHeaders(),
     }),
-
+  /**
+   * Function to get a specific application from a person from a specific opportunity
+   * @param opportunityId Id of the opportunity the application relates to.
+   * @returns Expected respone of an application as {@link Application}
+   */
   getApplication: async (opportunityId: number) =>
     axios
       .get<Application | null>(`${API_URL}/application/${opportunityId}`, {
         ...getAuthedHeaders(),
       })
       .then(({ data }) => (data === null ? null : ApplicationSchema.parse(data))),
+  /**
+   * Function to get all applications
+   * @returns Expected response of all application as {@link Application}[]
+   */
   getApplications: async () =>
     axios
       .get<Application | null>(`${API_URL}/application`, {
@@ -260,6 +301,11 @@ const api = {
       })
       .then(({ data }) => z.array(ApplicationSchema).parse(data)),
 
+  /**
+   * Function to get all application previews for a specific opportunity
+   * @param opportunityId Id of the opportunity that the application previews relates to
+   * @returns Expected response of all application previews of specific opportunity as {@link ApplicationPreview}[]
+   */
   getApplicationsPreview: async (opportunityId: number) =>
     axios
       .get<ApplicationPreview[]>(`${API_URL}/application/preview/${opportunityId}`, {
@@ -267,6 +313,10 @@ const api = {
       })
       .then((res) => res.data),
 
+  /**
+   * Function to get all application statuses
+   * @returns Expected response of all application statuses as {@link ApplicationStatus}[]
+   */
   getApplicationStatuses: async () =>
     axios
       .get<ApplicationStatus[]>(`${API_URL}/application-status`, {

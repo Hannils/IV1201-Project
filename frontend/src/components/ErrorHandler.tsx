@@ -16,6 +16,10 @@ type ErrorHandlerProps = (LargeErrorHandlerProps | SmallErrorHandlerProps) & {
   error: unknown
 }
 
+/**
+ * Component for handling errors
+ * @param props object containing isError as `boolean` and error as `Error`
+ */
 export default function ErrorHandler(props: ErrorHandlerProps) {
   const { isError, error } = props
   if (!isError) return null

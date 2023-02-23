@@ -12,7 +12,9 @@ interface DatePickerProps extends HTMLProps<HTMLInputElement> {
   TextFieldProps?: TextFieldProps
   fullWidth?: boolean
 }
-
+/**
+ * Component for picking dates
+ */
 const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
   function DatePickerElement(
     { style, onChange, fullWidth, TextFieldProps, ...props },

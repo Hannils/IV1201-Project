@@ -1,6 +1,8 @@
 import { Box, CircularProgress } from '@mui/material'
-import React from 'react'
 
+/**
+ * Component for handling loading
+ */
 export default function FullPageLoader() {
   return (
     <Box sx={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>

@@ -23,7 +23,9 @@ interface OpportunityPageProps {
   opportunity: Opportunity
   initialHasApplied: boolean
 }
-
+/**
+ * View for opportunity page
+ */
 export default function OpportunityPage({
   opportunity,
   initialHasApplied,

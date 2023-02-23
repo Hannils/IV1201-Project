@@ -8,7 +8,9 @@ interface ViewPersonPageProps {
   availability: Availability[]
   competences: CompetenceProfile
 }
-
+/**
+ * View for viewPersonPage
+ */
 export default function ViewPersonPage({
   person,
   availability,

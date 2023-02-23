@@ -22,6 +22,9 @@ interface SignUpFormElement extends FormEvent<HTMLFormElement> {
   }
 }
 
+/**
+ * Main component for signUp page
+ */
 export default function Signup() {
   const navigate = useNavigate()
   const [, , setUser] = useUser()

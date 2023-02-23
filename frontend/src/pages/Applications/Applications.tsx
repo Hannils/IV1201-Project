@@ -7,6 +7,9 @@ import api from '../../api/api'
 import ErrorHandler from '../../components/ErrorHandler'
 import FullPageLoader from '../../components/FullPageLoader'
 
+/**
+ * Component for rendering applications
+ */
 export default function Applications() {
   const {
     data: applications,

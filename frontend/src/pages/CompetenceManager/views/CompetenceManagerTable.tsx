@@ -8,6 +8,9 @@ import { yearsOfExperienceSchema } from '../../../util/schemas'
 import { UserCompetence } from '../../../util/Types'
 import { useCompetenceManager } from '../CompetenceManagerContext'
 
+/**
+ * Component for displaying competences for a user
+ */
 export default function CompetenceManagerTable() {
   const { competences, deleteMutation, updateMutation } = useCompetenceManager()
 

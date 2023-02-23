@@ -13,6 +13,9 @@ interface SigninPageProps {
   form: UseFormReturn<SignInFields>
 }
 
+/**
+ * View for signInPage
+ */
 export default function SigninPage({ form, mutation }: SigninPageProps) {
   const { formState, register, handleSubmit } = form
   const usernameError = useErrorMessage<SignInFields>(formState, 'username')

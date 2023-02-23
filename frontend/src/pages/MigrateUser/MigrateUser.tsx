@@ -28,6 +28,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
 import { Person } from '../../util/Types'
 
+/**
+ * Presenter for migrate user
+ */
 export default function MigrateUser() {
   const [currentStep, setCurrentStep] = useState<number>(0)
   const [, , setUser] = useUser()
