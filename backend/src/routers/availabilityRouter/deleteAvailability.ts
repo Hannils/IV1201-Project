@@ -3,19 +3,24 @@ import { dropAvailability } from '../../integrations/DAO/availabilityDAO'
 
 
 /**
- * This method deletes an availability
- * @param req - Request containing params
- * @param res -
- * - `200`: Successful delete
- * - `500`: Database or internal error
- *
+ * This method gets deletes an availability
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `availabilityId`: Id of the availability to delete
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: OK.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
+ * @authorization [`applicant`]
  */
 export const deleteAvailability: express.RequestHandler = async (req, res) => {
-    const personId = Number(req.params.personId)
-  
-    if (isNaN(personId)) return res.sendStatus(400)
-    if (personId !== res.locals.currentUser.personId) return res.sendStatus(403)
+  const personId = res.locals.currentUser.personId
   
     try {
       await dropAvailability(Number(req.params.availabilityId))

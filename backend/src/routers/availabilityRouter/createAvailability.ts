@@ -3,14 +3,25 @@ import { z } from 'zod'
 import { insertAvailability, selectAvailabilitiesByPersonId } from '../../integrations/DAO/availabilityDAO'
 import { doTransaction } from '../../integrations/DAO/DAO'
 import { AvailabilitySchema } from '../../util/schemas'
+import { Availability } from '../../util/Types'
 
 /**
- * This method creates a new availability
- * @param req . Request containing params and body
- * @param res -
- * - `200`: Successful creation.
- * - `500`: Database or internal error
+ * This method gets creates an availability
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `fromDate`: Date when the availability begins.
+ * - - `toDate`: Date when the availability ends.
+ * - `params`:
+ * - - `personId`: Id of the person the availability relates to.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: Availability as {@link Availability}.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
+ * @authorization [`applicant`]
  */
 export const createAvailability: express.RequestHandler = async (req, res) => {
     const personId = Number(req.params.personId)

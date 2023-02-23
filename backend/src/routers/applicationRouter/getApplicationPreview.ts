@@ -1,30 +1,26 @@
 import express from 'express'
 import { ZodError } from 'zod'
 import { selectApplicationPreview } from '../../integrations/DAO/applicationDAO'
+import { ApplicationPreview } from '../../util/Types'
 
 
 /**
  * This method gets a single preview application
  * @param req Contains the request data
  * @param res Contains the response data 
- * - `200`: Successful getting of preview application.
- * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data or Bad Request default response
- * - `500`: Database or internal error 
- * @requestParams
- * - `opportunityId`: Id of the opportunity that the application is related to
- * @requestBody
- * - `void`
- * @responseBody
- * **200**
- * - `Application`: The retrieved application as {@link Application} 
- * 
- * **400**
- * - `Message`: ZodError message | Bad Request default message
- * 
- * **500**
- * - `Internal Error`: Default 500 Internal error message
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `opportunityId`: Id of the opportunity that the application preview relates to.
+ 
+ * **The response contains the following:**
+ *
+ * - `Status: 200`: Specified application preview as {@link ApplicationPreview}.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization `none`
+ * @authorization [`recruiter`]
  */
 
 export const getApplicationPreview: express.RequestHandler = async (req, res) => {

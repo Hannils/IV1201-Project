@@ -12,29 +12,23 @@
 ## Document express endpoint
 ```TypeScript
 /**
- * This method creates a new user and sends response
- * @param req - Contains the request data
- * @param res - Contains the response data
- * - `200`: 200 success description
- * - `400`: 400 bad request description
- * - `500`: 500 server error description
- * @requestParams
- * - `param1`: description
- * - `param2`: description
- * - `param2`: description
- * @requestBody 
- * - `key1` Description kinda like:
- * - `key2` follows {@link schemas.firstnameSchema},
- * 
- * @responseBody
- * **200**
- * - `key1`: value1
- * - `key2`: value2
- * 
- * **500**
- *  - `key1`: value1
- *  - `key2`: value2
- * 
+ * This method creates a single application
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`. OR
+ * - - `bodyParam1`: description etc.
+ * - - `bodyParam1`: description etc.
+ * - `params`:
+ * - - `param1`: Description.
+ * - - `param2`: Description.
+ 
+ * **The response contains the following:**
+ *
+ * - `Status: 200`: OK.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
  * @authorization `none` OR [`Role`] OR [`Role1` | `Role2`]
  */

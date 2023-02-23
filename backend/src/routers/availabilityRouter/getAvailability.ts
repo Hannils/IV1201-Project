@@ -1,14 +1,24 @@
 import express from 'express'
 import { dateInputFormatter } from '../../util/IntlFormatters'
 import { selectAvailabilitiesByPersonId } from '../../integrations/DAO/availabilityDAO'
+import { Availability } from '../../util/Types'
 
 /**
- * This method gets a specific availability
- * @param req - Request containing param
- * @param res -
- * - `200`: Successful get. return body will contain Availability as {@link Availability}
- * - `500`: Database or internal error
+ * This method gets gets an availability
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `personId`: Id of the person that the availability relates to.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: Specified availability as {@link Availability}.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
+ * @authorization [`applicant`]
  */
 export const getAvailability: express.RequestHandler = async (req, res) => {
     const personId = Number(req.params.personId)

@@ -4,16 +4,21 @@ import { z, ZodError } from 'zod'
 import { updateApplicationStatus } from '../../integrations/DAO/applicationDAO'
 
 /**
- * This method updates a single applications status
- * @param req - Request containing applicationId and applicationStatus
- * @param res -
- * - `200`: Successful patch. return body will contain
- * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
- * - `500`: Database or internal error
- * @body
- *
+ * This method patches an application
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`
+ * - `params`:
+ * - - `applicationId`: Id of the application to patch.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: OK.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization [applicant]
+ * @authorization [`recruiter`]
  */
 export const patchApplicationStatus: express.RequestHandler = async (req, res) => {
   const applicationId = Number(req.params.applicationId)
