@@ -39,13 +39,17 @@ export async function init() {
 
   console.log(`[server]: Server is running at https://localhost:${process.env.PORT}`)
 }
+
+const corsOptions = {
+  origin: ["https://recruitment-application.netlify.app/", "https://recruitment-application.onrender.com", "http://localhost:5432", "http://localhost:5173", "http://localhost:8888"]
+}
 /**
  * Initialize the server
  */
 export function initServer() {
   const app = express()
   app.use(express.json())
-  app.use(cors({ origin: true }))
+  app.use(cors(corsOptions))
   app.use(useAuth)
 
   app.use('/user', userRouter)
