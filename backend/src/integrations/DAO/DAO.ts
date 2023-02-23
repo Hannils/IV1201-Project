@@ -10,6 +10,7 @@ export async function initDatabase() {
     password: process.env.DATABASE_PASSWORD,
     port: Number(process.env.DATABASE_PORT),
     database: process.env.DATABASE_NAME,
+    ssl: Boolean(process.env.SSL)
   })
 
   console.log('Connecting to database...')

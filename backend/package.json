@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "clear-build": "rm -r ./dist && npx tsc",
-    "build": "npx tsc",
-    "start": "node dist/App.js",
+    "build": "yarn && npx tsc",
+    "start": "node ./dist/App.js",
     "dev": "pm2 flush recrutement-service && pm2 start src/app.ts --watch --name recrutement-service && pm2 logs recrutement-service",
     "dev-stop": "pm2 stop recrutement-service",
     "dev-conf": "pm2 install typescript && pm2 update",
