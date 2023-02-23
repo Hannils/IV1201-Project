@@ -5,6 +5,7 @@ import tokenManager from '../../util/tokenManager'
 import * as schemas from '../../util/schemas'
 import crypto from 'crypto'
 import { migratePerson, selectPersonById } from '../../integrations/DAO/userDAO'
+import { Person } from '../../util/Types'
 
 const migrateUserParams = z.object({
     token: z.string().uuid(),
@@ -13,21 +14,23 @@ const migrateUserParams = z.object({
   })
 
 /**
- * Express middleware for handling POST requests to migrate a user's account to a new authentication system.
- * @param req - The HTTP request object.
- * @param res - The HTTP response object.
+ * This method migrates a pre-existing user to new database
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `token`: Migration token for user.
+ * - - `username`: New username of the user.
+ * - - `password`: New password of the user
+ * - `params`:
+ * - - `none`.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: Token as `string` and user as {@link Person}.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- *
- * @description 
- * Validates the request body using the `migrateUserParams` schema, generates a new password hash for the user, and updates the user's account information in the database. 
- * 
- * If the migration is successful, the function retrieves the updated user information, generates a new authentication token, and responds with a JSON object containing the token and user information.
- *
- * If the request body does not match the expected schema, the function responds with a 400 status and an array of validation issues.
- *
- * If the provided migration token is not valid, the function responds with a 404 status.
- *
- * If there is an error during the migration process, the function logs the error message and responds with a 500 status code.
+ * @authorization `none`
  */
 
 export const migrateUser: express.RequestHandler = async (req, res) => {

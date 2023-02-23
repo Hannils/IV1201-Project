@@ -1,20 +1,25 @@
 import express from 'express'
 import { selectApplicableOpportunity, selectOpportunity } from '../../integrations/DAO/opportunityDAO'
-import { Role } from '../../util/Types'
+import { Role, Opportunity } from '../../util/Types'
 
 
 /**
- * This method get a single opportunity.
- * Must be applicable for applicant to be able to fetch
- * @param req - Request containing body
- * @param res -
- * - `200`: Successful creation. return body will contain
- * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
- * - `500`: Database or internal error
- * @body
- *
- * @returns an opportunity object
- * @authorization `none`
+ * This method gets a specific opportunity
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `opportunityId`: Id of the opportunity.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: Opportunity as {@link Opportunity}.
+ * - `Status: 400`: opportunityId not a number.
+ * - `Status: 404`: No opportunity found
+ * - `Status: 500`: Internal Server Error.
+ * @returns `void`
+ * @authorization [`applicant`| `recruiter`]
  */
 export const getOpportunity: express.RequestHandler = async (req, res) => {
     try {

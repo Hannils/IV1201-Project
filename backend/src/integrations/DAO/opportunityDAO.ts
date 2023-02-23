@@ -1,5 +1,5 @@
 import { z } from 'zod'
-
+import { Opportunity } from '../../util/Types'
 import { OpportunitySchema } from '../../util/schemas'
 import { queryDatabase } from './DAO'
 
@@ -81,6 +81,7 @@ export async function selectApplicableOpportunity(opportunityId: number) {
  * @param periodEnd date of the end of the opportunity as `Date`
  * @param name Identifies the opportunity as `string`
  * @param description Detailed information about the opportunity as `string`
+ * @returns `void`
  */
 export async function insertOpportunity(
   periodStart: Date,
@@ -88,7 +89,7 @@ export async function insertOpportunity(
   name: string,
   description: string,
 ) {
-  const response = await queryDatabase(
+  await queryDatabase(
     `INSERT INTO opportunity(application_period_start, application_period_end, name, description) VALUES($1, $2, $3, $4, $5)`,
     [periodStart, periodEnd, name, description],
   )
@@ -101,6 +102,7 @@ export async function insertOpportunity(
  * @param periodEnd date of the end of the opportunity as `Date`
  * @param name Identifies the opportunity as `string`
  * @param description Detailed information about the opportunity as `string`
+ * @returns `void`
  */
 export async function updateOpportunity(
   opportunityId: number,
@@ -109,7 +111,7 @@ export async function updateOpportunity(
   name: string,
   description: string,
 ) {
-  const reponse = await queryDatabase(
+  await queryDatabase(
     `UPDATE opportunity SET application_period_start = $1, application_period_end = $2, name = $3, description = $4 WHERE opportunity_id = $5`,
     [periodStart, periodEnd, name, description, opportunityId],
   )
@@ -118,9 +120,10 @@ export async function updateOpportunity(
 /**
  * Calls database and drops a specific opportunity row
  * @param opportunityId Id of the specific opportunity to drop`
+ * @returns `void`
  */
 export async function dropOpportunity(opportunityId: number) {
-  const response = await queryDatabase(
+  await queryDatabase(
     `DELETE FROM opportunity WHERE opportunity_id = $1`,
     [opportunityId],
   )

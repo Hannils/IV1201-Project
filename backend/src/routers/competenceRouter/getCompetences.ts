@@ -1,14 +1,22 @@
 import express from 'express'
 import { selectCompetence } from '../../integrations/DAO/competenceDAO'
+import { Competence } from '../../util/Types'
 
 /**
- * This method retrieves all competences
- * @param req - Request
- * @param res - 
- * - `200`: Sends Competences as Competence[]
- * - `500`: Database or internal error
+ * This method gets all competences
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `none`
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: Competences as {@link Competence}[].
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization none
+ * @authorization `none`
  */
 export const getCompetences: express.RequestHandler = async (req, res) => {
     try {

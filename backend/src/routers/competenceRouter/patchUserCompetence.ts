@@ -3,27 +3,22 @@ import { z } from 'zod'
 import { updateUserCompetence } from '../../integrations/DAO/competenceDAO'
 
 /**
- * Express middleware for handling PATCH requests to update a user's competence profile.
- *
- * @function patchUserCompetence
- * @param req - The HTTP request object, which contains the updated competence data.
- * @param res - The HTTP response object, which is used to send the response status to the client.
+ * This method patches a user competence
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `yearsOfExperience`: the number of years the user competence has as `number`.
+ * - `params`:
+ * - - `competenceId`: Id of the user competence to patch.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: OK.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- *
- * @paramreq.params.competenceId - The ID of the competence to update.
- * @param res.locals.currentUser - An object containing the currently logged-in user's data, including their personId.
- *
- * @requestBody
- *   - `yearsOfExperience` The updated number of years of experience for the specified competence.
- * @responseBody
- * **200**
- * - Success - The function successfully updates the competence profile for the current user and responds with a 200 status code.
- * **400**
- * - Bad Request - The request body does not match the expected format, and the function responds with a 400 status code.
- * **500**
- * - Server Error - The function is unable to update the competence profile due to an internal error.
- * @authorization `Applicant` 
-*/
+ * @authorization `none`
+ */
 
 export const patchUserCompetence: express.RequestHandler = async (req, res) => {
     const competenceId = Number(req.params.competenceId)

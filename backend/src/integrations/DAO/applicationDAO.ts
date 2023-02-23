@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { Person } from '../../util/Types'
 import { queryDatabase } from './DAO'
-import { Application, Opportunity } from '../../util/Types'
+import { Application, Opportunity, ApplicationPreview } from '../../util/Types'
 import { selectApplicationStatusId } from './statusDAO'
 import { ApplicationSchema, ApplicationPreviewSchema } from '../../util/schemas'
 
@@ -30,15 +30,9 @@ function toApplication(x: any) {
 }
 
 /**
- * Maps an application preview object to the expected format for responses.
- * @param {any} x - The application preview object to be mapped.
- * @returns {Object|null} The application preview object mapped to the expected format, or `null` if `x` is falsy.
- * @description
- * The returned object has the following properties:
- * - `applicationId`: The ID of the application.
- * - `status`: An object containing the name and ID of the application's status.
- * - `person`: The person object associated with the application.
- * - `competences`: An array of objects containing the years of experience and competence profile for the application.
+ * Util function for parsing db output to match scheme of {@link ApplicationPreview}
+ * @param x Database output
+ * @returns ApplicationPreview as {@link ApplicationPreview}
  */
 
 function toApplicationPreview(x: any) {
@@ -103,16 +97,7 @@ export async function selectApplicationByPersonAndOpportunity(
 /**
  * Retrieves all applications associated with a specified person ID from the database.
  * @param personId - The ID of the person associated with the applications.
- * @returns  An array of application objects retrieved from the database.
- * @throws `ZodError` If the data retrieved from the database does not match the expected schema.
- * @description The returned array contains objects with the following properties:
- * - `application_id`: The ID of the application.
- * - `person_id`: The ID of the person associated with the application.
- * - `status`: The name of the application's status.
- * - `name`: The name of the opportunity associated with the application.
- * - `opportunity_id`: The ID of the opportunity associated with the application.
- * - `application_period_start`: The start date of the application period for the opportunity.
- * - `application_period_end`: The end date of the application period for the opportunity.
+ * @returns  An array of application objects retrieved from the database as {@link Application}[].
  */
 
 export async function selectApplicationsByPersonId(personId: number) {
@@ -144,6 +129,7 @@ export async function insertApplication(personId: number, opportunityId: number)
 /**
  * Drops a specific row from the application table
  * @param applicationId Id of the row to drop
+ * @returns `void`
  */
 export async function dropApplication(applicationId: number) {
   await queryDatabase(`DELETE FROM application WHERE application_id = $1`, [
@@ -155,8 +141,7 @@ export async function dropApplication(applicationId: number) {
  * Updates the status of an application in the database.
  * @param applicationId - The ID of the application to be updated.
  * @param statusId - The ID of the new status to be assigned to the application.
- * @throws `Error` If an error occurs while updating the application's status in the database.
- * @description Updates the `status_id` column in the `application` table for the application with the specified ID to the new status ID specified.
+ * @returns `void`
  */
 
 export async function updateApplicationStatus(applicationId: number, statusId: number) {
@@ -169,13 +154,7 @@ export async function updateApplicationStatus(applicationId: number, statusId: n
 /**
  * Retrieves an array of application preview objects associated with a specified opportunity ID from the database.
  * @param opportunityId - The ID of the opportunity associated with the applications.
- * @returns A promise that resolves to an array of application objects retrieved from the database.
- * @throws `ZodError` If the data retrieved from the database does not match the expected schema.
- * @description The returned array contains objects with the following properties:
- * - `applicationId`: The ID of the application.
- * - `status`: An object containing the name and ID of the application's status.
- * - `person`: An object containing the name, surname, and ID of the person associated with the application.
- * - `competences`: An array of objects containing the years of experience, name, and ID of the competence profile for the application.
+ * @returns ApplicationPreview as {@link ApplicationPreview}.
  */
 export async function selectApplicationPreview(opportunityId: number) {
   const response = await queryDatabase(

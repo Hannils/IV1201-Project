@@ -2,14 +2,22 @@ import express from 'express'
 import { selectPersonById } from '../../integrations/DAO/userDAO'
 
 /**
- * This method gets the a user based on a personId
- * @param req - Request containing body
- * @param res -
- * - `200`: Sends `user` as {@link Person} in body
- * - `404`: User not found
- * - `500`: Database or internal error
+ * This method gets a user with personId as param
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `personId`: Id of the person to get
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: User as {@link Person}.
+ * - `Status: 400`: PersonId param not a number.
+ * - `Status: 404`: User not found.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization `Yes`
+ * @authorization [`recruiter`]
  */
 export const getUserWithPersonId: express.RequestHandler = async (req, res) => {
   const personId = Number(req.params.personId)
@@ -22,6 +30,6 @@ export const getUserWithPersonId: express.RequestHandler = async (req, res) => {
     res.json(person)
   } catch (e: any) {
     console.error(e.message)
-    res.sendStatus(400)
+    res.sendStatus(500)
   }
 }

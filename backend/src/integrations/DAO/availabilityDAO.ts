@@ -1,7 +1,7 @@
 import { z } from 'zod'
-
 import { AvailabilitySchema } from '../../util/schemas'
 import { queryDatabase } from './DAO'
+import { Availability } from '../../util/Types'
 
 /**
  * Util function for parsing db output to match schmeme of {@link Availability}
@@ -46,6 +46,7 @@ export async function selectAvailabilities() {
  * @param personId Id of the person that the row corresponds to as `number`
  * @param fromDate Date of the start of the available period as `Date`
  * @param toDate Date fo the end of the available period as `Date`
+ * @returns `void`
  */
 export async function insertAvailability(personId: number, fromDate: Date, toDate: Date) {
   const res = await queryDatabase(
@@ -59,6 +60,7 @@ export async function insertAvailability(personId: number, fromDate: Date, toDat
 /**
  * Drops a availability row from the database
  * @param availabilityId Id of the row to drop
+ * @returns `void`
  */
 export async function dropAvailability(availabilityId: number) {
   await queryDatabase(`DELETE FROM availability WHERE availability_id = $1`, [
@@ -71,6 +73,7 @@ export async function dropAvailability(availabilityId: number) {
  * @param availabilityId Id of the availability to update
  * @param fromDate New date of the start of the available period as `Date`
  * @param toDate New date of the end of the available period as `Date`
+ * @returns `void`
  */
 export async function updateAvailability(
   availabilityId: number,

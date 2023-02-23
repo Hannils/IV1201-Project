@@ -3,14 +3,21 @@ import { z } from 'zod'
 import { dropUserCompetence } from '../../integrations/DAO/competenceDAO'
 
 /**
- * This method deletes competenceProfile for specific person
- * @param req - Request containing `personId` as number & `competenceId` as number
- * @param res -
- * - `200`: OK
- * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
- * - `500`: Database or internal error
+ * This method deletes a user competence
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `competenceId`: Id of the person that the user competence relates to.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: OK.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization `Applicant`
+ * @authorization `none`
  */
 export const deleteUserCompetence: express.RequestHandler = async (req, res) => {
     const competenceId = Number(req.params.competenceId)

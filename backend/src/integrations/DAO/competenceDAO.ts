@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { CompetenceSchema, UserCompetenceSchema } from '../../util/schemas'
-import { UserCompetence } from '../../util/Types'
+import { UserCompetence, Competence } from '../../util/Types'
 import { queryDatabase } from './DAO'
 
 /**
@@ -35,8 +35,7 @@ function toCompetence(x: any) {
 
 /**
  * Calls database and selects all competences
- * @returns Competences as {@link Competence}[]
- * @requires Database
+ * @returns All competences as {@link Competence}[]
  */
 export async function selectCompetence() {
   const response = await queryDatabase(`SELECT * FROM competence`, [])
@@ -67,7 +66,6 @@ export async function selectCompetenceProfile(personId: number) {
  * @param  userCompetence - Competence to be inserted as {@link UserCompetence}
  * @param  personId - Id of the person to insert into as `number`
  * @returns `void`
- * @requires Database
  */
 export async function insertUserCompetence(
   userCompetence: UserCompetence,
@@ -86,7 +84,6 @@ export async function insertUserCompetence(
  * @param personId - Id of the person as `number`
  * @param competenceId - Id of the competence to remove as `number`
  * @returns `void`
- * @requires Database
  */
 export async function dropUserCompetence({
   personId,
@@ -109,7 +106,6 @@ export async function dropUserCompetence({
  * @param competenceId - Id of the competence to update as `number`
  * @param yearsOfExperience - `number`
  * @returns `void`
- * @requires Database
  */
 export async function updateUserCompetence({
   personId,

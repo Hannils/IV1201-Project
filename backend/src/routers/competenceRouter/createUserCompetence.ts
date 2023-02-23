@@ -2,19 +2,24 @@ import express from 'express'
 import { z } from 'zod'
 import { insertUserCompetence } from '../../integrations/DAO/competenceDAO'
 import { UserCompetenceSchema } from '../../util/schemas'
+import { UserCompetence } from '../../util/Types'
 
 /**
- * This method creates a userCompetence for specific person
- * @param req - Request containing body
- * @param res -
- * - `200`: Success
- * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
- * - `500`: Database or internal error
- * @body
- * - `competence`
- * - `yearsOfExperience`
+ * This method creates a user competence
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `User competence as {@link @UserCompetence}`.
+ * - `params`:
+ * - - `none`.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: OK.
+ * - `Status: 400`: Body does not match validation schema sends ZodError message as array of issues.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization `Applicant`
+ * @authorization `none`
  */
 export const createUserCompetence: express.RequestHandler = async (req, res) => {
     const personId = res.locals.currentUser.personId

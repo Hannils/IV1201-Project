@@ -5,19 +5,21 @@ import { selectIncompletePersonByEmail } from '../../integrations/DAO/userDAO'
 import { emailSchema } from '../../util/schemas'
 
 /**
- * This method Signs in an existing user
- * @param req - Request containing body
- * @param res -
- * - `200`: Sends `token` as `string` & `user` as {@link Person} in body
- * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
- * - `500`: Database or internal error
- * @body
- * - `email`: {@link schemas.usernameSchema},
- *
- * @responseBody
- *
+ * This method generates a token for migrating user
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+  * - - `email`: Email of the migrating user.
+ * - `params`:
+ * - - `none`.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: OK.
+ * - `Status: 404`: User not found by email.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization none
+ * @authorization `none`
  */
 export const generateToken: express.RequestHandler = async (req, res) => {
     let email: string

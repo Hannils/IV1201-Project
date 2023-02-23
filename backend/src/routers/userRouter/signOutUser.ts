@@ -2,18 +2,28 @@ import express from 'express'
 import tokenManager from '../../util/tokenManager'
 
 /**
- * This method Signs in an existing user
- * @param req - Request containing body
- * @param res -
- * - `200`: User is successfully signed out
- * - `500`: Database or internal error
+ * This method signs out a user
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `none`.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: OK.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization `Yes`
+ * @authorization `none`
  */
 export const signOutUser: express.RequestHandler = (req, res) => {
+  try {
     const token: string = res.locals.currentToken
-  
     tokenManager.deleteToken(token)
-  
-    res.sendStatus(200)
+  } catch (error: any) {
+    console.error(error.message)
+    res.sendStatus(500)
   }
+  res.sendStatus(200)
+}

@@ -4,7 +4,10 @@ export interface TokenEntry {
   personId: number
   expires: Date
 }
-
+/**
+ * This functions generates a new token
+ * @returns Token as `string`
+ */
 const generateToken = async () =>
   new Promise<string>((resolve, reject) =>
     crypto.randomBytes(64, (err, key) =>
@@ -21,11 +24,7 @@ export class TokenManager {
   #tokenValidity
   #tokenGenerator
 
-  /**
-   *
-   * @param tokenValidity How long a token is valid in ms
-   * @param tokenGenerator a generator function for the identifiers/tokens
-   */
+
   constructor(
     tokenValidity: number | null = null,
     tokenGenerator: TokenGenerator | null = null,
@@ -38,7 +37,7 @@ export class TokenManager {
   /**
    * Creates a new token linked to a personId
    * @param personId the id to link the token to
-   * @returns the generated token as `string`
+   * @returns Token as `string`
    */
   async createToken(personId: number) {
     const token = await this.#tokenGenerator()

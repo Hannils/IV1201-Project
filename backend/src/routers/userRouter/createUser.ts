@@ -6,6 +6,7 @@ import { insertPerson, selectPersonByUsername } from '../../integrations/DAO/use
 import tokenManager from '../../util/tokenManager'
 import { Person } from '../../util/Types'
 import { doTransaction } from '../../integrations/DAO/DAO'
+import { usernameSchema, firstnameSchema, lastnameSchema, emailSchema, personNumberSchema, passwordSchema } from '../../util/schemas'
 
 const createUserParams = z.object({
   username: schemas.usernameSchema,
@@ -17,21 +18,27 @@ const createUserParams = z.object({
 })
 
 /**
- * This method creates a new user and sends response
- * @param req - Request containing body
- * @param res -
- * - `200`: Sends `token` as `string` & `user` as {@link Person} in body
- * - `400`: Body does not match validation schema. body will contain {@link ZodIssue}[] with the provided data
- * - `500`: Database or internal error
- * @body
- * - `username`: {@link schemas.usernameSchema},
- * - `firstname`: {@link schemas.firstnameSchema},
- * - `lastname`: {@link schemas.lastnameSchema},
- * - `email`: {@link schemas.emailSchema},
- * - `personNumber`: {@link schemas.personNumberSchema},
- * - `password`: {@link schemas.passwordSchema},
+ * This method creates a new user
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+  * - - `username`: Username of the user as {@link usernameSchema}.
+  * - - `firstname`: Firstname of the user as {@link firstnameSchema}.
+  * - - `lastname`: Lastname of the user as {@link lastnameSchema}.
+  * - - `email`: Email of the user as {@link emailSchema}.
+  * - - `personNumber`: Person number of the user as {@link personNumberSchema}.
+  * - - `password`: Password of the user as {@link passwordSchema}.
+  * 
+ * - `params`:
+ * - - `none`.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: Token as `string` and user as {@link Person}.
+ * - `Status: 400`: User already exists.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization none
+ * @authorization `none`
  */
 export const createUser: express.RequestHandler = async (req, res) => {
   let user: z.infer<typeof createUserParams>

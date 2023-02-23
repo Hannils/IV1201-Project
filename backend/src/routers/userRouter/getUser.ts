@@ -1,15 +1,23 @@
 import express from 'express'
 import { selectPersonById } from '../../integrations/DAO/userDAO'
+import { Person } from '../../util/Types'
 
 /**
- * This method gets the current user
- * @param req - Request containing body
- * @param res -
- * - `200`: Sends `user` as {@link Person} in body
- * - `404`: User not found
- * - `500`: Database or internal error
+ * This method gets a user
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `none`
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: User as {@link Person}.
+ * - `Status: 404`: User not found.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization `Yes`
+ * @authorization `none`
  */
 export const getUser: express.RequestHandler = async (req, res) => {
     const { personId } = res.locals.currentUser
@@ -19,6 +27,6 @@ export const getUser: express.RequestHandler = async (req, res) => {
       res.json(person)
     } catch (e: any) {
       console.error(e.message)
-      res.sendStatus(400)
+      res.sendStatus(500)
     }
   }

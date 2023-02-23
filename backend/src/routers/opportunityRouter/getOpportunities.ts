@@ -3,17 +3,20 @@ import { selectApplicableOpportunities, selectOpportunities } from '../../integr
 import { Role } from '../../util/Types'
 
 /**
- * This method gets all opportunities.
- * For applicants only the applicable ones are returned
- * @param req - Request containing body
- * @param res -
- * - `200`: Successful creation. return body will contain
- * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
- * - `500`: Database or internal error
- * @body
- *
- * @returns an array of opportunities
- * @authorization `applicant`
+ * This method gets all opportunities
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `none`.
+ * - `params`:
+ * - - `none`.
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: `Applicant`: All applicable opportunities. `Recruiter`: All opportunities.
+ * - `Status: 500`: Internal Server Error.
+ * @returns `void`
+ * @authorization [`applicant`| `recruiter`]
  */
 export const getOpportunities: express.RequestHandler = async (req, res) => {
     try {

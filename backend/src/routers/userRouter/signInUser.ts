@@ -4,19 +4,26 @@ import * as schemas from '../../util/schemas'
 import crypto from 'crypto'
 import { selectPersonByUsername } from '../../integrations/DAO/userDAO'
 import tokenManager from '../../util/tokenManager'
+import { Person } from '../../util/Types'
 
 /**
- * This method Signs in an existing user
- * @param req - Request containing body
- * @param res -
- * - `200`: Sends `token` as `string` & `user` as {@link Person} in body
- * - `400`: Body does not match validation schema. body will contain an array of issues with the provided data
- * - `500`: Database or internal error
- * @body
- * - `username`: {@link schemas.usernameSchema},
- * - `password`: {@link schemas.passwordSchema},
+ * This method signs in a user
+ * @param req Contains the request data
+ * @param res Contains the response data 
+ * @description **The request contains the following:**
+ * - `body`:
+ * - - `username`: Username of the user as {@link schemas.usernameSchema}.
+ * - - `password`: Password of the user as {@link schemas.passwordSchema}
+ * - `params`:
+ * - - `none`
+ 
+ * **The response contains the following:**
+ * - `Status: 200`: Token as `string` and User as {@link Person}.
+ * - `Status: 400`: Wrong password.
+ * - `Status: 404`: User not found.
+ * - `Status: 500`: Internal Server Error.
  * @returns `void`
- * @authorization none
+ * @authorization `none`
  */
 export const signInUser: express.RequestHandler = async (req, res) => {
     try {
@@ -65,6 +72,6 @@ export const signInUser: express.RequestHandler = async (req, res) => {
       })
     } catch (e: any) {
       console.error(e.message)
-      res.sendStatus(400)
+      res.sendStatus(500)
     }
   }

@@ -34,6 +34,14 @@
  */
 ```
 
+## Document general method
+```TypeScript
+/**
+ * Util function for parsing db output to match scheme of {@link Application}
+ * @param FirstParam Description... 
+ * @returns Application as {@link Application}
+ */
+
 # Architectural decisions for backend
 
 <details open>

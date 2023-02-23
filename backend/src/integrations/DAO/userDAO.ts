@@ -1,12 +1,11 @@
 import { z } from 'zod'
 
 import { IncompletePersonSchema, PersonSchema } from '../../util/schemas'
-import { Person, Role } from '../../util/Types'
+import { Person, Role, IncompletePerson } from '../../util/Types'
 import { queryDatabase } from './DAO'
 import { getRoleId } from './roleDAO'
 
 const PERSON_SELECT = `person_id, username, person.name as firstname, surname as lastname, role.name as role, email, person_number, password, salt`
-
 const PERSON_VALIDATOR = `person.username IS NOT NULL AND person.password IS NOT NULL AND person.salt IS NOT NULL`
 
 /**
@@ -26,7 +25,6 @@ function toPerson(x: any) {
  * Inserts a person into database
  * @param person - The person to insert as {@link Person}
  * @returns `void`
- * @requires Database
  */
 export async function insertPerson(person: Omit<Person, 'personId'>) {
   const response = await queryDatabase(
@@ -54,7 +52,6 @@ export async function insertPerson(person: Omit<Person, 'personId'>) {
  * Drops a person row from the database
  * @param personId - Id of the person to drop as `number`
  * @returns `void`
- * @requires Database
  */
 export async function dropPerson(personId: number) {
   await queryDatabase(
@@ -69,8 +66,7 @@ export async function dropPerson(personId: number) {
 /**
  * Calls database and selects a specific person from personId
  * @param personId - Id of the person to select as `number`
- * @returns Person as {@link Person}
- * @requires Database
+ * @returns Person as {@link Person} || `null`
  */
 export async function selectPersonById(personId: number) {
   const response = await queryDatabase(
@@ -91,8 +87,7 @@ export async function selectPersonById(personId: number) {
 /**
  * Calls database and selects a specific person from email
  * @param email - Email of the person as `string`
- * @returns Person as {@link Person}
- * @requires Database
+ * @returns Person as {@link Person} || `null`
  */
 export async function selectPersonByEmail(email: string) {
   const response = await queryDatabase(
@@ -115,7 +110,6 @@ export async function selectPersonByEmail(email: string) {
  * Calls database and selects a specific person from username
  * @param username - Username of the person as `string`
  * @returns Person as {@link Person} | `null`
- * @requires Database
  */
 export async function selectPersonByUsername(username: string) {
   const response = await queryDatabase(
@@ -137,7 +131,6 @@ export async function selectPersonByUsername(username: string) {
  * Calls database and selects all people with a specific role
  * @param role - Role to match the people to as {@link Role}
  * @returns Multiple people as {@link Person}[]
- * @requires Database
  */
 export async function selectPeopleByRole(role: Role) {
   const response = await queryDatabase(
@@ -154,11 +147,9 @@ export async function selectPeopleByRole(role: Role) {
 }
 
 /**
- * Calls database and updates a person with a specific id
- * @param personId - Id of the person to update as `number`
- * @param person - Person to update as {@link Person}
- * @returns `void`
- * @requires Database
+ * Calls database and selects a non-migrated user by email
+ * @param email - Email of the non-migrated user as `string`
+ * @returns Non-migrated user as {@link IncompletePerson} || `null`
  */
 export async function selectIncompletePersonByEmail(email: string) {
   const { rowCount, rows } = await queryDatabase(
@@ -176,11 +167,12 @@ export async function selectIncompletePersonByEmail(email: string) {
 }
 
 /**
- * Calls database and updates a person with a specific id
- * @param personId - Id of the person to update as `number`
- * @param person - Person to update as {@link Person}
+ * Calls database and migrates a non-migrated user
+ * @param username - New username of the user
+ * @param password - New password of the user
+ * @param salt - Salt of the user
+ * @param personId - Id of the user
  * @returns `void`
- * @requires Database
  */
 export async function migratePerson({
   username,

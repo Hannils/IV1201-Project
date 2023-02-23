@@ -10,7 +10,6 @@ import tokenManager from '../util/tokenManager'
  * @param res The express response as {@link Response}
  * @param next The express next function as {@link NextFunction}
  * @returns `void`
- * @requires Database
  */
 async function useAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.headers.authorization
