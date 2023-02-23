@@ -10,7 +10,7 @@ export async function initDatabase() {
     password: process.env.DATABASE_PASSWORD,
     port: Number(process.env.DATABASE_PORT),
     database: process.env.DATABASE_NAME,
-    ssl: Boolean(process.env.SSL)
+    ssl: process.env.SSL === 'true',
   })
 
   console.log('Connecting to database...')
@@ -45,9 +45,9 @@ export async function queryDatabase(query: string, data: any[]): Promise<QueryRe
  * @param transactionFunction - The function to execute as part of the transaction.
  * @returns A promise that resolves after the transaction is committed or rejects if there is an error.
  * @throws `Error` If the client is not initialized or if an error occurs during the transaction.
- * @description 
+ * @description
  * This function wraps the specified `transactionFunction` in a database transaction. It executes the function,
- * then commits the transaction if successful, or rolls back the transaction if there is an error. 
+ * then commits the transaction if successful, or rolls back the transaction if there is an error.
  * If the function returns a promise that resolves with a value, that value is returned.
  */
 
