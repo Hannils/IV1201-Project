@@ -6,7 +6,7 @@
   "scripts": {
     "clear-build": "rm -r ./dist && npx tsc",
     "build": "yarn && npx tsc",
-    "start": "ls && ls ./dist && node ./dist/src/App.js",
+    "start": "node ./dist/src/App.js",
     "dev": "pm2 flush recrutement-service && pm2 start src/app.ts --watch --name recrutement-service && pm2 logs recrutement-service",
     "dev-stop": "pm2 stop recrutement-service",
     "dev-conf": "pm2 install typescript && pm2 update",
