@@ -12,10 +12,14 @@ import { ApplicationSchema, ApplicationPreviewSchema } from '../../util/schemas'
  */
 function toApplication(x: any) {
   if (!x) return null
+  console.log(x)
   return {
     applicationId: x.application_id,
     personId: x.person_id,
-    status: x.status,
+    status: {
+      name: x.status,
+      statusId: x.status_id,
+    },
     opportunity: {
       opportunityId: x.opportunity_id,
       applicationPeriodStart: x.application_period_start,
@@ -29,7 +33,7 @@ function toApplication(x: any) {
  * Maps an application preview object to the expected format for responses.
  * @param {any} x - The application preview object to be mapped.
  * @returns {Object|null} The application preview object mapped to the expected format, or `null` if `x` is falsy.
- * @description 
+ * @description
  * The returned object has the following properties:
  * - `applicationId`: The ID of the application.
  * - `status`: An object containing the name and ID of the application's status.
@@ -63,7 +67,7 @@ function toApplicationPreview(x: any) {
 export async function selectApplication(applicationId: number) {
   const response = await queryDatabase(
     `
-        SELECT 'application_id, person_id, status.name as status, opportunity.name, opportunity.opportunity_id, application_period_start, application_period_end' FROM application
+        SELECT 'application_id, person_id, status.name as status, application.status_id, opportunity.name, opportunity.opportunity_id, application_period_start, application_period_end' FROM application
         INNER JOIN status ON status.status_id = application.status_id
         INNER JOIN opportunity ON opportunity.opportunity_id = application.opportunity_id
         WHERE application_id = $1
@@ -86,7 +90,7 @@ export async function selectApplicationByPersonAndOpportunity(
 ) {
   const response = await queryDatabase(
     `
-        SELECT application_id, person_id, status.name as status, opportunity.name, opportunity.opportunity_id, application_period_start, application_period_end FROM application
+        SELECT application_id, person_id, status.name as status, application.status_id, opportunity.name, opportunity.opportunity_id, application_period_start, application_period_end FROM application
         INNER JOIN status ON status.status_id = application.status_id
         INNER JOIN opportunity ON opportunity.opportunity_id = application.opportunity_id
         WHERE person_id = $1 AND application.opportunity_id = $2
@@ -114,7 +118,7 @@ export async function selectApplicationByPersonAndOpportunity(
 export async function selectApplicationsByPersonId(personId: number) {
   const response = await queryDatabase(
     `
-            SELECT application_id, person_id, status.name as status, opportunity.name, opportunity.opportunity_id, application_period_start, application_period_end FROM application
+            SELECT application_id, person_id, status.name as status, application.status_id, opportunity.name, opportunity.opportunity_id, application_period_start, application_period_end FROM application
             INNER JOIN status ON status.status_id = application.status_id
             INNER JOIN opportunity ON opportunity.opportunity_id = application.opportunity_id
             WHERE person_id = $1
