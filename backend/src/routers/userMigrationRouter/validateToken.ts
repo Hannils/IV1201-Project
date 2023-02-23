@@ -29,6 +29,6 @@ export const validateToken: express.RequestHandler = async (req, res) => {
       return res.sendStatus(400)
     }
   
-    if (migrationTokenStore.validateToken(token) === null) return res.sendStatus(404)
+    if (migrationTokenStore.validateToken(token) === null) return res.status(404).send("BAD_TOKEN")
     res.sendStatus(200)
   }
