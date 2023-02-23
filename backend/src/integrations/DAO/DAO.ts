@@ -57,8 +57,9 @@ export async function doTransaction<ResolvedValue = void>(
 
   try {
     await client.query('BEGIN')
-    await transationFunction()
+    const result = await transationFunction()
     await client.query('COMMIT')
+    return result
   } catch (error) {
     await client.query('ROLLBACK')
     throw error

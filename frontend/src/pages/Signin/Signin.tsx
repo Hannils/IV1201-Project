@@ -4,74 +4,47 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom'
 
 import api from '../../api/api'
 import useUser from '../../util/auth'
+import { useMutation } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-interface SignInFormElement extends FormEvent<HTMLFormElement> {
-  target: EventTarget & {
-    username: HTMLInputElement
-    password: HTMLInputElement
-  }
-}
+
+
+import { Person } from '../../util/Types'
+import { AxiosError } from 'axios'
+import SigninPage from './SigninPage'
+import { SignInFields, SignInSchema } from './SigninTypes'
+
 
 export default function SignIn() {
-  const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const [, , setUser] = useUser()
 
-  const signIn = (e: SignInFormElement) => {
-    const username = e.target.username.value
-    const password = e.target.password.value
-    e.preventDefault()
-    setLoading(true)
-    api
-      .signIn({ username, password })
-      .then((user) => setUser(user))
-      .then(() => navigate('/'))
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false))
-  }
+  const form = useForm<SignInFields>({
+    mode: 'onChange',
+    resolver: zodResolver(SignInSchema),
+  })
 
-  return (
-    <Container
-      maxWidth="sm"
-      sx={{ display: 'grid', alignContent: 'center', minHeight: '80vh' }}
-    >
-      <Typography variant="h1" gutterBottom>
-        Sign in
-      </Typography>
-      <Box component="form" onSubmit={signIn}>
-        <Stack spacing={2}>
-          <TextField
-            disabled={loading}
-            name="username"
-            label="Username"
-            required
-            variant="outlined"
-          />
-          <TextField
-            disabled={loading}
-            name="password"
-            label="Password"
-            required
-            variant="outlined"
-            type="password"
-          />
-          <Button disabled={loading} type="submit" variant="contained">
-            {loading ? 'Signing in...' : 'Sign in'}
-          </Button>
-          <Typography>
-            No account?{' '}
-            <Link component={RouterLink} to="/signup">
-              Create account
-            </Link>
-          </Typography>
-          <Typography>
-            No username or password?{' '}
-            <Link component={RouterLink} to="/migrate-user">
-              Add login for account
-            </Link>
-          </Typography>
-        </Stack>
-      </Box>
-    </Container>
-  )
+  const mutation = useMutation<Person, AxiosError, SignInFields>({
+    mutationFn: (data: SignInFields) => api.signIn(data),
+    onSuccess: (user) => {
+      setUser(user)
+      navigate('/')
+    },
+    onError: (error) => {
+      if (error.response?.status === 404 && error.response.data === 'USER_NOT_FOUND') {
+        form.setError('username', {
+          message: 'User not found',
+        })
+      }
+      if (error.response?.status === 400 && error.response.data === 'WRONG_PASSWORD') {
+        form.setError('password', {
+          message: 'Password is incorrect',
+        })
+      }
+    },
+  })
+
+
+  return <SigninPage form={form} mutation={mutation} />
 }

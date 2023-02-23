@@ -64,11 +64,11 @@ export default function OpportunityPage({
       </ReactMarkdown>
       <Box>
         {hasApplied ? (
-          <Button variant="contained" disabled>
+          <Button variant="contained" disabled sx={{mb: 4}}>
             You have applied for this position
           </Button>
         ) : (
-          <Button variant="contained" onClick={setModal(true)}>
+          <Button variant="contained" sx={{mb: 4}} onClick={setModal(true)}>
             Apply for this opportunity...
           </Button>
         )}
