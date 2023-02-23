@@ -12,6 +12,10 @@ import Signin from './pages/Signin/Signin'
 import Signup from './pages/Signup/Signup'
 import ViewPerson from './pages/ViewPerson/ViewPerson'
 
+/**
+ * App is the main component for the application.
+ * It does routing and renders the layout
+ */
 function App() {
   return (
     <BrowserRouter>

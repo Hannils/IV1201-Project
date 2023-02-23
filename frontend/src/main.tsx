@@ -8,6 +8,10 @@ import App from './App'
 import { AuthProvider } from './util/auth'
 import theme from './util/theme'
 
+/**
+ * The queryclient used wihtin the whole application.
+ * @see https://tanstack.com/query/v4/docs/react/reference/useQuery
+ */
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -18,16 +22,23 @@ const queryClient = new QueryClient({
   },
 })
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </ThemeProvider>
-      <ReactQueryDevtools />
-    </QueryClientProvider>
-  </React.StrictMode>,
-)
+/**
+ * Main renderer. Provides all the global contexts and renders {@link App}
+ */
+function init() {
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ThemeProvider>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
+    </React.StrictMode>,
+  )
+}
+
+init()
