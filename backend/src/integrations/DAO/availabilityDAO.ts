@@ -54,7 +54,7 @@ export async function insertAvailability(personId: number, fromDate: Date, toDat
     [personId, fromDate, toDate],
   )
 
-  return res.rows.at(0)?.availability_id as number
+  return res.rows[0].availability_id as number
 }
 
 /**
