@@ -37,7 +37,10 @@ export default function Applications() {
             component={Link}
             to={`/opportunity/${opportunity.opportunityId}`}
           >
-            <ListItemText primary={opportunity.name} secondary={`Status: ${status.name}`} />
+            <ListItemText
+              primary={opportunity.name}
+              secondary={`Status: ${status.name}`}
+            />
           </ListItemButton>
         ))}
       </List>

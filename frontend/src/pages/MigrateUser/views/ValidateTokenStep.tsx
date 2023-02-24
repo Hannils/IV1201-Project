@@ -1,17 +1,17 @@
 import { Box, Button, Stack, TextField } from '@mui/material'
 import { UseMutationResult } from '@tanstack/react-query'
-import { AxiosResponse } from 'axios'
-import React, { FormEvent } from 'react'
-import { ValidateTokenFields } from '../migrateUserTypes'
+import React from 'react'
 import { UseFormReturn, useFormState } from 'react-hook-form'
-import useErrorMessage from '../../../util/useErrorMessages'
+
 import ErrorHandler from '../../../components/ErrorHandler'
 import { useFormDirtySinceLastSubmit } from '../../../util/useDirtySinceLastSubmit'
+import useErrorMessage from '../../../util/useErrorMessages'
+import { ValidateTokenFields } from '../migrateUserTypes'
 
 interface ValidateTokenStepProps {
   mutator: UseMutationResult<unknown, unknown, ValidateTokenFields>
   form: UseFormReturn<ValidateTokenFields>
-  goBack: Function
+  goBack: CallableFunction
 }
 
 /**

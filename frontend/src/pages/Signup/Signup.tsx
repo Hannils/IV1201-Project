@@ -1,26 +1,15 @@
-import React, { FormEvent, useState } from 'react'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 
 import api from '../../api/api'
 import useUser from '../../util/auth'
-import { useForm } from 'react-hook-form'
-import { SignupFields, SignupSchema } from './SignupTypes'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
 import { Person } from '../../util/Types'
-import { AxiosError } from 'axios'
 import SignupPage from './SignupPage'
-
-interface SignUpFormElement extends FormEvent<HTMLFormElement> {
-  target: EventTarget & {
-    firstname: HTMLInputElement
-    lastname: HTMLInputElement
-    username: HTMLInputElement
-    email: HTMLInputElement
-    password: HTMLInputElement
-    personNumber: HTMLInputElement
-  }
-}
+import { SignupFields, SignupSchema } from './SignupTypes'
 
 /**
  * Main component for signUp page

@@ -3,8 +3,8 @@ import { z } from 'zod'
 
 import {
   Application,
+  ApplicationPreview,
   ApplicationSchema,
-  ApplicationStatusState,
   ApplicationStatus,
   Availability,
   AvailabilitySchema,
@@ -13,8 +13,6 @@ import {
   OpportunitySchema,
   Person,
   UserCompetence,
-  ApplicationPreview,
-  Opportunity
 } from '../util/Types'
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -240,7 +238,6 @@ const api = {
     axios
       .get(`${API_URL}/opportunity/${opportunityId}`, { ...getAuthedHeaders() })
       .then((res) => OpportunitySchema.parse(res.data)),
-
 
   /**
    * Fuction to get all availabilities for a specific person

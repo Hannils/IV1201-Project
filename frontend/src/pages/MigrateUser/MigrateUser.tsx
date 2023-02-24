@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Container,
   Step,
@@ -7,27 +8,25 @@ import {
   Typography,
 } from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import React, { useCallback, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 import api from '../../api/api'
 import useUser from '../../util/auth'
+import { Person } from '../../util/Types'
+import {
+  GetTokenFields,
+  getTokenSchema,
+  UpdateFields,
+  updateSchema,
+  ValidateTokenFields,
+  validateTokenSchema,
+} from './migrateUserTypes'
 import GetTokenStep from './views/GetTokenStep'
 import UpdateStep from './views/UpdateStep'
 import ValidateTokenStep from './views/ValidateTokenStep'
-import {
-  GetTokenFields,
-  UpdateFields,
-  ValidateTokenFields,
-  getTokenSchema,
-  updateSchema,
-  validateTokenSchema,
-} from './migrateUserTypes'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { AxiosError } from 'axios'
-import { Person } from '../../util/Types'
-import ErrorHandler from '../../components/ErrorHandler'
 
 /**
  * Presenter for migrate user

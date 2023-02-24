@@ -60,7 +60,6 @@ export default function ApplicantHome() {
   const { firstname } = useAuthedUser()
   const {
     data: opportunities,
-    isLoading,
     isError,
     error,
   } = useQuery<Opportunity[] | null[]>(['opportunity'], () => api.getOpportunities(), {

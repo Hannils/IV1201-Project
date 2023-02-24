@@ -1,4 +1,5 @@
 import { z } from 'zod'
+
 import { passwordSchema, usernameSchema } from '../../util/schemas'
 
 export const getTokenSchema = z.object({
@@ -8,7 +9,7 @@ export const getTokenSchema = z.object({
 export type GetTokenFields = z.infer<typeof getTokenSchema>
 
 export const validateTokenSchema = z.object({
-  token: z.string().uuid("Invalid token"),
+  token: z.string().uuid('Invalid token'),
 })
 
 export type ValidateTokenFields = z.infer<typeof validateTokenSchema>

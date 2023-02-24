@@ -1,14 +1,15 @@
 import { Box, Button, Container, Link, Stack, TextField, Typography } from '@mui/material'
+import { UseMutationResult } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import React from 'react'
 import { UseFormReturn, useFormState } from 'react-hook-form'
-import { SignupFields } from './SignupTypes'
-import { UseMutationResult } from '@tanstack/react-query'
-import { Person } from '../../util/Types'
-import { AxiosError } from 'axios'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
-import useErrorMessage from '../../util/useErrorMessages'
+import { Link as RouterLink } from 'react-router-dom'
+
 import ErrorHandler from '../../components/ErrorHandler'
+import { Person } from '../../util/Types'
 import { useFormDirtySinceLastSubmit } from '../../util/useDirtySinceLastSubmit'
+import useErrorMessage from '../../util/useErrorMessages'
+import { SignupFields } from './SignupTypes'
 
 interface SignupPageProps {
   form: UseFormReturn<SignupFields>
@@ -106,7 +107,11 @@ export default function SignupPage({ form, mutation }: SignupPageProps) {
             variant="outlined"
             type="password"
           />
-          <Button type="submit" variant="contained" disabled={isLoading || (submitCount !== 0 && !isValid)}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isLoading || (submitCount !== 0 && !isValid)}
+          >
             {isLoading ? 'Creating account... ' : 'Sign up'}
           </Button>
           <Typography>

@@ -1,14 +1,15 @@
 import { Box, Button, Container, Link, Stack, TextField, Typography } from '@mui/material'
-import React, { FormEvent, useState } from 'react'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
-import useErrorMessage from '../../util/useErrorMessages'
 import { UseMutationResult } from '@tanstack/react-query'
-import { UseFormReturn, useFormState } from 'react-hook-form'
-import { Person } from '../../util/Types'
 import { AxiosError } from 'axios'
-import { SignInFields } from './SigninTypes'
+import React from 'react'
+import { UseFormReturn, useFormState } from 'react-hook-form'
+import { Link as RouterLink } from 'react-router-dom'
+
 import ErrorHandler from '../../components/ErrorHandler'
+import { Person } from '../../util/Types'
 import { useFormDirtySinceLastSubmit } from '../../util/useDirtySinceLastSubmit'
+import useErrorMessage from '../../util/useErrorMessages'
+import { SignInFields } from './SigninTypes'
 
 interface SigninPageProps {
   mutation: UseMutationResult<Person, AxiosError, SignInFields>
@@ -61,7 +62,11 @@ export default function SigninPage({ form, mutation }: SigninPageProps) {
             error={!!passwordError}
             helperText={passwordError}
           />
-          <Button disabled={mutation.isLoading || (submitCount !== 0 && !isValid)} type="submit" variant="contained">
+          <Button
+            disabled={mutation.isLoading || (submitCount !== 0 && !isValid)}
+            type="submit"
+            variant="contained"
+          >
             {mutation.isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
           <Typography>

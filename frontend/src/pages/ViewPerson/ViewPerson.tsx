@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 import api from '../../api/api'
 import ErrorHandler from '../../components/ErrorHandler'
 import FullPageLoader from '../../components/FullPageLoader'
-import { useAuthedUser } from '../../components/WithAuth'
 import ViewPersonPage from './ViewPersonPage'
 
 /**
