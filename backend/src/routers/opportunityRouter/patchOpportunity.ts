@@ -24,7 +24,7 @@ import { updateOpportunity } from '../../integrations/DAO/opportunityDAO'
  */
 export const patchOpportunity: express.RequestHandler = async (req, res) => {
     try {
-      const opportunityId = z.number().parse(req.params.opportunityId)
+      const opportunityId = Number(req.params.opportunityId)
       const { periodStart, periodEnd, name, description } = req.body
       await updateOpportunity(
         opportunityId,
