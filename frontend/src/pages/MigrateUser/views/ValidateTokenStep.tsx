@@ -3,8 +3,10 @@ import { UseMutationResult } from '@tanstack/react-query'
 import { AxiosResponse } from 'axios'
 import React, { FormEvent } from 'react'
 import { ValidateTokenFields } from '../migrateUserTypes'
-import { UseFormReturn } from 'react-hook-form'
+import { UseFormReturn, useFormState } from 'react-hook-form'
 import useErrorMessage from '../../../util/useErrorMessages'
+import ErrorHandler from '../../../components/ErrorHandler'
+import { useFormDirtySinceLastSubmit } from '../../../util/useDirtySinceLastSubmit'
 
 interface ValidateTokenStepProps {
   mutator: UseMutationResult<unknown, unknown, ValidateTokenFields>
@@ -20,15 +22,20 @@ export default function ValidateTokenStep({
   form,
   goBack,
 }: ValidateTokenStepProps) {
-  const { handleSubmit, register, formState } = form
+  const { handleSubmit, register, formState, control } = form
+  const { isValid, submitCount } = useFormState({ control })
 
   const tokenError = useErrorMessage<ValidateTokenFields>(formState, 'token')
-
-  console.log(tokenError)
+  const dirtySinceLastSubmit = useFormDirtySinceLastSubmit<ValidateTokenFields>(form)
 
   return (
     <Box component="form" onSubmit={handleSubmit((data) => mutator.mutate(data))}>
       <Stack spacing={2}>
+        <ErrorHandler
+          size="large"
+          error={mutator.error}
+          isError={mutator.isError && !dirtySinceLastSubmit && isValid}
+        />
         <TextField
           {...register('token')}
           disabled={mutator.isLoading}
@@ -50,7 +57,7 @@ export default function ValidateTokenStep({
           <Button
             type="submit"
             variant="contained"
-            disabled={mutator.isLoading}
+            disabled={mutator.isLoading || (submitCount !== 0 && !isValid)}
             fullWidth
           >
             {mutator.isLoading ? 'Validating...' : 'Continue'}

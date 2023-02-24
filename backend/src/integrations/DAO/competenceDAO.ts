@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { CompetenceSchema, UserCompetenceSchema } from '../../util/schemas'
-import { UserCompetence, Competence } from '../../util/Types'
+import { UserCompetence } from '../../util/Types'
 import { queryDatabase } from './DAO'
 
 /**

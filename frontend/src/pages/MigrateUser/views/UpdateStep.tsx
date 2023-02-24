@@ -4,8 +4,10 @@ import React, { FormEvent } from 'react'
 
 import { Person } from '../../../util/Types'
 import { UpdateFields } from '../migrateUserTypes'
-import { UseFormReturn } from 'react-hook-form'
+import { UseFormReturn, useFormState } from 'react-hook-form'
 import useErrorMessage from '../../../util/useErrorMessages'
+import ErrorHandler from '../../../components/ErrorHandler'
+import { useFormDirtySinceLastSubmit } from '../../../util/useDirtySinceLastSubmit'
 
 interface UpdateStepProps {
   mutator: UseMutationResult<Person, unknown, UpdateFields, unknown>
@@ -16,14 +18,21 @@ interface UpdateStepProps {
  * Component for updating username and password in migrating user
  */
 export default function UpdateStep({ mutator, form }: UpdateStepProps) {
-  const { handleSubmit, register, formState } = form
+  const { handleSubmit, register, formState, control } = form
+  const { isValid, submitCount } = useFormState({ control })
 
   const usernameError = useErrorMessage<UpdateFields>(formState, 'username')
   const passwordError = useErrorMessage<UpdateFields>(formState, 'password')
+  const dirtySinceLastSubmit = useFormDirtySinceLastSubmit<UpdateFields>(form)
 
   return (
     <Box component="form" onSubmit={handleSubmit((data) => mutator.mutate(data))}>
       <Stack spacing={2}>
+        <ErrorHandler
+          size="large"
+          error={mutator.error}
+          isError={mutator.isError && !dirtySinceLastSubmit && isValid}
+        />
         <TextField
           {...register('token')}
           disabled={true}
@@ -50,7 +59,11 @@ export default function UpdateStep({ mutator, form }: UpdateStepProps) {
           error={!!passwordError}
           helperText={passwordError}
         />
-        <Button type="submit" variant="contained" disabled={mutator.isLoading}>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={mutator.isLoading || (submitCount !== 0 && !isValid)}
+        >
           {mutator.isLoading ? 'Updating...' : 'Finish'}
         </Button>
       </Stack>

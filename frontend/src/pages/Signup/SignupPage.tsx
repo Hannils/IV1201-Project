@@ -1,12 +1,14 @@
 import { Box, Button, Container, Link, Stack, TextField, Typography } from '@mui/material'
 import React from 'react'
-import { UseFormReturn } from 'react-hook-form'
+import { UseFormReturn, useFormState } from 'react-hook-form'
 import { SignupFields } from './SignupTypes'
 import { UseMutationResult } from '@tanstack/react-query'
 import { Person } from '../../util/Types'
 import { AxiosError } from 'axios'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import useErrorMessage from '../../util/useErrorMessages'
+import ErrorHandler from '../../components/ErrorHandler'
+import { useFormDirtySinceLastSubmit } from '../../util/useDirtySinceLastSubmit'
 
 interface SignupPageProps {
   form: UseFormReturn<SignupFields>
@@ -16,8 +18,9 @@ interface SignupPageProps {
  * View for signUp page
  */
 export default function SignupPage({ form, mutation }: SignupPageProps) {
-  const { handleSubmit, register, formState } = form
+  const { handleSubmit, register, formState, control } = form
   const { isLoading, mutate } = mutation
+  const { isValid, submitCount } = useFormState({ control })
 
   const firstnameError = useErrorMessage<SignupFields>(formState, 'firstname')
   const lastnameError = useErrorMessage<SignupFields>(formState, 'lastname')
@@ -25,6 +28,10 @@ export default function SignupPage({ form, mutation }: SignupPageProps) {
   const usernameError = useErrorMessage<SignupFields>(formState, 'username')
   const emailError = useErrorMessage<SignupFields>(formState, 'email')
   const passwordError = useErrorMessage<SignupFields>(formState, 'password')
+
+  const dirtySinceLastSubmit = useFormDirtySinceLastSubmit<SignupFields>(form)
+
+  console.log(mutation.isError, !dirtySinceLastSubmit, isValid)
 
   return (
     <Container
@@ -34,6 +41,12 @@ export default function SignupPage({ form, mutation }: SignupPageProps) {
       <Typography variant="h1" mb={3}>
         Sign up
       </Typography>
+      <ErrorHandler
+        sx={{ mb: 5 }}
+        size="large"
+        error={mutation.error}
+        isError={mutation.isError && !dirtySinceLastSubmit && isValid}
+      />
       <Box component="form" onSubmit={handleSubmit((data) => mutate(data))}>
         <Stack spacing={2}>
           <TextField
@@ -93,7 +106,7 @@ export default function SignupPage({ form, mutation }: SignupPageProps) {
             variant="outlined"
             type="password"
           />
-          <Button type="submit" variant="contained" disabled={isLoading}>
+          <Button type="submit" variant="contained" disabled={isLoading || (submitCount !== 0 && !isValid)}>
             {isLoading ? 'Creating account... ' : 'Sign up'}
           </Button>
           <Typography>

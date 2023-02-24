@@ -1,6 +1,6 @@
 import express from 'express'
+
 import { selectApplicationStatus } from '../../integrations/DAO/statusDAO'
-import { ApplicationStatus } from '../../util/Types'
 
 /**
  * This method gets all applications statuses
@@ -19,11 +19,11 @@ import { ApplicationStatus } from '../../util/Types'
  * @authorization `none`
  */
 export const getApplicationStatuses: express.RequestHandler = async (req, res) => {
-    try {
-      const applicationStatuses = await selectApplicationStatus()
-      res.json(applicationStatuses)
-    } catch (error: any) {
-      console.error(error.message)
-      return res.sendStatus(500)
-    }
+  try {
+    const applicationStatuses = await selectApplicationStatus()
+    res.json(applicationStatuses)
+  } catch (error: any) {
+    console.error(error.message)
+    return res.sendStatus(500)
   }
+}

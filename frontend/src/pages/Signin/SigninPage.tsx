@@ -3,10 +3,12 @@ import React, { FormEvent, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import useErrorMessage from '../../util/useErrorMessages'
 import { UseMutationResult } from '@tanstack/react-query'
-import { UseFormReturn } from 'react-hook-form'
+import { UseFormReturn, useFormState } from 'react-hook-form'
 import { Person } from '../../util/Types'
 import { AxiosError } from 'axios'
 import { SignInFields } from './SigninTypes'
+import ErrorHandler from '../../components/ErrorHandler'
+import { useFormDirtySinceLastSubmit } from '../../util/useDirtySinceLastSubmit'
 
 interface SigninPageProps {
   mutation: UseMutationResult<Person, AxiosError, SignInFields>
@@ -17,9 +19,12 @@ interface SigninPageProps {
  * View for signInPage
  */
 export default function SigninPage({ form, mutation }: SigninPageProps) {
-  const { formState, register, handleSubmit } = form
+  const { formState, register, handleSubmit, control } = form
+  const { isValid, submitCount } = useFormState({ control })
   const usernameError = useErrorMessage<SignInFields>(formState, 'username')
   const passwordError = useErrorMessage<SignInFields>(formState, 'password')
+
+  const dirtySinceLastSubmit = useFormDirtySinceLastSubmit<SignInFields>(form)
 
   return (
     <Container
@@ -29,6 +34,12 @@ export default function SigninPage({ form, mutation }: SigninPageProps) {
       <Typography variant="h1" gutterBottom>
         Sign in
       </Typography>
+      <ErrorHandler
+        sx={{ mb: 5 }}
+        size="large"
+        error={mutation.error}
+        isError={mutation.isError && !dirtySinceLastSubmit && isValid}
+      />
       <Box component="form" onSubmit={handleSubmit((params) => mutation.mutate(params))}>
         <Stack spacing={2}>
           <TextField
@@ -50,7 +61,7 @@ export default function SigninPage({ form, mutation }: SigninPageProps) {
             error={!!passwordError}
             helperText={passwordError}
           />
-          <Button disabled={mutation.isLoading} type="submit" variant="contained">
+          <Button disabled={mutation.isLoading || (submitCount !== 0 && !isValid)} type="submit" variant="contained">
             {mutation.isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
           <Typography>

@@ -24,12 +24,10 @@ export default function ErrorHandler(props: ErrorHandlerProps) {
   const { isError, error } = props
   if (!isError) return null
 
-  const size = props.size || 'large'
-
   if (!(error instanceof Error))
     return (
       <ErrorRenderer
-        size={size}
+        {...props}
         heading="Unknown error"
         body="An unknown error happened. Please try again later"
       />
@@ -38,7 +36,7 @@ export default function ErrorHandler(props: ErrorHandlerProps) {
   if (error instanceof ZodError)
     return (
       <ErrorRenderer
-        size={size}
+        {...props}
         heading="Validation error"
         body={error.issues.at(0)?.message}
       />
@@ -47,38 +45,46 @@ export default function ErrorHandler(props: ErrorHandlerProps) {
   if (isAxiosError(error))
     return (
       <ErrorRenderer
-        size={size}
+        {...props}
         heading="There was an error with the request"
-        body={(size === 'large' ? 'Further info: ' : '') + error.message}
+        body={(props.size === 'large' ? 'Further info: ' : '') + error.message}
       />
     )
 
   return (
     <ErrorRenderer
-      size={size}
+      {...props}
       heading={error.name || 'Something went wrong'}
       body={error.message || 'No further details 😔'}
     />
   )
 }
 
-interface ErrorRendererProps {
-  size: 'large' | 'small'
-  heading?: string
+interface LargeErrorRendererProps extends AlertProps {
+  size: 'large'
+}
+
+interface SmallErrorRendererProps extends TypographyProps {
+  size: 'small'
+}
+
+type ErrorRendererProps = (LargeErrorRendererProps | SmallErrorRendererProps) & {
   body: ReactNode
+  heading?: string
 }
 
 function ErrorRenderer(props: ErrorRendererProps) {
-  if (props.size === 'small')
+  const { size, body } = props
+  if (size === 'small')
     return (
-      <Typography color="error" variant="body2">
-        {props.body}
+      <Typography {...props} color="error" variant="body2">
+        {body}
       </Typography>
     )
 
-  const { heading, body } = props
+  const { heading } = props
   return (
-    <Alert severity="error">
+    <Alert {...props} severity="error">
       <AlertTitle>{heading}</AlertTitle>
       {body}
     </Alert>

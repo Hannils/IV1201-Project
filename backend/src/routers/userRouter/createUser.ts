@@ -1,12 +1,12 @@
-import express from 'express'
 import crypto from 'crypto'
+import express from 'express'
 import { z } from 'zod'
-import * as schemas from '../../util/schemas'
+
+import { doTransaction } from '../../integrations/DAO/DAO'
 import { insertPerson, selectPersonByUsername } from '../../integrations/DAO/userDAO'
+import * as schemas from '../../util/schemas'
 import tokenManager from '../../util/tokenManager'
 import { Person } from '../../util/Types'
-import { doTransaction } from '../../integrations/DAO/DAO'
-import { usernameSchema, firstnameSchema, lastnameSchema, emailSchema, personNumberSchema, passwordSchema } from '../../util/schemas'
 
 const createUserParams = z.object({
   username: schemas.usernameSchema,
@@ -75,16 +75,15 @@ export const createUser: express.RequestHandler = async (req, res) => {
   let personId: number
 
   try {
-    const result = await doTransaction<number | false>(async () => {
+    const result = await doTransaction<number | false>(async () => {
       const alreadyExistingPerson = await selectPersonByUsername(person.username)
 
-      if (alreadyExistingPerson !== null)
-        return  false
+      if (alreadyExistingPerson !== null) return false
 
-      return personId = await insertPerson(person)
+      return (personId = await insertPerson(person))
     })
 
-    if(!result) return res.status(400).send('USER_ALREADY_EXISTS')
+    if (!result) return res.status(400).send('USER_ALREADY_EXISTS')
     personId = result
   } catch (error: any) {
     res.status(500).send('Database Error')

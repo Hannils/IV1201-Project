@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Opportunity } from '../../util/Types'
+
 import { OpportunitySchema } from '../../util/schemas'
 import { queryDatabase } from './DAO'
 
@@ -123,8 +123,7 @@ export async function updateOpportunity(
  * @returns `void`
  */
 export async function dropOpportunity(opportunityId: number) {
-  await queryDatabase(
-    `DELETE FROM opportunity WHERE opportunity_id = $1`,
-    [opportunityId],
-  )
+  await queryDatabase(`DELETE FROM opportunity WHERE opportunity_id = $1`, [
+    opportunityId,
+  ])
 }

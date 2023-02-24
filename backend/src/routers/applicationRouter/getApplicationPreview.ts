@@ -1,8 +1,7 @@
 import express from 'express'
 import { ZodError } from 'zod'
-import { selectApplicationPreview } from '../../integrations/DAO/applicationDAO'
-import { ApplicationPreview } from '../../util/Types'
 
+import { selectApplicationPreview } from '../../integrations/DAO/applicationDAO'
 
 /**
  * This method gets a single preview application

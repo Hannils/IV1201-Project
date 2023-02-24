@@ -46,7 +46,11 @@ export async function init() {
 export function initServer() {
   const app = express()
   app.use(express.json())
-  app.use(cors({origin: ['https://recruitment-application.netlify.app', 'http://localhost:5173']}))
+  app.use(
+    cors({
+      origin: ['https://recruitment-application.netlify.app', 'http://localhost:5173'],
+    }),
+  )
   app.use(useAuth)
 
   app.use('/user', userRouter)

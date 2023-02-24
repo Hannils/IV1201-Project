@@ -1,6 +1,6 @@
 import express from 'express'
-import { dropAvailability } from '../../integrations/DAO/availabilityDAO'
 
+import { dropAvailability } from '../../integrations/DAO/availabilityDAO'
 
 /**
  * This method gets deletes an availability
@@ -21,12 +21,12 @@ import { dropAvailability } from '../../integrations/DAO/availabilityDAO'
  */
 export const deleteAvailability: express.RequestHandler = async (req, res) => {
   const personId = res.locals.currentUser.personId
-  
-    try {
-      await dropAvailability(Number(req.params.availabilityId))
-      res.sendStatus(200)
-    } catch (error: any) {
-      console.error(error.message)
-      return res.sendStatus(500)
-    }
+
+  try {
+    await dropAvailability(Number(req.params.availabilityId))
+    res.sendStatus(200)
+  } catch (error: any) {
+    console.error(error.message)
+    return res.sendStatus(500)
   }
+}

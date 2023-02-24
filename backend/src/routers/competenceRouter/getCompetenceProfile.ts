@@ -1,6 +1,6 @@
 import express from 'express'
+
 import { selectCompetenceProfile } from '../../integrations/DAO/competenceDAO'
-import { CompetenceProfile } from '../../util/Types'
 
 /**
  * This method gets a competence profile
@@ -19,14 +19,12 @@ import { CompetenceProfile } from '../../util/Types'
  * @authorization `none`
  */
 export const getCompetenceProfile: express.RequestHandler = async (req, res) => {
-    try {
-      const competenceProfile = await selectCompetenceProfile(
-        Number(req.params.personId),
-      )
-      if (competenceProfile === null || competenceProfile === undefined) res.sendStatus(400)
-      res.json(competenceProfile)
-    } catch (error: any) {
-      console.error(error.message)
-      return res.sendStatus(500)
-    }
+  try {
+    const competenceProfile = await selectCompetenceProfile(Number(req.params.personId))
+    if (competenceProfile === null || competenceProfile === undefined) res.sendStatus(400)
+    res.json(competenceProfile)
+  } catch (error: any) {
+    console.error(error.message)
+    return res.sendStatus(500)
   }
+}

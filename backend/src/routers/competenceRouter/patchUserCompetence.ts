@@ -1,5 +1,6 @@
 import express from 'express'
 import { z } from 'zod'
+
 import { updateUserCompetence } from '../../integrations/DAO/competenceDAO'
 
 /**
@@ -21,21 +22,21 @@ import { updateUserCompetence } from '../../integrations/DAO/competenceDAO'
  */
 
 export const patchUserCompetence: express.RequestHandler = async (req, res) => {
-    const competenceId = Number(req.params.competenceId)
-    const personId = res.locals.currentUser.personId
-  
-    if (isNaN(competenceId)) return res.sendStatus(400)
-  
-    try {
-      const yearsOfExperience = z.number().parse(req.body.yearsOfExperience)
-  
-      await updateUserCompetence({ competenceId, personId, yearsOfExperience })
-    } catch (error: any) {
-      console.error(error)
-      return error instanceof z.ZodError
-        ? res.status(400).json(error.issues)
-        : res.sendStatus(500)
-    }
-  
-    res.sendStatus(200)
+  const competenceId = Number(req.params.competenceId)
+  const personId = res.locals.currentUser.personId
+
+  if (isNaN(competenceId)) return res.sendStatus(400)
+
+  try {
+    const yearsOfExperience = z.number().parse(req.body.yearsOfExperience)
+
+    await updateUserCompetence({ competenceId, personId, yearsOfExperience })
+  } catch (error: any) {
+    console.error(error)
+    return error instanceof z.ZodError
+      ? res.status(400).json(error.issues)
+      : res.sendStatus(500)
   }
+
+  res.sendStatus(200)
+}

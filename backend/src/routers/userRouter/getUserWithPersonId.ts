@@ -1,4 +1,5 @@
 import express from 'express'
+
 import { selectPersonById } from '../../integrations/DAO/userDAO'
 
 /**

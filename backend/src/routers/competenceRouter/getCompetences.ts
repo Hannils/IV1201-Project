@@ -1,6 +1,6 @@
 import express from 'express'
+
 import { selectCompetence } from '../../integrations/DAO/competenceDAO'
-import { Competence } from '../../util/Types'
 
 /**
  * This method gets all competences
@@ -19,11 +19,11 @@ import { Competence } from '../../util/Types'
  * @authorization `none`
  */
 export const getCompetences: express.RequestHandler = async (req, res) => {
-    try {
-      const response = await selectCompetence()
-      res.json(response)
-    } catch (error: any) {
-      console.error(error.message)
-      return res.sendStatus(500)
-    }
+  try {
+    const response = await selectCompetence()
+    res.json(response)
+  } catch (error: any) {
+    console.error(error.message)
+    return res.sendStatus(500)
   }
+}

@@ -1,4 +1,5 @@
 import express from 'express'
+
 import tokenManager from '../../util/tokenManager'
 
 /**

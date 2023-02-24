@@ -1,8 +1,8 @@
 import express from 'express'
 import { z } from 'zod'
+
 import { insertUserCompetence } from '../../integrations/DAO/competenceDAO'
 import { UserCompetenceSchema } from '../../util/schemas'
-import { UserCompetence } from '../../util/Types'
 
 /**
  * This method creates a user competence
@@ -22,19 +22,19 @@ import { UserCompetence } from '../../util/Types'
  * @authorization `none`
  */
 export const createUserCompetence: express.RequestHandler = async (req, res) => {
-    const personId = res.locals.currentUser.personId
-  
-    try {
-      const competence = UserCompetenceSchema.parse(req.body)
-  
-      await insertUserCompetence(competence, personId)
-    } catch (error: any) {
-      console.error(error)
-  
-      return error instanceof z.ZodError
-        ? res.status(400).json(error.issues)
-        : res.sendStatus(500)
-    }
-  
-    res.sendStatus(200)
+  const personId = res.locals.currentUser.personId
+
+  try {
+    const competence = UserCompetenceSchema.parse(req.body)
+
+    await insertUserCompetence(competence, personId)
+  } catch (error: any) {
+    console.error(error)
+
+    return error instanceof z.ZodError
+      ? res.status(400).json(error.issues)
+      : res.sendStatus(500)
   }
+
+  res.sendStatus(200)
+}

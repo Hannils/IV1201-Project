@@ -1,6 +1,6 @@
 import express from 'express'
+
 import { selectPersonById } from '../../integrations/DAO/userDAO'
-import { Person } from '../../util/Types'
 
 /**
  * This method gets a user
@@ -20,13 +20,13 @@ import { Person } from '../../util/Types'
  * @authorization `none`
  */
 export const getUser: express.RequestHandler = async (req, res) => {
-    const { personId } = res.locals.currentUser
-    try {
-      const person = await selectPersonById(personId)
-      if (person === null) return res.sendStatus(404)
-      res.json(person)
-    } catch (e: any) {
-      console.error(e.message)
-      res.sendStatus(500)
-    }
+  const { personId } = res.locals.currentUser
+  try {
+    const person = await selectPersonById(personId)
+    if (person === null) return res.sendStatus(404)
+    res.json(person)
+  } catch (e: any) {
+    console.error(e.message)
+    res.sendStatus(500)
   }
+}

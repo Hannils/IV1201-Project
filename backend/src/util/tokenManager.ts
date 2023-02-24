@@ -24,7 +24,6 @@ export class TokenManager {
   #tokenValidity
   #tokenGenerator
 
-
   constructor(
     tokenValidity: number | null = null,
     tokenGenerator: TokenGenerator | null = null,

@@ -27,6 +27,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
 import { Person } from '../../util/Types'
+import ErrorHandler from '../../components/ErrorHandler'
 
 /**
  * Presenter for migrate user

@@ -1,5 +1,6 @@
 import express from 'express'
 import { ZodError } from 'zod'
+
 import { insertApplication } from '../../integrations/DAO/applicationDAO'
 
 /**

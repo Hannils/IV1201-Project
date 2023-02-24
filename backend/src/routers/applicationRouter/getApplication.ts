@@ -1,6 +1,6 @@
 import express from 'express'
 import { ZodError } from 'zod'
-import { Application } from '../../util/Types'
+
 import { selectApplicationByPersonAndOpportunity } from '../../integrations/DAO/applicationDAO'
 
 /**

@@ -1,9 +1,8 @@
 import { z } from 'zod'
-import { Person } from '../../util/Types'
+
+import { ApplicationPreviewSchema, ApplicationSchema } from '../../util/schemas'
 import { queryDatabase } from './DAO'
-import { Application, Opportunity, ApplicationPreview } from '../../util/Types'
 import { selectApplicationStatusId } from './statusDAO'
-import { ApplicationSchema, ApplicationPreviewSchema } from '../../util/schemas'
 
 /**
  * Util function for parsing db output to match scheme of {@link Application}

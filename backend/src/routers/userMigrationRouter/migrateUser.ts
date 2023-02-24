@@ -1,16 +1,16 @@
+import crypto from 'crypto'
 import express from 'express'
 import { z } from 'zod'
-import { migrationTokenStore } from '.'
-import tokenManager from '../../util/tokenManager'
-import * as schemas from '../../util/schemas'
-import crypto from 'crypto'
-import { Person } from '../../util/Types'
+
+import { doTransaction } from '../../integrations/DAO/DAO'
 import {
   migratePerson,
   selectPersonById,
   selectPersonByUsername,
 } from '../../integrations/DAO/userDAO'
-import { doTransaction } from '../../integrations/DAO/DAO'
+import * as schemas from '../../util/schemas'
+import tokenManager from '../../util/tokenManager'
+import { migrationTokenStore } from '.'
 
 const migrateUserParams = z.object({
   token: z.string().uuid(),

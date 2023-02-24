@@ -1,5 +1,6 @@
 import express from 'express'
 import { z } from 'zod'
+
 import { insertOpportunity } from '../../integrations/DAO/opportunityDAO'
 
 /**
@@ -23,13 +24,13 @@ import { insertOpportunity } from '../../integrations/DAO/opportunityDAO'
  * @authorization [`recruiter`]
  */
 export const createOpportunity: express.RequestHandler = async (req, res) => {
-    try {
-      const { periodStart, periodEnd, name, description } = req.body
-      await insertOpportunity(periodStart, periodEnd, name, description)
-    } catch (error: any) {
-      console.error(error.message)
-      return error instanceof z.ZodError
-        ? res.status(400).json(error.message)
-        : res.sendStatus(500)
-    }
+  try {
+    const { periodStart, periodEnd, name, description } = req.body
+    await insertOpportunity(periodStart, periodEnd, name, description)
+  } catch (error: any) {
+    console.error(error.message)
+    return error instanceof z.ZodError
+      ? res.status(400).json(error.message)
+      : res.sendStatus(500)
   }
+}

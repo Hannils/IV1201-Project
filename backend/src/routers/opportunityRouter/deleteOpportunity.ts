@@ -1,5 +1,6 @@
 import express from 'express'
 import { z } from 'zod'
+
 import { dropOpportunity } from '../../integrations/DAO/opportunityDAO'
 
 /**
@@ -20,13 +21,13 @@ import { dropOpportunity } from '../../integrations/DAO/opportunityDAO'
  * @authorization [`recruiter`]
  */
 export const deleteOpportunity: express.RequestHandler = async (req, res) => {
-    try {
-      const opportunityId = z.number().parse(Number(req.params.opportunity))
-      await dropOpportunity(opportunityId)
-    } catch (error: any) {
-      console.error(error.message)
-      return error instanceof z.ZodError
-        ? res.status(400).json(error.message)
-        : res.sendStatus(500)
-    }
+  try {
+    const opportunityId = z.number().parse(Number(req.params.opportunity))
+    await dropOpportunity(opportunityId)
+  } catch (error: any) {
+    console.error(error.message)
+    return error instanceof z.ZodError
+      ? res.status(400).json(error.message)
+      : res.sendStatus(500)
   }
+}
