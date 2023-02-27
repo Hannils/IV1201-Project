@@ -24,7 +24,7 @@ export const signOutUser: express.RequestHandler = (req, res) => {
     tokenManager.deleteToken(token)
   } catch (error: any) {
     console.error(error.message)
-    res.sendStatus(500)
+    res.sendStatus(500) // Should not happen
   }
   res.sendStatus(200)
 }

@@ -5,5 +5,6 @@ module.exports = {
   moduleNameMapper: {
     "#(.*)": "<rootDir>/node_modules/$1"
   },
-  modulePaths: ["<rootDir>"]
+  modulePaths: ["<rootDir>"],
+  testRegex: '\/__tests__\/.*\.test.ts'
 };

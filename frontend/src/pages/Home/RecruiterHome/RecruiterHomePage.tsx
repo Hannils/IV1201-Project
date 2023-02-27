@@ -10,11 +10,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import React, { ChangeEventHandler, useState } from 'react'
+import React, { ChangeEventHandler } from 'react'
 import { Link } from 'react-router-dom'
+
 import ErrorHandler from '../../../components/ErrorHandler'
 import { ApplicationPreview } from '../../../util/Types'
-
 import { useRecruiterHome } from './RecruiterHomeContext'
 
 /**

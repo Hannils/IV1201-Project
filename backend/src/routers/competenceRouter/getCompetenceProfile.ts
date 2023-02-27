@@ -19,9 +19,11 @@ import { selectCompetenceProfile } from '../../integrations/DAO/competenceDAO'
  * @authorization `none`
  */
 export const getCompetenceProfile: express.RequestHandler = async (req, res) => {
+  const personId = Number(req.params.personId)
+  if (isNaN(personId)) return res.sendStatus(400)
+
   try {
-    const competenceProfile = await selectCompetenceProfile(Number(req.params.personId))
-    if (competenceProfile === null || competenceProfile === undefined) res.sendStatus(400)
+    const competenceProfile = await selectCompetenceProfile(personId)
     res.json(competenceProfile)
   } catch (error: any) {
     console.error(error.message)

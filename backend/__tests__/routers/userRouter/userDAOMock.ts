@@ -2,9 +2,14 @@ import { Request, Response, NextFunction } from 'express'
 import { Person } from '../../../src/util/Types'
 import crypto from 'crypto'
 
-jest.mock('../../src/integrations/DAO/userDAO', () => ({
-  insertPerson: jest.fn(),
-  selectPersonByUsername: jest.fn(async () => {
+jest.mock('../../../src/integrations/DAO/DAO', () => ({
+  doTransaction: async (cb: () => Promise<unknown>) => await cb(),
+}))
+
+jest.mock('../../../src/integrations/DAO/userDAO', () => ({
+  insertPerson: jest.fn(async () => Math.floor(Math.random() * 10000)),
+  selectPersonByUsername: jest.fn(async (username: string) => {
+    if (username === 'NON_EXISTING_PERSON') return null
     const hashedPassword = await new Promise<string>((resolve, reject) =>
       crypto.pbkdf2(
         'password',

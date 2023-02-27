@@ -80,7 +80,7 @@ export const createUser: express.RequestHandler = async (req, res) => {
 
       if (alreadyExistingPerson !== null) return false
 
-      return (personId = await insertPerson(person))
+      return await insertPerson(person)
     })
 
     if (!result) return res.status(400).send('USER_ALREADY_EXISTS')

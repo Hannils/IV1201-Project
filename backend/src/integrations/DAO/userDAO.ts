@@ -111,7 +111,7 @@ export async function selectPersonByEmail(email: string) {
  * @param username - Username of the person as `string`
  * @returns Person as {@link Person} | `null`
  */
-export async function selectPersonByUsername(username: string, shouldLock: boolean = false) {
+export async function selectPersonByUsername(username: string, shouldLock = false) {
   const response = await queryDatabase(
     `
       SELECT ${PERSON_SELECT} FROM person 

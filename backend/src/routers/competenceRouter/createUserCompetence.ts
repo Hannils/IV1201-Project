@@ -26,7 +26,6 @@ export const createUserCompetence: express.RequestHandler = async (req, res) => 
 
   try {
     const competence = UserCompetenceSchema.parse(req.body)
-
     await insertUserCompetence(competence, personId)
   } catch (error: any) {
     console.error(error)

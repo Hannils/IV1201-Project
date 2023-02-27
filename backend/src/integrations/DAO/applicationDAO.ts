@@ -57,7 +57,7 @@ function toApplicationPreview(x: any) {
  * @param applicationId Id of the specific application as `number`
  * @returns Application as {@link Application}
  */
-export async function selectApplication(applicationId: number, shouldLock: boolean = false) {
+export async function selectApplication(applicationId: number, shouldLock = false) {
   const response = await queryDatabase(
     `
         SELECT application_id, person_id, status.name as status, application.status_id, opportunity.name, opportunity.opportunity_id, application_period_start, application_period_end FROM application
@@ -143,16 +143,14 @@ export async function dropApplication(applicationId: number) {
  * @returns `void`
  */
 
-export async function updateApplicationStatus(applicationId: number, newStatusId: number) {
-  try {
-    const response = await queryDatabase(`UPDATE application SET status_id=$1 WHERE application_id=$2`, [
-      newStatusId,
-      applicationId,
-    ])
-  } catch (e: unknown) {
-    
-  }
-
+export async function updateApplicationStatus(
+  applicationId: number,
+  newStatusId: number,
+) {
+  const response = await queryDatabase(
+    `UPDATE application SET status_id=$1 WHERE application_id=$2`,
+    [newStatusId, applicationId],
+  )
 }
 
 /**

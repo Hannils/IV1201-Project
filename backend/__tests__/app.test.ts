@@ -1,4 +1,3 @@
-import request from 'supertest'
 import { init, initServer } from '../src/App'
 import * as DAO from '../src/integrations/DAO/DAO'
 

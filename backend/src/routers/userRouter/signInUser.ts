@@ -72,8 +72,10 @@ export const signInUser: express.RequestHandler = async (req, res) => {
         role: user.role,
       },
     })
-  } catch (e: any) {
-    console.error(e.message)
-    res.sendStatus(500)
+  } catch (error: any) {
+    console.error(error.message)
+    return error instanceof z.ZodError
+      ? res.status(400).json(error.issues)
+      : res.sendStatus(500)
   }
 }

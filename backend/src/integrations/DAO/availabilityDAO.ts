@@ -23,9 +23,14 @@ function toAvailability(x: any) {
  * @param personId Id of the person's avaiability row to retrieve as `number`
  * @returns Availability as {@link Availability}[]
  */
-export async function selectAvailabilitiesByPersonId(personId: number, shouldLock: boolean = false) {
+export async function selectAvailabilitiesByPersonId(
+  personId: number,
+  shouldLock = false,
+) {
   const response = await queryDatabase(
-    `SELECT * FROM availability WHERE person_id = $1 ORDER BY from_date asc${shouldLock ? ' FOR UPDATE' : ''}`,
+    `SELECT * FROM availability WHERE person_id = $1 ORDER BY from_date asc${
+      shouldLock ? ' FOR UPDATE' : ''
+    }`,
     [personId],
   )
   return z.array(AvailabilitySchema).parse(response.rows.map(toAvailability))
