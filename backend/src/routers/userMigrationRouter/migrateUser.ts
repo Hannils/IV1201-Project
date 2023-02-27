@@ -68,8 +68,8 @@ export const migrateUser: express.RequestHandler = async (req, res) => {
   }
 
   try {
-    const result = await doTransaction<boolean>(async () => {
-      const alreadyExistingPerson = await selectPersonByUsername(data.username)
+    const result = await doTransaction(async () => {
+      const alreadyExistingPerson = await selectPersonByUsername(data.username, true)
 
       if (alreadyExistingPerson !== null) return false
 

@@ -6,40 +6,6 @@ import { createUser } from '../../src/routers/userRouter/createUser'
 import { getUser } from '../../src/routers/userRouter/getUser'
 import { signInUser } from '../../src/routers/userRouter/signInUser'
 
-jest.mock('../../src/integrations/DAO/userDAO', () => ({
-  insertPerson: jest.fn(),
-  selectPersonByUsername: jest.fn(async () => {
-    const hashedPassword = await new Promise<string>((resolve, reject) =>
-      crypto.pbkdf2(
-        'password',
-        'randomSalt',
-        310000,
-        32,
-        'sha256',
-        (err, hashedPassword) => {
-          if (err) reject(err)
-          return resolve(hashedPassword.toString('hex'))
-        },
-      ),
-    )
-    return {
-      username: 'username',
-      firstname: 'firstname',
-      lastname: 'lastname',
-      email: 'test@test.se',
-      role: 'applicant',
-      personId: -1,
-      personNumber: '20000101-0000',
-      password: hashedPassword,
-      salt: 'randomSalt',
-    } satisfies Person
-  }),
-  selectPersonById: jest.fn(async (personId) => {
-    if (personId === -1) return null
-    return {} as Person
-  }),
-}))
-
 describe('Test all with good parameters on userRouter', () => {
   let mockResponse: Response
 

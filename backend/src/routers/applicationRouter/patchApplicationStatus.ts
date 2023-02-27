@@ -1,7 +1,9 @@
 import express from 'express'
 import { z, ZodError } from 'zod'
 
-import { updateApplicationStatus } from '../../integrations/DAO/applicationDAO'
+import { selectApplication, updateApplicationStatus } from '../../integrations/DAO/applicationDAO'
+import { doTransaction } from '../../integrations/DAO/DAO'
+import { ApplicationStatusSchema } from '../../util/schemas'
 
 /**
  * This method patches an application
@@ -24,17 +26,27 @@ export const patchApplicationStatus: express.RequestHandler = async (req, res) =
   const applicationId = Number(req.params.applicationId)
   if (isNaN(applicationId)) return res.sendStatus(400)
   try {
-    const { statusId } = z
+    const { newStatusId, oldStatusId } = z
       .object({
-        statusId: z.number(),
+        newStatusId: z.number(),
+        oldStatusId: z.number(),
       })
       .parse(req.body)
-    await updateApplicationStatus(applicationId, statusId)
+      
+      const result = await doTransaction( async () => {
+        const application = await selectApplication(applicationId, true)
+        if(application === null) return 404
+        if(application.status.statusId !== oldStatusId) return 409
+        await updateApplicationStatus(applicationId, newStatusId)
+        return 200
+      })
+
+      return res.sendStatus(result)
+      
   } catch (error: any) {
     console.error(error.message)
     return error instanceof ZodError
       ? res.status(400).json(error.message)
       : res.sendStatus(500)
   }
-  res.sendStatus(200)
 }

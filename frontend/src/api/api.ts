@@ -149,15 +149,17 @@ const api = {
    * @returns Expects response of 200 OK as `statuscode`
    */
   updateApplicationStatus: async ({
-    statusId,
+    newStatusId,
+    oldStatusId,
     applicationId,
   }: {
-    statusId: number
+    newStatusId: number
+    oldStatusId: number
     applicationId: number
   }) =>
     axios.patch(
       `${API_URL}/application/status/${applicationId}`,
-      { statusId },
+      { newStatusId, oldStatusId },
       {
         ...getAuthedHeaders(),
       },

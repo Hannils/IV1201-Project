@@ -111,12 +111,12 @@ export async function selectPersonByEmail(email: string) {
  * @param username - Username of the person as `string`
  * @returns Person as {@link Person} | `null`
  */
-export async function selectPersonByUsername(username: string) {
+export async function selectPersonByUsername(username: string, shouldLock: boolean = false) {
   const response = await queryDatabase(
     `
       SELECT ${PERSON_SELECT} FROM person 
       INNER JOIN public.role ON role.role_id = person.role_id 
-      WHERE username = $1 AND ${PERSON_VALIDATOR}
+      WHERE username = $1 AND ${PERSON_VALIDATOR}${shouldLock ? ' FOR UPDATE' : ''}
     `,
     [username],
   )

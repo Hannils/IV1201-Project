@@ -42,14 +42,19 @@ export default function ErrorHandler(props: ErrorHandlerProps) {
       />
     )
 
-  if (isAxiosError(error))
+  if (isAxiosError(error)) {
+    const message =
+      error.response?.status === 409
+        ? 'The item you are trying to update was updated by someone else. Refresh the page and try again'
+        : error.message
     return (
       <ErrorRenderer
         {...props}
         heading="There was an error with the request"
-        body={(props.size === 'large' ? 'Further info: ' : '') + error.message}
+        body={(props.size === 'large' ? 'Further info: ' : '') + message}
       />
     )
+  }
 
   return (
     <ErrorRenderer

@@ -76,7 +76,7 @@ export const createUser: express.RequestHandler = async (req, res) => {
 
   try {
     const result = await doTransaction<number | false>(async () => {
-      const alreadyExistingPerson = await selectPersonByUsername(person.username)
+      const alreadyExistingPerson = await selectPersonByUsername(person.username, true)
 
       if (alreadyExistingPerson !== null) return false
 

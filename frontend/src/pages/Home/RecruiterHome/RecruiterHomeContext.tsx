@@ -1,18 +1,20 @@
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query'
 import { createContext, PropsWithChildren, useContext } from 'react'
+import { AxiosError } from 'axios'
 
 import api from '../../../api/api'
 import { ApplicationPreview, ApplicationStatus } from '../../../util/Types'
 
 interface UpdateParams {
   applicationId: number
-  statusId: number
+  newStatusId: number
+  oldStatusId: number
 }
 
 interface RecruiterHomeData {
   statuses: ApplicationStatus[]
   applications: ApplicationPreview[]
-  updateMutation: UseMutationResult<unknown, unknown, UpdateParams>
+  updateMutation: UseMutationResult<unknown, AxiosError, UpdateParams>
 }
 
 const recruiterHomeContext = createContext<RecruiterHomeData>({} as RecruiterHomeData)
@@ -41,8 +43,8 @@ export default function RecruiterHomeProvider({
     updateMutation: useMutation({
       mutationFn: (data: UpdateParams) => api.updateApplicationStatus(data),
 
-      onMutate: ({ statusId }) =>
-        statuses?.find((status) => status.statusId === statusId),
+      onMutate: ({ newStatusId }) =>
+        statuses?.find((status) => status.statusId === newStatusId),
 
       onSuccess: (_, { applicationId }, status) => {
         if (!status) return
