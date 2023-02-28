@@ -29,8 +29,7 @@ export const createOpportunity: express.RequestHandler = async (req, res) => {
     await insertOpportunity(periodStart, periodEnd, name, description)
   } catch (error: any) {
     console.error(error.message)
-    return error instanceof z.ZodError
-      ? res.status(400).json(error.message)
-      : res.sendStatus(500)
+    return res.sendStatus(500)
   }
+  res.sendStatus(200)
 }

@@ -3,7 +3,7 @@ import './availabilityDAOMock'
 import createMockResponse from '../createMockResponse'
 import { deleteAvailability } from '../../../src/routers/availabilityRouter/deleteAvailability'
 
-describe('Test create availability', () => {
+describe('Test delete availability', () => {
   let mockResponse: Response
 
   beforeAll(() => {

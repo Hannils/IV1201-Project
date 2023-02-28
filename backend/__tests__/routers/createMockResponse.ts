@@ -7,7 +7,7 @@ export default function createMockResponse() {
     jest.fn(/* (...params: any[]) => console.log('STATUS_SEND', ...params) */)
   return {
     locals: {
-      currentUser: { personId: 1 },
+      currentUser: { personId: 1, role: 'applicant' },
     },
     status: jest.fn(() => ({
       json: statusJson,

@@ -32,8 +32,6 @@ export const getOpportunity: express.RequestHandler = async (req, res) => {
     const opportunity = isApplicant
       ? await selectApplicableOpportunity(opportunityId)
       : await selectOpportunity(opportunityId)
-
-    if (opportunity === null) return res.sendStatus(404)
     res.json(opportunity)
   } catch (error: any) {
     res.sendStatus(500)

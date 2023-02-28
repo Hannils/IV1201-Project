@@ -2,6 +2,7 @@ import express from 'express'
 
 import { selectAvailabilitiesByPersonId } from '../../integrations/DAO/availabilityDAO'
 import { dateInputFormatter } from '../../util/IntlFormatters'
+import { Role } from '../../util/Types'
 
 /**
  * This method gets gets an availability
@@ -24,6 +25,11 @@ export const getAvailability: express.RequestHandler = async (req, res) => {
   const personId = Number(req.params.personId)
 
   if (isNaN(personId)) return res.sendStatus(400)
+  if (
+    res.locals.currentUser.role === ('applicant' satisfies Role) &&
+    res.locals.currentUser.personId !== personId
+  )
+    return res.sendStatus(403)
 
   try {
     const response = await selectAvailabilitiesByPersonId(personId)

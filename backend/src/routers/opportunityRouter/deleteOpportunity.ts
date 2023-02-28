@@ -21,13 +21,13 @@ import { dropOpportunity } from '../../integrations/DAO/opportunityDAO'
  * @authorization [`recruiter`]
  */
 export const deleteOpportunity: express.RequestHandler = async (req, res) => {
+  const opportunityId = Number(req.params.opportunityId)
   try {
-    const opportunityId = z.number().parse(Number(req.params.opportunity))
+    if (isNaN(opportunityId)) return res.sendStatus(400)
     await dropOpportunity(opportunityId)
   } catch (error: any) {
     console.error(error.message)
-    return error instanceof z.ZodError
-      ? res.status(400).json(error.message)
-      : res.sendStatus(500)
+    return res.sendStatus(500)
   }
+  return res.sendStatus(200)
 }

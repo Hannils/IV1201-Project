@@ -26,13 +26,12 @@ import { updateOpportunity } from '../../integrations/DAO/opportunityDAO'
 export const patchOpportunity: express.RequestHandler = async (req, res) => {
   try {
     const opportunityId = Number(req.params.opportunityId)
+    if (isNaN(opportunityId)) return res.sendStatus(400)
     const { periodStart, periodEnd, name, description } = req.body
     await updateOpportunity(opportunityId, periodStart, periodEnd, name, description)
   } catch (error: any) {
     console.error(error.message)
-    return error instanceof z.ZodError
-      ? res.status(400).json(error.message)
-      : res.sendStatus(500)
+    return res.sendStatus(500)
   }
   res.sendStatus(200)
 }

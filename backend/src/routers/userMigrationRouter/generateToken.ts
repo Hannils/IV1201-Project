@@ -23,24 +23,24 @@ import { migrationTokenStore } from '.'
  * @authorization `none`
  */
 export const generateToken: express.RequestHandler = async (req, res) => {
-  let email: string
   try {
-    email = z.object({ email: emailSchema }).parse(req.body).email
-  } catch (err: unknown) {
-    return err instanceof z.ZodError
-      ? res.status(400).json(err.issues)
-      : res.sendStatus(500) // Should never happen
-  }
-  try {
+    const { email } = z.object({ email: emailSchema }).parse(req.body)
+
     const user = await selectIncompletePersonByEmail(email)
+
     if (user === null) return res.status(404).send('USER_NOT_FOUND')
+
     const token = await migrationTokenStore.createToken(user.personId)
+
     console.info(
       `[SENT IN AN EMAIL]: A token was generated: "${token}" for user: ${user.email}`,
     )
     res.sendStatus(200)
-  } catch (error: any) {
-    console.error(error.message)
-    res.sendStatus(500)
+  } catch (err: unknown) {
+    if (err instanceof Error) console.error(err.message)
+
+    return err instanceof z.ZodError
+      ? res.status(400).json(err.issues)
+      : res.sendStatus(500)
   }
 }
