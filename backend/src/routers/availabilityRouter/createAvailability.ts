@@ -16,6 +16,7 @@ import { AvailabilitySchema } from '../../util/schemas'
  * - `body`:
  * - - `fromDate`: Date when the availability begins.
  * - - `toDate`: Date when the availability ends.
+ * - - `personId`: `Number` the person id for the availability
  * - `params`:
  * - - `personId`: Id of the person the availability relates to.
  
@@ -32,7 +33,7 @@ export const createAvailability: express.RequestHandler = async (req, res) => {
   if (isNaN(personId)) return res.sendStatus(400)
   if (personId !== res.locals.currentUser.personId) return res.sendStatus(403)
   try {
-    doTransaction(async () => {
+    await doTransaction(async () => {
       const existingAvailability = await selectAvailabilitiesByPersonId(personId, true)
 
       const data = AvailabilitySchema.omit({ availabilityId: true })
@@ -80,7 +81,7 @@ export const createAvailability: express.RequestHandler = async (req, res) => {
         .parse(req.body)
 
       const availabilityId = await insertAvailability(
-        data.personId,
+        personId,
         data.fromDate,
         data.toDate,
       )

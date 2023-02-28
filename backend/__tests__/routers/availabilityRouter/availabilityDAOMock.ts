@@ -13,7 +13,7 @@ jest.mock('../../../src/integrations/DAO/availabilityDAO', () => ({
     return [] as unknown as CompetenceProfile[]
   }),
   insertAvailability: jest.fn((personId: number, fromDate: Date, toDate: Date) => {
-    return null
+    return 1
   }),
   dropAvailability: jest.fn(async (availabilityId: number) => {
     return null

@@ -21,9 +21,12 @@ import { dropAvailability } from '../../integrations/DAO/availabilityDAO'
  */
 export const deleteAvailability: express.RequestHandler = async (req, res) => {
   const personId = res.locals.currentUser.personId
+  const availabilityId = Number(req.params.availabilityId)
+
+  if (isNaN(availabilityId)) return res.sendStatus(400)
 
   try {
-    await dropAvailability(Number(req.params.availabilityId))
+    await dropAvailability(availabilityId, personId)
     res.sendStatus(200)
   } catch (error: any) {
     console.error(error.message)

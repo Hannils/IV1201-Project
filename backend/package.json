@@ -12,7 +12,10 @@
     "dev-conf": "pm2 install typescript && pm2 update",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
-    "test": "jest --coverage --verbose=true"
+    "test": "jest --verbose=true",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --verbose=true"
+
   },
   "dependencies": {
     "@types/passport": "^1.0.11",

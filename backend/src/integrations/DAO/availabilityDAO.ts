@@ -67,9 +67,9 @@ export async function insertAvailability(personId: number, fromDate: Date, toDat
  * @param availabilityId Id of the row to drop
  * @returns `void`
  */
-export async function dropAvailability(availabilityId: number) {
-  await queryDatabase(`DELETE FROM availability WHERE availability_id = $1`, [
-    availabilityId,
+export async function dropAvailability(availabilityId: number, personId: number) {
+  await queryDatabase(`DELETE FROM availability WHERE availability_id = $1 AND person_id = $2`, [
+    availabilityId, personId
   ])
 }
 
