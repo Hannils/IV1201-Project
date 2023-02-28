@@ -30,9 +30,8 @@ export async function selectApplicationStatusId(status: ApplicationStatusState) 
 }
 
 /**
- * Gets the status id from a status name
- * @param status - Name of the status as {@link ApplicationStatusState}
- * @returns Id of the given status name as `number`
+ * Gets the all application statuses
+ * @returns All application statuses as {@link ApplicationStatus}[]
  */
 export async function selectApplicationStatus() {
   const response = await queryDatabase(`SELECT * FROM status`, [])
