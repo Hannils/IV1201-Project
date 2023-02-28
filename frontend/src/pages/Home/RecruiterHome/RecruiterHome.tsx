@@ -30,8 +30,11 @@ export default function RecruiterHome() {
   if (opportunitiesQuery.isError)
     return <ErrorHandler size="large" isError={true} error={opportunitiesQuery.error} />
 
-  if (selectedOpportunity === null)
+  if (selectedOpportunity === null) {
+    if (opportunitiesQuery.data.length !== 0)
+      setSelectedOpportunity(opportunitiesQuery.data.at(0)?.opportunityId || null)
     return <Typography>No opportunities available</Typography>
+  }
 
   return (
     <Stack>
