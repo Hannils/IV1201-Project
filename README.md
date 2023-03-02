@@ -12,6 +12,35 @@ Frontend code is placed in `frontend` folder
 
 Database SQL is placed in `database` folder
 
+# Try out the application
+
+Here is a small tutorial on how to run the project.
+
+## Deployed application
+
+A live demo of the project is deployed can be seen on [recruitment-application.netlify.app](https://recruitment-application.netlify.app)  
+*NOTE: The backend is initially slow so refresh a few times if it doesn't load within about a minute*
+
+## Run it locally
+
+- Clone the repo
+- Make sure Postgres is installed and running
+- Create a new empty database
+- Open a terminal
+- cd in `./database` folder 
+  - Run the `SQL` dump using the command in the [README](https://github.com/Hannils/IV1201-Project/tree/main/database#migrating-database)
+- cd in `./backend`
+  - create and configure a `.env.local` file with the configurations for the database [hint](https://github.com/Hannils/IV1201-Project/blob/main/backend/src/integrations/DAO/DAO.ts#L8).
+  - create and configure a `.env` file with the entry `PORT` set it to an unused port i.e. 8888.
+  - run `yarn`
+  - run `yarn dev-conf`
+  - run `yarn dev`
+- Open a new terminal instance
+- cd in  `./frontend`
+  - Create a `.env` file and add an entry `VITE_API_URL` set it to `http://localhost:PORT` where PORT is the port you set for the backend
+  - run `yarn`
+  - run `yarn dev`
+
 ## JSDoc guidlines
 
 ### Parameters and other specifications
